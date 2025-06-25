@@ -20,7 +20,7 @@
   "files.eol": "\n",
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-  "editor.rulers": [80],
+  "editor.rulers": [120],
   "editor.wordWrap": "on",
   "editor.minimap.enabled": true,
   "workbench.iconTheme": "vscode-icons",
@@ -44,5 +44,16 @@
   },
   "editor.quickSuggestionsDelay": 100,
   "editor.suggestOnTriggerCharacters": true,
-  "editor.tabCompletion": "on"
+  "editor.tabCompletion": "on",
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.next/**", "**/dist/**"],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
 }
