@@ -1,26 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ChatMessageSkeleton } from "@/components/myui/chat-message-skeleton";
+import Header from "@/containers/header";
 
 export default function Home() {
   return (
     <div className="bg-background overflow-y-auto">
-      {/* ヘッダー - 固定 */}
-      <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto p-4">
-          <div className="flex items-center">
-            {/* ロゴSkeleton */}
-            <Skeleton className="h-8 w-48" />
-            <div className="flex-1" />
-            {/* ヘッダーアクション */}
-            <div className="flex items-center gap-8">
-              <Skeleton className="h-8 w-8 rounded-full" />
-              <Skeleton className="h-8 w-8 rounded-full" />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* メインコンテンツ - チャットエリア - 固定高さでスクロール */}
       <main className="pt-20 pb-24 h-[100vh]">
