@@ -7,6 +7,14 @@ export interface RadioValue {
   label: string;
 }
 
+// メッセージの型定義
+export interface Message {
+  user: number;
+  text: string;
+  translated: string;
+  datetime: string;
+}
+
 // 言語設定の連想配列
 export const lang1Map: Record<string, string> = {
   ja: "日本語",
@@ -17,6 +25,9 @@ export const lang2Map: Record<string, string> = {
   ja: "日本語",
   en: "English",
 };
+
+// 言語設定の統合マップ
+export const langMap: Record<string, string> = { ...lang1Map, ...lang2Map };
 
 // 音声設定の連想配列
 export const voiceMap: Record<string, string> = {
@@ -66,5 +77,43 @@ export function setLang2(value: string): void {
 export function setVoice(value: string): void {
   if (typeof window !== "undefined") {
     localStorage.setItem("hootalk_voice", value);
+  }
+}
+
+// メッセージ関連の関数
+export function getMessages(): Message[] {
+  if (typeof window !== "undefined") {
+    return JSON.parse(localStorage.getItem("messages") || "[]");
+  }
+  return [];
+}
+
+export function setMessages(messages: Message[]): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("messages", JSON.stringify(messages));
+  }
+}
+
+export function addMessage(message: Omit<Message, "datetime">): void {
+  if (typeof window !== "undefined") {
+    const messages = getMessages();
+    const messageWithDateTime: Message = {
+      ...message,
+      datetime: new Date().toISOString(),
+    };
+    messages.push(messageWithDateTime);
+    setMessages(messages);
+
+    // メッセージ追加時にカスタムイベントを発火
+    window.dispatchEvent(new Event("messages"));
+  }
+}
+
+// メッセージを初期化する関数
+export function clearMessages(): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("messages", "[]");
+    // メッセージ初期化時にカスタムイベントを発火
+    window.dispatchEvent(new Event("messages"));
   }
 }
