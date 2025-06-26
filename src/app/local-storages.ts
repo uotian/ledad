@@ -17,8 +17,8 @@ export interface Message {
 
 // 言語設定の連想配列
 export const lang1Map: Record<string, string> = {
-  ja: "日本語",
   en: "English",
+  ja: "日本語",
 };
 
 export const lang2Map: Record<string, string> = {
@@ -42,23 +42,23 @@ export const voiceMap: Record<string, string> = {
 // 設定値を取得する関数
 export function getLang1(): string {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("hootalk_lang1") || "ja";
+    return localStorage.getItem("hootalk_lang1") || Object.keys(lang1Map)[0];
   }
-  return "ja";
+  return Object.keys(lang1Map)[0];
 }
 
 export function getLang2(): string {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("hootalk_lang2") || "en";
+    return localStorage.getItem("hootalk_lang2") || Object.keys(lang2Map)[0];
   }
-  return "en";
+  return Object.keys(lang2Map)[0];
 }
 
 export function getVoice(): string {
   if (typeof window !== "undefined") {
     return localStorage.getItem("hootalk_voice") || "alloy";
   }
-  return "alloy";
+  return Object.keys(voiceMap)[0];
 }
 
 // 設定値を保存する関数

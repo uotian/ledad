@@ -27,8 +27,6 @@ const Component: React.FC<Props> = ({ className }) => {
     window.location.reload();
   };
 
-  const handleClearHistory = () => {};
-
   return (
     <DialogContent className={`max-w-md w-full p-6 rounded-lg shadow-lg ${className}`}>
       <DialogHeader className="mb-4">
@@ -41,11 +39,6 @@ const Component: React.FC<Props> = ({ className }) => {
         <RadioGroup name="あなたの声" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
 
         <DialogFooter className="flex items-center gap-2 mt-4">
-          <DialogClose asChild>
-            <Button type="button" variant="destructive" onClick={handleClearHistory}>
-              履歴の削除
-            </Button>
-          </DialogClose>
           <div className="flex-1" />
           <DialogClose asChild>
             <Button type="submit">保存</Button>

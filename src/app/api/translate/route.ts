@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const translatedText = data.choices[0].message.content;
+    const translatedText = data.choices[0].message.content.replace(/\n+/g, "\n");
 
     return NextResponse.json({
       translatedText,
