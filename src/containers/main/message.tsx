@@ -18,8 +18,12 @@ function CommonMessageContent({ message, className }: CommonMessageContentProps)
   return (
     <div className={cn(className, "w-full px-2 py-2 rounded-lg")}>
       <div className="text-sm px-2 whitespace-pre-wrap">{message.text.replace(/\n\n/g, "\n")}</div>
-      <Separator className="my-1 bg-border/30" />
-      <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated.replace(/\n\n/g, "\n")}</div>
+      {message.translated && (
+        <>
+          <Separator className="my-1 bg-border/30" />
+          <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated.replace(/\n\n/g, "\n")}</div>
+        </>
+      )}
     </div>
   );
 }
@@ -43,7 +47,7 @@ function ReceivedMessageContent({ message }: { message: Message }) {
 }
 
 export default function MessageItem({ message, index, className }: MessageItemProps) {
-  const isUser = message.user === 1;
+  const isUser = message.user === 2;
 
   return (
     <div key={index} className={cn("flex flex-col", isUser ? "items-end" : "items-start", className)}>

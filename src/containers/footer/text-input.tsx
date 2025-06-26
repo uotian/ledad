@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { getLang1, getLang2, addMessage } from "@/app/local-storages";
-import access from "@/app/api/translate/access";
+import accessTranslate from "@/app/api/translate/access";
 
 export default function Input() {
   const [value, setValue] = useState("");
@@ -29,7 +29,7 @@ export default function Input() {
           try {
             const langFrom = getLang2();
             const langTo = getLang1();
-            translated = await access({ text, langFrom, langTo }).catch(() => "翻訳失敗");
+            translated = await accessTranslate({ text, langFrom, langTo }).catch(() => "翻訳失敗");
             setValueBackup(text);
           } catch (error) {
             translated = "[ERROR] 翻訳に失敗しました: " + error;
@@ -39,7 +39,7 @@ export default function Input() {
           }
         }
         if (!e.shiftKey) {
-          addMessage({ user: 1, text, translated: translated });
+          addMessage({ user: 2, text, translated: translated });
           setValue("");
           setValueTranslate("");
           setSaving(false);

@@ -11,7 +11,7 @@ export interface RadioValue {
 export interface Message {
   user: number;
   text: string;
-  translated: string;
+  translated?: string;
   datetime: string;
 }
 

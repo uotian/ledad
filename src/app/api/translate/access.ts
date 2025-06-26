@@ -11,9 +11,7 @@ export interface TranslateRequest {
 export default async function access(request: TranslateRequest): Promise<string> {
   const response = await fetch("/api/translate", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   });
 

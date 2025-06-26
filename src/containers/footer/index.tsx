@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import Input from "./input";
+import MicInput from "./mic-input";
+import TextInput from "./text-input";
 
 export default function Footer() {
   return (
@@ -7,9 +7,9 @@ export default function Footer() {
       <div className="container mx-auto p-4">
         <div className="flex items-center gap-8">
           <div>
-            <Skeleton className="h-16 w-16 rounded-full bg-red-900" />
+            <MicInput />
           </div>
-          <Input />
+          <TextInput />
         </div>
       </div>
     </footer>
