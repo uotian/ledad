@@ -3,8 +3,8 @@
 import { useState, useCallback } from "react";
 import { Mic, MicOff, Loader2 } from "lucide-react";
 import { getLang1, getLang2, addMessage } from "@/app/local-storages";
-import whisperAccess from "@/app/api/whisper/access";
-import accessTranslate from "@/app/api/translate/access";
+import whisperAPI from "@/app/api/whisper/access";
+import translateAPI from "@/app/api/translate/access";
 
 export default function MicInput() {
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
@@ -14,8 +14,8 @@ export default function MicInput() {
     setConverting(true);
     const langFrom = getLang1();
     const langTo = getLang2();
-    const text = await whisperAccess({ audio, lang: langFrom }).catch(() => "音声認識失敗");
-    const translated = await accessTranslate({ text, langFrom, langTo }).catch(() => "翻訳失敗");
+    const text = await whisperAPI({ audio, lang: langFrom }).catch(() => "音声認識失敗");
+    const translated = await translateAPI({ text, langFrom, langTo }).catch(() => "翻訳失敗");
     if (text && text.trim()) {
       addMessage({ user: 1, text, translated });
     }
