@@ -1,6 +1,7 @@
-import { Message } from "@/app/local-storages";
+import { Message } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
 
 interface MessageItemProps {
   message: Message;
@@ -13,22 +14,29 @@ interface CommonMessageContentProps {
   className: string;
 }
 
-// 共通のメッセージコンテンツ
 function CommonMessageContent({ message, className }: CommonMessageContentProps) {
   return (
     <div className={cn(className, "w-full px-2 py-2 rounded-lg")}>
-      <div className="text-sm px-2 whitespace-pre-wrap">{message.text.replace(/\n\n/g, "\n")}</div>
+      <div className="text-sm px-2 whitespace-pre-wrap flex items-center gap-2">
+        {message.text.replace(/\n\n/g, "\n")}
+        {message.status === "processing" && <Loader2 className="h-4 w-4 animate-spin" />}
+      </div>
       {message.translated && (
         <>
           <Separator className="my-1 bg-border/30" />
           <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated.replace(/\n\n/g, "\n")}</div>
         </>
       )}
+      {message.status === "error" && (
+        <>
+          <Separator className="my-1 bg-border/30" />
+          <div className="text-sm px-2 text-red-600 opacity-75">エラーが発生しました</div>
+        </>
+      )}
     </div>
   );
 }
 
-// ユーザーメッセージ用のコンテンツ
 function UserMessageContent({ message }: { message: Message }) {
   return (
     <div className="flex justify-end max-w-2/3">
@@ -37,7 +45,6 @@ function UserMessageContent({ message }: { message: Message }) {
   );
 }
 
-// 受信メッセージ用のコンテンツ
 function ReceivedMessageContent({ message }: { message: Message }) {
   return (
     <div className="flex justify-start">
@@ -51,10 +58,7 @@ export default function MessageItem({ message, index, className }: MessageItemPr
 
   return (
     <div key={index} className={cn("flex flex-col", isUser ? "items-end" : "items-start", className)}>
-      {/* タイムスタンプ */}
       <div className="text-xs text-gray-500 mb-1">{new Date(message.datetime).toLocaleString("ja-JP")}</div>
-
-      {/* メッセージコンテンツ */}
       {isUser ? <UserMessageContent message={message} /> : <ReceivedMessageContent message={message} />}
     </div>
   );

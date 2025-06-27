@@ -1,79 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { getLang1, getLang2, addMessage } from "@/app/local-storages";
-import translateAPI from "@/app/api/translate/access";
+import { getLang1, getLang2, addMessage, updateMessage } from "@/lib/storage";
+import translateAPI from "@/lib/translate-api";
 
 export default function Input() {
   const [value, setValue] = useState("");
-  const [valueTranslate, setValueTranslate] = useState("");
-  const [valueBackup, setValueBackup] = useState("");
+  const [translated0, setTranslated0] = useState("");
   const [composing, setComposing] = useState(false);
-  const [translating, setTranslating] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [langFrom, langTo, user] = [getLang2(), getLang1(), 2];
 
-  const action = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const text = value.trim();
     if (text && e.key === "Enter" && !composing) {
-      if (translating) {
-        alert("翻訳中だから待てって");
+      if (e.shiftKey) {
+        setTranslated0(translated0 ? translated0 + "\n翻訳中..." : "翻訳中...");
+        const translated = await translateAPI({ text, langFrom, langTo });
+        setTranslated0(translated);
       } else {
-        if (!e.shiftKey) {
-          setSaving(true);
-        }
-        let translated = valueTranslate;
-        if (text != valueBackup) {
-          setTranslating(true);
-          try {
-            const langFrom = getLang2();
-            const langTo = getLang1();
-            translated = await translateAPI({ text, langFrom, langTo }).catch(() => "翻訳失敗");
-            setValueBackup(text);
-          } catch (error) {
-            translated = "[ERROR] 翻訳に失敗しました: " + error;
-          } finally {
-            setValueTranslate(translated);
-            setTranslating(false);
-          }
-        }
-        if (!e.shiftKey) {
-          addMessage({ user: 2, text, translated: translated });
-          setValue("");
-          setValueTranslate("");
-          setSaving(false);
-        }
+        e.preventDefault();
+        setTranslated0(translated0 ? translated0 + "\n翻訳し送信中..." : "翻訳し送信中...");
+        const messageId = addMessage({ user, text, translated: "翻訳中..." });
+        setValue("");
+        const translated = await translateAPI({ text, langFrom, langTo });
+        updateMessage(messageId, { translated, status: "success" });
+        setTranslated0("");
       }
     }
   };
 
   return (
-    <div className="flex gap-4 w-full flex-row-reverse">
-      <div className="absolute right-4 bottom-4">
-        {translating ? (
-          <Loader2 className="h-8 w-8 animate-spin text-red-800" />
-        ) : (
-          <AlertCircle className="h-8 w-8 text-blue-800" />
-        )}
+    <div className="flex gap-3 xl:gap-6 w-full">
+      <div className="flex-1 bg-stone-200/75 min-h-16 px-3 py-2 border rounded-md overflow-y-auto text-base md:text-sm whitespace-pre-wrap">
+        {translated0 || "翻訳結果が確認できます"}
       </div>
       <Textarea
         placeholder="入力してください"
-        className="flex-1 bg-white/75 disabled:bg-stone-300 disabled:opacity-80 min-h-24"
+        className="flex-1 bg-white/75 min-h-16"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onKeyDown={action}
+        onKeyDown={handleKeyDown}
         onCompositionStart={() => setComposing(true)}
         onCompositionEnd={() => setComposing(false)}
-        disabled={saving}
       />
-      <Textarea
-        placeholder="翻訳結果が入力されます"
-        className="flex-1 bg-white/75 disabled:bg-stone-300 disabled:opacity-80 min-h-24"
-        value={valueTranslate}
-        readOnly
-      />
-      <div></div>
     </div>
   );
 }

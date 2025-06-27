@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowLeftRight, Volume2 } from "lucide-react";
-import { lang1Map, lang2Map, voiceMap } from "@/app/local-storages";
-import { getLang1, getLang2, getVoice } from "@/app/local-storages";
+import { ArrowRightLeft } from "lucide-react";
+import { getLang1, getLang2 } from "@/lib/storage";
 
 interface Props {
   className?: string;
@@ -12,14 +11,12 @@ interface Props {
 const Component: React.FC<Props> = ({ className }) => {
   const [lang1, setLang1] = useState("ja");
   const [lang2, setLang2] = useState("en");
-  const [voice, setVoice] = useState("alloy");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     setLang1(getLang1());
     setLang2(getLang2());
-    setVoice(getVoice());
   }, []);
 
   const infoValue = (value: string): string => {
@@ -29,13 +26,9 @@ const Component: React.FC<Props> = ({ className }) => {
   return (
     <div className={`flex items-center gap-12 text-sm ${className}`}>
       <div className="flex items-center gap-2">
-        <span>{infoValue(lang1Map[lang1])}</span>
-        <ArrowLeftRight className="h-4 w-4" />
-        <span>{infoValue(lang2Map[lang2])}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Volume2 className="h-4 w-4" />
-        <span>{infoValue(voiceMap[voice])}</span>
+        <span>{infoValue(lang1.toUpperCase())}</span>
+        <ArrowRightLeft className="h-4 w-4" />
+        <span>{infoValue(lang2.toUpperCase())}</span>
       </div>
     </div>
   );

@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import RadioGroup from "@/components/myui/radio-group";
-import { lang1Map, lang2Map, voiceMap } from "@/app/local-storages";
-import { getLang1, getLang2, getVoice } from "@/app/local-storages";
-import { setLang1, setLang2, setVoice } from "@/app/local-storages";
+import RadioGroupNeo from "@/components/myui/radio-group-neo";
+import { lang1Map, lang2Map, voiceMap } from "@/lib/storage";
+import { getLang1, getLang2, getVoice } from "@/lib/storage";
+import { setLang1, setLang2, setVoice } from "@/lib/storage";
 
 interface Props {
   className?: string;
@@ -34,9 +34,9 @@ const Component: React.FC<Props> = ({ className }) => {
       </DialogHeader>
 
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-        <RadioGroup name="相手の言語" valueMap={lang1Map} defaultValue={lang1} onValueChange={setLang1State} />
-        <RadioGroup name="あなたの言語" valueMap={lang2Map} defaultValue={lang2} onValueChange={setLang2State} />
-        <RadioGroup name="あなたの声" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
+        <RadioGroupNeo name="相手の言語" valueMap={lang1Map} defaultValue={lang1} onValueChange={setLang1State} />
+        <RadioGroupNeo name="あなたの言語" valueMap={lang2Map} defaultValue={lang2} onValueChange={setLang2State} />
+        <RadioGroupNeo name="あなたの声" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
 
         <DialogFooter className="flex items-center gap-2 mt-4">
           <div className="flex-1" />

@@ -15,7 +15,8 @@
 ## ファイル構造
 
 - コンポーネントは src/components/ に配置
-- UI コンポーネントは src/components/ui/ に配置
+- UI コンポーネント(shadcn/)は src/components/ui/ に配置
+- UI コンポーネント(自作)は src/components/myui/ に配置
 - ページは src/app/ に配置
 - ユーティリティは src/lib/ に配置
 - 型定義は src/types/ に配置

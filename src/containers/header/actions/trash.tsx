@@ -1,10 +1,9 @@
 import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { clearMessages } from "@/app/local-storages";
+import ButtonSquare from "@/components/myui/button-square";
+import { clearMessages } from "@/lib/storage";
 
 export default function Trash() {
   const handleClearMessages = () => {
-    // 確認ダイアログを表示
     if (confirm("すべてのメッセージを削除しますか？")) {
       clearMessages();
       console.log("メッセージが初期化されました");
@@ -12,9 +11,9 @@ export default function Trash() {
   };
 
   return (
-    <Button variant="ghost" size="icon" className="h-9 w-9" onClick={handleClearMessages}>
-      <Trash2 className="h-4 w-4" />
+    <ButtonSquare size="sm" onClick={handleClearMessages}>
+      <Trash2 className="h-4 w-4" strokeWidth={1.5} />
       <span className="sr-only">ゴミ箱</span>
-    </Button>
+    </ButtonSquare>
   );
 }

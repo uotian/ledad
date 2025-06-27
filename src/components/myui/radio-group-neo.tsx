@@ -1,14 +1,14 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-interface CustomRadioGroupProps {
+interface Props {
   name: string;
   valueMap: Record<string, string>;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
 }
 
-export default function CustomRadioGroup({ name, valueMap, defaultValue, onValueChange }: CustomRadioGroupProps) {
+export default function RadioGroupNeo({ name, valueMap, defaultValue, onValueChange }: Props) {
   const radioValues = Object.entries(valueMap).map(([value, label]) => ({ value, label }));
 
   return (
@@ -19,12 +19,15 @@ export default function CustomRadioGroup({ name, valueMap, defaultValue, onValue
         className="flex gap-6 flex-wrap"
         onValueChange={onValueChange}
       >
-        {radioValues.map((item) => (
-          <div key={item.value} className="flex items-center gap-2">
-            <RadioGroupItem value={item.value} id={item.value} />
-            <Label htmlFor={item.value}>{item.label}</Label>
-          </div>
-        ))}
+        {radioValues.map((item) => {
+          const uniqueId = `${name}-${item.value}`;
+          return (
+            <div key={item.value} className="flex items-center gap-2 md:min-w-30">
+              <RadioGroupItem value={item.value} id={uniqueId} />
+              <Label htmlFor={uniqueId}>{item.label}</Label>
+            </div>
+          );
+        })}
       </RadioGroup>
     </div>
   );
