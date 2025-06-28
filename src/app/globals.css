@@ -53,7 +53,7 @@
   /* カード・ポップオーバー - 背景色より少し暗く */
   --card: oklch(75% 0.04 90);
   --card-foreground: oklch(10% 0.02 90);
-  --popover: oklch(40% 0.035 90);
+  --popover: oklch(10% 0.035 90);
   --popover-foreground: oklch(90% 0.02 90);
 
   /* プライマリ・セカンダリ - 革製品の色感に調和 */

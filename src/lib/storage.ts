@@ -95,7 +95,7 @@ export function addMessage(message: Omit<Message, "id" | "datetime">): string {
   if (typeof window !== "undefined") {
     const messages = getMessages();
     const datetime = new Date().toISOString();
-    const id = `${datetime}:${Math.random().toString(36).substr(2, 9)}`;
+    const id = `${message.user}_${datetime}:${Math.random().toString(36).substr(2, 9)}`;
     const status = message.status || "processing";
     messages[id] = { ...message, id, datetime, status };
     setMessages(messages);

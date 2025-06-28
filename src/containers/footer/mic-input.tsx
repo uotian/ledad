@@ -1,16 +1,21 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Pause, Mic, Play } from "lucide-react";
-import { getLang1, getLang2, addMessage, updateMessage } from "@/lib/storage";
+import { useCallback } from "react";
+import { Pause, Mic, MessageCirclePlus } from "lucide-react";
+import { addMessage, updateMessage } from "@/lib/storage";
 import whisperAPI from "@/lib/whisper-api";
 import translateAPI from "@/lib/translate-api";
 import ButtonCircle from "@/components/myui/button-circle";
+import { Badge } from "@/components/ui/badge";
+import { useRecorder } from "@/hooks/use-recorder";
 
-export default function MicInput() {
-  const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
-  const [langFrom, langTo, user] = [getLang1(), getLang2(), 1];
+interface MicInputProps {
+  langFrom: string;
+  langTo: string;
+  user: number;
+}
 
+export default function MicInput({ langFrom, langTo, user }: MicInputProps) {
   const convert = useCallback(
     async (audio: Blob) => {
       try {
@@ -30,48 +35,30 @@ export default function MicInput() {
     [langFrom, langTo, user]
   );
 
-  const start = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
-      let audio: Blob | null = null;
-      mr.ondataavailable = (e) => (audio = e.data);
-      mr.onstop = () => audio && convert(audio);
-      mr.start();
-      setRecorder(mr);
-    } catch (err) {
-      console.error("録音開始エラー:", err);
-    }
-  }, [convert]);
-
-  const stop = useCallback(() => {
-    if (recorder) {
-      recorder.stop();
-      recorder.stream.getTracks().forEach((track) => track.stop());
-      setRecorder(null);
-    }
-  }, [recorder]);
-
-  const send = useCallback(() => {
-    if (recorder) {
-      stop();
-      start();
-    }
-  }, [recorder, stop, start]);
+  const { recorder, count, start, stop, send } = useRecorder(convert);
 
   return (
     <div className="relative">
       <div className="flex gap-3 xl:gap-6">
         <ButtonCircle
-          variant="red"
+          variant="destructive"
           onClick={recorder ? stop : start}
-          className={recorder ? "animate-pulse bg-red-600" : ""}
+          className={recorder ? "animate-pulse relative" : ""}
         >
-          {recorder ? <Pause className="text-white fill-current" /> : <Mic className="text-white" />}
+          {recorder ? (
+            <>
+              <Pause className="text-white fill-current" />
+              <Badge variant="destructive" className="absolute -top-2 -right-2 rounded-full w-6 h-6">
+                {count}
+              </Badge>
+            </>
+          ) : (
+            <Mic className="text-white" />
+          )}
         </ButtonCircle>
 
-        <ButtonCircle variant={recorder ? "blue" : "gray"} onClick={send} disabled={!recorder}>
-          <Play className="text-white fill-current" />
+        <ButtonCircle variant={recorder ? "secondary" : "muted"} onClick={send} disabled={!recorder}>
+          <MessageCirclePlus className="text-white" />
         </ButtonCircle>
       </div>
     </div>
