@@ -22,7 +22,7 @@ function CommonMessageContent({ message, className }: CommonMessageContentProps)
       </div>
       {message.translated && (
         <>
-          <Separator className="my-1 bg-background/60" />
+          <Separator className="my-1 bg-border/75" />
           <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated.replace(/\n\n/g, "\n")}</div>
         </>
       )}

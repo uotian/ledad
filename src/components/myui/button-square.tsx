@@ -9,9 +9,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function ButtonSquare({ size = "md", className, children, ...props }: Props) {
-  const baseClasses =
-    "inline-flex items-center justify-center rounded-lg cursor-pointer focus:outline-none transition-all duration-200";
-  const colorClasses = "bg-foreground/80 hover:bg-foreground/60 border-[1px] border text-background ";
+  const baseClasses = "inline-flex items-center justify-center rounded-lg cursor-pointer focus:outline-none transition-all duration-200";
+  const colorClasses = "bg-foreground/60 hover:bg-foreground/40 border-[1px] border text-background ";
 
   const sizeClasses = {
     xs: "h-8 w-8",

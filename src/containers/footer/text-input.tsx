@@ -2,14 +2,19 @@
 
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { getLang1, getLang2, addMessage, updateMessage } from "@/lib/storage";
+import { addMessage, updateMessage } from "@/lib/storage";
 import translateAPI from "@/lib/translate-api";
 
-export default function Input() {
+interface TextInputProps {
+  langFrom: string;
+  langTo: string;
+  user: number;
+}
+
+export default function TextInput({ langFrom, langTo, user }: TextInputProps) {
   const [value, setValue] = useState("");
   const [translated0, setTranslated0] = useState("");
   const [composing, setComposing] = useState(false);
-  const [langFrom, langTo, user] = [getLang2(), getLang1(), 2];
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const text = value.trim();
@@ -31,13 +36,13 @@ export default function Input() {
   };
 
   return (
-    <div className="flex gap-3 xl:gap-6 w-full">
-      <div className="flex-1 bg-muted/75 min-h-16 px-3 py-2 border rounded-md overflow-y-auto text-base md:text-sm whitespace-pre-wrap">
+    <div className="flex flex-col md:flex-row w-full">
+      <div className="flex-1 bg-muted/75 min-h-8 md:min-h-16 px-3 py-2 border border-border rounded-md border-b-0 md:border-1 md:border-r-0 rounded-b-none md:rounded-xl md:rounded-r-none overflow-y-auto text-xs md:text-sm whitespace-pre-wrap">
         {translated0 || "翻訳結果が確認できます"}
       </div>
       <Textarea
         placeholder="入力してください"
-        className="flex-1 bg-input/75 min-h-16 resize-none"
+        className="flex-1 bg-input/75 min-h-8 md:min-h-16 resize-none border border-border border-t-0 md:border-1 md:border-l-0 rounded-t-none md:rounded-xl md:rounded-l-none text-xs md:text-sm "
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}

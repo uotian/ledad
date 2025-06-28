@@ -52,8 +52,9 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
   // 10秒後に自動送信
   useEffect(() => {
     if (recorder) {
+      const countMax = 60;
       clearTimer();
-      setCount(10);
+      setCount(countMax);
 
       interval.current = setInterval(() => {
         setCount((prev) => {
@@ -62,7 +63,7 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
         });
       }, 1000);
 
-      timeout.current = setTimeout(() => send(), 10000);
+      timeout.current = setTimeout(() => send(), countMax * 1000);
     }
     return () => clearTimer();
   }, [recorder, send, clearTimer]);

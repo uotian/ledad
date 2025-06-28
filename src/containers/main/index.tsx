@@ -30,12 +30,10 @@ export default function Main() {
     };
   }, []);
 
-  const sortedMessages = Object.values(messages).sort(
-    (a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
-  );
+  const sortedMessages = Object.values(messages).sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
 
   return (
-    <main className="pt-20 pb-28 h-[100vh] overflow-y-auto">
+    <main className="pt-14 pb-20 h-[100vh] overflow-y-auto">
       {sortedMessages.length === 0 ? (
         <div className="container mx-auto p-4 h-full">
           <NoMessage />

@@ -8,20 +8,13 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
 }
 
-export default function ButtonCircle({
-  variant = "primary",
-  size = "md",
-  className,
-  children,
-  disabled,
-  ...props
-}: Props) {
+export default function ButtonCircle({ variant = "primary", size = "md", className, children, disabled, ...props }: Props) {
   const baseClasses = "rounded-full transition-all duration-200 flex items-center justify-center focus:outline-none";
 
   const sizeClasses = {
     xs: "h-6 w-6",
     sm: "h-8 w-8",
-    md: "h-12 w-12",
+    md: "h-12 w-14",
     lg: "h-16 w-16",
     xl: "h-20 w-20",
   };
@@ -37,11 +30,7 @@ export default function ButtonCircle({
   const disabledClasses = disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer";
 
   return (
-    <button
-      className={cn(baseClasses, sizeClasses[size], variantClasses[variant], disabledClasses, className)}
-      disabled={disabled}
-      {...props}
-    >
+    <button className={cn(baseClasses, sizeClasses[size], variantClasses[variant], disabledClasses, className)} disabled={disabled} {...props}>
       {children}
     </button>
   );
