@@ -41,7 +41,9 @@ const Component: React.FC<Props> = ({ className }) => {
         <DialogFooter className="flex items-center gap-2 mt-4">
           <div className="flex-1" />
           <DialogClose asChild>
-            <Button type="submit">保存</Button>
+            <Button type="submit" className="cursor-pointer">
+              保存
+            </Button>
           </DialogClose>
         </DialogFooter>
       </form>

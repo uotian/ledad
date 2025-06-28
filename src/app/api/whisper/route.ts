@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const text = (await res.json()).text
       .replace(/([.!?])\s*([A-Z])/g, "$1\n$2")
-      .replace(/([。！？])/g, "$1\n$2")
+      .replace(/([。！？])/g, "$1\n")
       .replace(/\n+/g, "\n")
       .trim();
     return NextResponse.json({ text });

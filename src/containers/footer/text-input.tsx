@@ -32,12 +32,12 @@ export default function Input() {
 
   return (
     <div className="flex gap-3 xl:gap-6 w-full">
-      <div className="flex-1 bg-stone-200/75 min-h-16 px-3 py-2 border rounded-md overflow-y-auto text-base md:text-sm whitespace-pre-wrap">
+      <div className="flex-1 bg-muted/75 min-h-16 px-3 py-2 border rounded-md overflow-y-auto text-base md:text-sm whitespace-pre-wrap">
         {translated0 || "翻訳結果が確認できます"}
       </div>
       <Textarea
         placeholder="入力してください"
-        className="flex-1 bg-white/75 min-h-16"
+        className="flex-1 bg-input/75 min-h-16 resize-none"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}

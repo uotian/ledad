@@ -21,9 +21,9 @@ export default function ButtonCircle({ variant = "blue", size = "md", className,
   };
 
   const variantClasses = {
-    red: "bg-red-900/75 hover:bg-red-800",
-    blue: "bg-blue-600/75 hover:bg-blue-700",
-    gray: "bg-gray-400/75 cursor-not-allowed",
+    red: "bg-red-900/80 hover:bg-red-900/60",
+    blue: "bg-blue-900/80 hover:bg-blue-700/60",
+    gray: "bg-gray-900/80 cursor-not-allowed",
   };
 
   return (

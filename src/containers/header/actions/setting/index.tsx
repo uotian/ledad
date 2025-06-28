@@ -7,7 +7,7 @@ export default function Component() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <ButtonSquare size="sm" aria-label="設定を開く" type="button" title="設定">
+        <ButtonSquare size="sm" aria-label="設定を開く" type="button" className="rounded-none border-l-0">
           <Settings className="w-5 h-5" strokeWidth={1.5} />
         </ButtonSquare>
       </DialogTrigger>

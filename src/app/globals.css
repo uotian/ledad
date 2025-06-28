@@ -6,8 +6,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-btn-bg: var(--btn-bg);
-  --color-btn-fg: var(--btn-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -47,75 +45,98 @@
 
 :root {
   --radius: 0.625rem;
-  --btn-bg: oklch(74.223% 0.04842 86.425);
-  --btn-fg: oklch(43.831% 0.02741 93.599);
-  --background: oklch(78.872% 0.04335 87.362);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.646 0.222 41.116);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.646 0.222 41.116);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.646 0.222 41.116);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.646 0.222 41.116);
+
+  /* 基本色 - 革製品をイメージ */
+  --background: oklch(80% 0.04 90);
+  --foreground: oklch(35% 0.02 90);
+
+  /* カード・ポップオーバー - 背景色より少し暗く */
+  --card: oklch(75% 0.04 90);
+  --card-foreground: oklch(10% 0.02 90);
+  --popover: oklch(40% 0.035 90);
+  --popover-foreground: oklch(90% 0.02 90);
+
+  /* プライマリ・セカンダリ - 革製品の色感に調和 */
+  --primary: oklch(60% 0.13 50);
+  --primary-foreground: oklch(95% 0.01 50);
+  --secondary: oklch(50% 0.08 240);
+  --secondary-foreground: oklch(95% 0.01 240);
+
+  /* ミュート・アクセント - 基本色とプライマリ・セカンダリに調和 */
+  --muted: oklch(70% 0.03 90);
+  --muted-foreground: oklch(50% 0.015 90);
+  --accent: oklch(68% 0.12 50);
+  --accent-foreground: oklch(95% 0.01 50);
+
+  /* システム色 - 基本色とプライマリ・セカンダリに統一 */
+  --destructive: oklch(65% 0.25 25);
+  --border: oklch(70% 0.02 90);
+  --input: oklch(95% 0.01 90);
+  --ring: oklch(65% 0.15 50);
+
+  /* チャート色 - 基本色とプライマリ・セカンダリに調和 */
+  --chart-1: oklch(65% 0.15 50);
+  --chart-2: oklch(60% 0.12 240);
+  --chart-3: oklch(55% 0.1 90);
+  --chart-4: oklch(70% 0.18 50);
+  --chart-5: oklch(65% 0.15 240);
+
+  /* サイドバー - 基本色とプライマリ・セカンダリに統一 */
+  --sidebar: oklch(82% 0.04 90);
+  --sidebar-foreground: oklch(35% 0.02 90);
+  --sidebar-primary: oklch(65% 0.15 50);
+  --sidebar-primary-foreground: oklch(95% 0.01 50);
+  --sidebar-accent: oklch(75% 0.03 240);
+  --sidebar-accent-foreground: oklch(95% 0.01 240);
+  --sidebar-border: oklch(70% 0.02 90);
+  --sidebar-ring: oklch(65% 0.15 50);
 }
 
 .dark {
-  --btn-bg: oklch(0.208 0.042 265.755);
-  --btn-fg: oklch(45.831% 0.02741 93.599);
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.769 0.188 70.08);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.769 0.188 70.08);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.769 0.188 70.08);
-  --sidebar-primary-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.769 0.188 70.08);
+  /* 基本色 - ダークモードは背景色の反転 */
+  --background: oklch(15% 0.02 87.362);
+  --foreground: oklch(85% 0.02 87.362);
+
+  /* カード・ポップオーバー */
+  --card: oklch(20% 0.025 87.362);
+  --card-foreground: oklch(85% 0.02 87.362);
+  --popover: oklch(18% 0.02 87.362);
+  --popover-foreground: oklch(85% 0.02 87.362);
+
+  /* プライマリ・セカンダリ */
+  --primary: oklch(70% 0.15 87.362);
+  --primary-foreground: oklch(15% 0.02 87.362);
+  --secondary: oklch(25% 0.03 87.362);
+  --secondary-foreground: oklch(85% 0.02 87.362);
+
+  /* ミュート・アクセント */
+  --muted: oklch(22% 0.02 87.362);
+  --muted-foreground: oklch(65% 0.015 87.362);
+  --accent: oklch(25% 0.05 87.362);
+  --accent-foreground: oklch(85% 0.02 87.362);
+
+  /* システム色 */
+  --destructive: oklch(70% 0.25 25);
+  --border: oklch(25% 0.02 87.362);
+  --input: oklch(25% 0.02 87.362);
+  --ring: oklch(70% 0.15 87.362);
+
+  /* チャート色 */
+  --chart-1: oklch(70% 0.15 87.362);
+  --chart-2: oklch(65% 0.12 120);
+  --chart-3: oklch(60% 0.1 180);
+  --chart-4: oklch(75% 0.18 60);
+  --chart-5: oklch(70% 0.15 300);
+
+  /* サイドバー */
+  --sidebar: oklch(20% 0.025 87.362);
+  --sidebar-foreground: oklch(85% 0.02 87.362);
+  --sidebar-primary: oklch(70% 0.15 87.362);
+  --sidebar-primary-foreground: oklch(15% 0.02 87.362);
+  --sidebar-accent: oklch(25% 0.03 87.362);
+  --sidebar-accent-foreground: oklch(85% 0.02 87.362);
+  --sidebar-border: oklch(25% 0.02 87.362);
+  --sidebar-ring: oklch(70% 0.15 87.362);
 }
 
 @layer base {

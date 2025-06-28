@@ -11,7 +11,7 @@ export default function Trash() {
   };
 
   return (
-    <ButtonSquare size="sm" onClick={handleClearMessages}>
+    <ButtonSquare size="sm" onClick={handleClearMessages} className="rounded-none border-l-0">
       <Trash2 className="h-4 w-4" strokeWidth={1.5} />
       <span className="sr-only">ゴミ箱</span>
     </ButtonSquare>
