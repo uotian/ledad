@@ -44,7 +44,7 @@ export default function Main() {
         <div className="container mx-auto p-4">
           <div className="flex flex-col gap-4">
             {sortedMessages.map((message, index) => (
-              <MessageItem key={message.id} message={message} index={index} />
+              <MessageItem key={index} message={message} />
             ))}
           </div>
         </div>

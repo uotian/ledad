@@ -5,7 +5,6 @@ import { Loader2 } from "lucide-react";
 
 interface MessageItemProps {
   message: Message;
-  index: number;
   className?: string;
 }
 
@@ -53,11 +52,11 @@ function ReceivedMessageContent({ message }: { message: Message }) {
   );
 }
 
-export default function MessageItem({ message, index, className }: MessageItemProps) {
+export default function MessageItem({ message, className }: MessageItemProps) {
   const isUser = message.user === 2;
 
   return (
-    <div key={index} className={cn("flex flex-col", isUser ? "items-end" : "items-start", className)}>
+    <div className={cn("flex flex-col", isUser ? "items-end" : "items-start", className)}>
       <div className="text-xs mb-1 px-1">{new Date(message.datetime).toLocaleString("ja-JP")}</div>
       {isUser ? <UserMessageContent message={message} /> : <ReceivedMessageContent message={message} />}
     </div>
