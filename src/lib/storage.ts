@@ -1,44 +1,62 @@
 // ------------------------------------------------------------
-// lang1
+// langA
 // ------------------------------------------------------------
 
-export const lang1Map: Record<string, string> = {
+export const langAMap: Record<string, string> = {
   en: "English",
   ja: "日本語",
 };
 
-export function getLang1(): string {
-  if (typeof window !== "undefined") return localStorage.getItem("lang1") || Object.keys(lang1Map)[0];
-  return Object.keys(lang1Map)[0];
+export function getLangA(): string {
+  if (typeof window !== "undefined") return localStorage.getItem("langA") || Object.keys(langAMap)[0];
+  return Object.keys(langAMap)[0];
 }
 
-export function setLang1(value: string): void {
-  if (typeof window !== "undefined") localStorage.setItem("lang1", value);
+export function setLangA(value: string): void {
+  if (typeof window !== "undefined") localStorage.setItem("langA", value);
 }
 
-export const lang2Map: Record<string, string> = {
+// ------------------------------------------------------------
+// langB
+// ------------------------------------------------------------
+
+export const langBMap: Record<string, string> = {
   ja: "日本語",
   en: "English",
 };
 
-// ------------------------------------------------------------
-// lang2
-// ------------------------------------------------------------
-
-export function getLang2(): string {
-  if (typeof window !== "undefined") return localStorage.getItem("lang2") || Object.keys(lang2Map)[0];
-  return Object.keys(lang2Map)[0];
+export function getLangB(): string {
+  if (typeof window !== "undefined") return localStorage.getItem("langB") || Object.keys(langBMap)[0];
+  return Object.keys(langBMap)[0];
 }
 
-export function setLang2(value: string): void {
-  if (typeof window !== "undefined") localStorage.setItem("lang2", value);
+export function setLangB(value: string): void {
+  if (typeof window !== "undefined") localStorage.setItem("langB", value);
 }
 
 // ------------------------------------------------------------
 // lang common
 // ------------------------------------------------------------
 
-export const langMap: Record<string, string> = { ...lang1Map, ...lang2Map };
+export const langMap: Record<string, string> = { ...langAMap, ...langBMap };
+
+// ------------------------------------------------------------
+// mainUser
+// ------------------------------------------------------------
+
+export const mainUserMap: Record<string, string> = {
+  A: "A",
+  B: "B",
+};
+
+export function getMainUser(): string {
+  if (typeof window !== "undefined") return localStorage.getItem("mainUser") || "?";
+  return Object.keys(mainUserMap)[0];
+}
+
+export function setMainUser(value: string): void {
+  if (typeof window !== "undefined") localStorage.setItem("mainUser", value);
+}
 
 // ------------------------------------------------------------
 // voice
@@ -63,12 +81,31 @@ export function setVoice(value: string): void {
 }
 
 // ------------------------------------------------------------
+// intervalSec
+// ------------------------------------------------------------
+
+export const intervalSecMap: Record<string, string> = {
+  "10": "10秒",
+  "30": "30秒",
+  "60": "60秒",
+};
+
+export function getIntervalSec(): number {
+  if (typeof window !== "undefined") return parseInt(localStorage.getItem("intervalSec") || "60");
+  return 60;
+}
+
+export function setIntervalSec(value: string): void {
+  if (typeof window !== "undefined") localStorage.setItem("intervalSec", value);
+}
+
+// ------------------------------------------------------------
 // messages
 // ------------------------------------------------------------
 
 export interface Message {
   id: string;
-  user: number;
+  user: string;
   text: string;
   translated?: string;
   datetime: string;

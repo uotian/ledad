@@ -1,4 +1,7 @@
+"use client";
+
 import { useState, useCallback, useRef, useEffect } from "react";
+import { getIntervalSec } from "@/lib/storage";
 
 // 録音関連のロジックをカスタムフックとして切り出し
 export function useRecorder(convert: (audio: Blob) => Promise<void>) {
@@ -6,6 +9,7 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
   const [count, setCount] = useState<number>(0);
   const timeout = useRef<NodeJS.Timeout | null>(null);
   const interval = useRef<NodeJS.Timeout | null>(null);
+  const chunks = useRef<Blob[]>([]);
 
   const clearTimer = useCallback(() => {
     if (timeout.current) {
@@ -21,11 +25,15 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
 
   const start = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
-      let audio: Blob | null = null;
-      mr.ondataavailable = (e) => (audio = e.data);
-      mr.onstop = () => audio && convert(audio);
+      const mr = new MediaRecorder(await navigator.mediaDevices.getUserMedia({ audio: true }), { mimeType: "audio/webm;codecs=opus" });
+      chunks.current = [];
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.current.push(e.data);
+      };
+      mr.onstop = () => {
+        if (chunks.current.length > 0) convert(new Blob(chunks.current, { type: "audio/webm;codecs=opus" }));
+        chunks.current = [];
+      };
       mr.start();
       setRecorder(mr);
     } catch (err) {
@@ -49,12 +57,12 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
     }
   }, [recorder, stop, start]);
 
-  // 10秒後に自動送信
+  // localStorageから設定された間隔で自動送信
   useEffect(() => {
     if (recorder) {
-      const countMax = 60;
+      const intervalSec = getIntervalSec();
       clearTimer();
-      setCount(countMax);
+      setCount(intervalSec);
 
       interval.current = setInterval(() => {
         setCount((prev) => {
@@ -63,7 +71,7 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
         });
       }, 1000);
 
-      timeout.current = setTimeout(() => send(), countMax * 1000);
+      timeout.current = setTimeout(() => send(), intervalSec * 1000);
     }
     return () => clearTimer();
   }, [recorder, send, clearTimer]);

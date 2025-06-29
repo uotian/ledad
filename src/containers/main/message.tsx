@@ -22,13 +22,13 @@ function CommonMessageContent({ message, className }: CommonMessageContentProps)
       </div>
       {message.translated && (
         <>
-          <Separator className="my-1 bg-border/75" />
+          <Separator className="my-1 bg-background/30" />
           <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated.replace(/\n\n/g, "\n")}</div>
         </>
       )}
       {message.status === "error" && (
         <>
-          <Separator className="my-1 bg-background/60" />
+          <Separator className="my-1 bg-background/30" />
           <div className="text-sm px-2 text-destructive opacity-75">エラーが発生しました</div>
         </>
       )}
@@ -36,15 +36,7 @@ function CommonMessageContent({ message, className }: CommonMessageContentProps)
   );
 }
 
-function UserMessageContent({ message }: { message: Message }) {
-  return (
-    <div className="flex justify-end max-w-2/3">
-      <CommonMessageContent message={message} className="bg-primary/80 text-primary-foreground rounded-br-none" />
-    </div>
-  );
-}
-
-function ReceivedMessageContent({ message }: { message: Message }) {
+function MessageContentA({ message }: { message: Message }) {
   return (
     <div className="flex justify-start max-w-2/3">
       <CommonMessageContent message={message} className="bg-card/80 text-card-foreground rounded-bl-none border-1" />
@@ -52,13 +44,20 @@ function ReceivedMessageContent({ message }: { message: Message }) {
   );
 }
 
-export default function MessageItem({ message, className }: MessageItemProps) {
-  const isUser = message.user === 2;
-
+function MessageContentB({ message }: { message: Message }) {
   return (
-    <div className={cn("flex flex-col", isUser ? "items-end" : "items-start", className)}>
+    <div className="flex justify-end max-w-2/3">
+      <CommonMessageContent message={message} className="bg-primary/80 text-primary-foreground rounded-br-none" />
+    </div>
+  );
+}
+
+export default function MessageItem({ message, className }: MessageItemProps) {
+  const isA = message.user === "A";
+  return (
+    <div className={cn("flex flex-col", isA ? "items-start" : "items-end", className)}>
       <div className="text-xs mb-1 px-1">{new Date(message.datetime).toLocaleString("ja-JP")}</div>
-      {isUser ? <UserMessageContent message={message} /> : <ReceivedMessageContent message={message} />}
+      {isA ? <MessageContentA message={message} /> : <MessageContentB message={message} />}
     </div>
   );
 }

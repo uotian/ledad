@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RadioGroupNeo from "@/components/myui/radio-group-neo";
-import { lang1Map, lang2Map, voiceMap } from "@/lib/storage";
-import { getLang1, getLang2, getVoice } from "@/lib/storage";
-import { setLang1, setLang2, setVoice } from "@/lib/storage";
+import { langAMap, langBMap, voiceMap, mainUserMap, intervalSecMap } from "@/lib/storage";
+import { getLangA, getLangB, getVoice, getMainUser, getIntervalSec } from "@/lib/storage";
+import { setLangA, setLangB, setVoice, setMainUser, setIntervalSec } from "@/lib/storage";
 
 interface Props {
   open: boolean;
@@ -15,16 +15,19 @@ interface Props {
 
 export default function SettingDialog({ open, onOpenChange }: Props) {
   // 設定値の状態管理（localStorageから初期値を読み込み）
-  const [lang1, setLang1State] = useState(() => getLang1());
-  const [lang2, setLang2State] = useState(() => getLang2());
+  const [langA, setLangAState] = useState(() => getLangA());
+  const [langB, setLangBState] = useState(() => getLangB());
   const [voice, setVoiceState] = useState(() => getVoice());
+  const [mainUser, setMainUserState] = useState(() => getMainUser());
+  const [intervalSec, setIntervalSecState] = useState(() => getIntervalSec().toString());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLang1(lang1);
-    setLang2(lang2);
+    setLangA(langA);
+    setLangB(langB);
     setVoice(voice);
-    alert("保存しました");
+    setMainUser(mainUser);
+    setIntervalSec(intervalSec);
     window.location.reload();
   };
 
@@ -36,9 +39,11 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
         </DialogHeader>
 
         <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-          <RadioGroupNeo name="相手の言語" valueMap={lang1Map} defaultValue={lang1} onValueChange={setLang1State} />
-          <RadioGroupNeo name="あなたの言語" valueMap={lang2Map} defaultValue={lang2} onValueChange={setLang2State} />
-          <RadioGroupNeo name="あなたの声" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
+          <RadioGroupNeo name="Aの言語" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
+          <RadioGroupNeo name="Bの言語" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
+          <RadioGroupNeo name="メインユーザー" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
+          <RadioGroupNeo name="Voice" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
+          <RadioGroupNeo name="自動送信間隔" valueMap={intervalSecMap} defaultValue={intervalSec} onValueChange={setIntervalSecState} />
 
           <DialogFooter className="flex items-center gap-2 mt-4">
             <div className="flex-1" />

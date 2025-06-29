@@ -101,23 +101,23 @@ export default Component;
 
 import React, { useState, useEffect } from "react";
 import { ArrowLeftRight } from "lucide-react";
-import { lang1Map, lang2Map, voiceMap } from "@/app/local-storages";
-import { getLang1, getLang2, getVoice } from "@/app/local-storages";
+import { langAMap, langBMap, voiceMap } from "@/app/local-storages";
+import { getLangA, getLangB, getVoice } from "@/app/local-storages";
 
 interface Props {
   className?: string;
 }
 
 const Component: React.FC<Props> = ({ className }) => {
-  const [lang1, setLang1] = useState("ja");
-  const [lang2, setLang2] = useState("en");
+  const [langA, setLangA] = useState("ja");
+  const [langB, setLangB] = useState("en");
   const [voice, setVoice] = useState("alloy");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    setLang1(getLang1());
-    setLang2(getLang2());
+    setLangA(getLangA());
+    setLangB(getLangB());
     setVoice(getVoice());
   }, []);
 
@@ -128,9 +128,9 @@ const Component: React.FC<Props> = ({ className }) => {
   return (
     <div className={`flex items-center gap-12 text-sm ${className}`}>
       <div className="flex items-center gap-2">
-        <span>{infoValue(lang1Map[lang1])}</span>
+        <span>{infoValue(langAMap[langA])}</span>
         <ArrowLeftRight className="h-4 w-4" />
-        <span>{infoValue(lang2Map[lang2])}</span>
+        <span>{infoValue(langBMap[langB])}</span>
       </div>
       <span>voice: {infoValue(voiceMap[voice])}</span>
     </div>
@@ -206,7 +206,7 @@ export default function Setting() {
 
 **ファイル**: `src/containers/header/actions/setting/content.tsx`
 
-- 言語設定（lang1, lang2）の変更
+- 言語設定（langA, langB）の変更
 - 音声設定（voice）の変更
 - localStorage への保存機能
 
@@ -216,12 +216,12 @@ export default function Setting() {
 
 ```tsx
 // 言語設定の連想配列
-export const lang1Map: Record<string, string> = {
+export const langAMap: Record<string, string> = {
   ja: "日本語",
   en: "English",
 };
 
-export const lang2Map: Record<string, string> = {
+export const langBMap: Record<string, string> = {
   ja: "日本語",
   en: "English",
 };
@@ -237,16 +237,16 @@ export const voiceMap: Record<string, string> = {
 };
 
 // 設定値を取得・保存する関数
-export function getLang1(): string {
+export function getLangA(): string {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("hootalk_lang1") || "ja";
+    return localStorage.getItem("hootalk_langA") || "ja";
   }
   return "ja";
 }
 
-export function setLang1(value: string): void {
+export function setLangA(value: string): void {
   if (typeof window !== "undefined") {
-    localStorage.setItem("hootalk_lang1", value);
+    localStorage.setItem("hootalk_langA", value);
   }
 }
 

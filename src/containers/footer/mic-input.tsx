@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 interface MicInputProps {
   langFrom: string;
   langTo: string;
-  user: number;
+  user: string;
 }
 
 export default function MicInput({ langFrom, langTo, user }: MicInputProps) {

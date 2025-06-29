@@ -1,4 +1,4 @@
-# 11. 包括的リファクタリングと機能改善
+# 11. 包括的なリファクタリングと機能改善
 
 ## 概要
 
@@ -39,7 +39,7 @@ export function useRecorder(convert: (audio: Blob) => Promise<void>) {
 ```tsx
 export default function MicInput() {
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
-  const [langFrom, langTo, user] = [getLang1(), getLang2(), 1];
+  const [langFrom, langTo, user] = [getLangA(), getLangB(), 1];
 }
 ```
 
@@ -70,14 +70,14 @@ export default function MicInput({ langFrom, langTo, user }: MicInputProps) {
 
 ```tsx
 export default function Footer() {
-  const lang1 = getLang1();
-  const lang2 = getLang2();
+  const langA = getLangA();
+  const langB = getLangB();
 
   return (
     <div className="flex items-center gap-8 xl:gap-16">
-      <MicInput langFrom={lang1} langTo={lang2} user={1} />
+      <MicInput langFrom={langA} langTo={langB} user={1} />
       <TextInput />
-      <MicInput langFrom={lang2} langTo={lang1} user={2} />
+      <MicInput langFrom={langB} langTo={langA} user={2} />
     </div>
   );
 }
@@ -166,14 +166,14 @@ const switchTheme = () => {
 
 ```tsx
 export default function SettingDialog({ open, onOpenChange }: Props) {
-  const [lang1, setLang1State] = useState(() => getLang1());
-  const [lang2, setLang2State] = useState(() => getLang2());
+  const [langA, setLangAState] = useState(() => getLangA());
+  const [langB, setLangBState] = useState(() => getLangB());
   const [voice, setVoiceState] = useState(() => getVoice());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLang1(lang1);
-    setLang2(lang2);
+    setLangA(langA);
+    setLangB(langB);
     setVoice(voice);
     alert("保存しました");
     window.location.reload();
