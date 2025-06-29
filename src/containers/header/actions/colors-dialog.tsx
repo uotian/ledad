@@ -99,8 +99,7 @@ export default function ColorsDialog({ open, onOpenChange }: ColorsDialogProps) 
         <DialogHeader>
           <DialogTitle>HooTalk カラーパレット</DialogTitle>
           <DialogDescription>
-            プロジェクトで使用されているすべての色定義を視覚的に確認できます。
-            ライトモードとダークモードで色が自動的に切り替わります。
+            プロジェクトで使用されているすべての色定義を視覚的に確認できます。 ライトモードとダークモードで色が自動的に切り替わります。
           </DialogDescription>
         </DialogHeader>
 

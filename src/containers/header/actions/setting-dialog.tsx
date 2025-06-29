@@ -33,7 +33,7 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`max-w-md w-full p-6 rounded-lg shadow-lg`}>
+      <DialogContent className={`w-full p-6 rounded-lg shadow-lg`}>
         <DialogHeader className="mb-4">
           <DialogTitle>設定</DialogTitle>
         </DialogHeader>

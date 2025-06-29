@@ -37,12 +37,12 @@ export default function TextInput({ langFrom, langTo, user }: TextInputProps) {
 
   return (
     <div className="flex flex-col md:flex-row w-full">
-      <div className="flex-1 bg-muted/75 min-h-8 md:min-h-16 px-3 py-2 border border-foreground/60 rounded-md border-b-0 md:border-1 md:border-r-0 rounded-b-none md:rounded-xl md:rounded-r-none overflow-y-auto text-xs md:text-sm whitespace-pre-wrap">
+      <div className="flex-1 bg-muted/60 min-h-8 md:min-h-16 px-3 py-2 border border-foreground/60 rounded-md border-b-0 md:border-1 md:border-r-0 rounded-b-none md:rounded-xl md:rounded-r-none overflow-y-auto text-xs md:text-sm whitespace-pre-wrap">
         {translated0 || "翻訳結果が確認できます"}
       </div>
       <Textarea
         placeholder="入力してください"
-        className="flex-1 bg-input/75 min-h-8 md:min-h-16 resize-none border border-foreground/60 border-t-0 md:border-1 md:border-l-0 rounded-t-none md:rounded-xl md:rounded-l-none text-xs md:text-sm "
+        className="flex-1 bg-white/60 min-h-8 md:min-h-16 resize-none border border-foreground/60 md:border-1 rounded-t-none md:rounded-xl md:rounded-l-none text-xs md:text-sm "
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}

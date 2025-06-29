@@ -100,6 +100,96 @@ export function setIntervalSec(value: string): void {
 }
 
 // ------------------------------------------------------------
+// room
+// ------------------------------------------------------------
+
+export interface Room {
+  id: string;
+  name: string;
+}
+
+export function getRooms(): Room[] {
+  if (typeof window !== "undefined") {
+    const rooms = localStorage.getItem("rooms");
+    return rooms ? JSON.parse(rooms) : [];
+  }
+  return [];
+}
+
+export function setRooms(rooms: Room[]): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("rooms", JSON.stringify(rooms));
+  }
+}
+
+export function getCurrentRoomId(): string | null {
+  if (typeof window !== "undefined") return localStorage.getItem("currentRoomId");
+  return null;
+}
+
+export function setCurrentRoomId(roomId: string): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("currentRoomId", roomId);
+    window.dispatchEvent(new Event("roomChange"));
+  }
+}
+
+export function getCurrentRoom(): Room | null {
+  const rooms = getRooms();
+  const currentRoomId = getCurrentRoomId();
+  if (!currentRoomId) return null;
+  return rooms.find((room) => room.id === currentRoomId) || null;
+}
+
+export function createRoom(name: string): Room {
+  const rooms = getRooms();
+  const newRoom: Room = {
+    id: `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    name,
+  };
+
+  rooms.push(newRoom);
+  setRooms(rooms);
+  return newRoom;
+}
+
+export function deleteRoom(roomId: string): boolean {
+  const rooms = getRooms();
+  const filteredRooms = rooms.filter((room) => room.id !== roomId);
+
+  if (filteredRooms.length !== rooms.length) {
+    setRooms(filteredRooms);
+
+    // 現在のルームが削除された場合、nullにセット
+    if (getCurrentRoomId() === roomId) {
+      setCurrentRoomId("");
+    }
+
+    // ルームのメッセージも削除
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(`messages_${roomId}`);
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+export function updateRoom(roomId: string, updates: Partial<Room>): boolean {
+  const rooms = getRooms();
+  const roomIndex = rooms.findIndex((room) => room.id === roomId);
+
+  if (roomIndex !== -1) {
+    rooms[roomIndex] = { ...rooms[roomIndex], ...updates };
+    setRooms(rooms);
+    return true;
+  }
+
+  return false;
+}
+
+// ------------------------------------------------------------
 // messages
 // ------------------------------------------------------------
 
@@ -113,23 +203,35 @@ export interface Message {
 }
 
 export function getMessages(): Record<string, Message> {
-  if (typeof window !== "undefined") return JSON.parse(localStorage.getItem("messages") || "{}");
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return {};
+    return JSON.parse(localStorage.getItem(`messages_${currentRoomId}`) || "{}");
+  }
   return {};
 }
 
 export function setMessages(messages: Record<string, Message>): void {
-  if (typeof window !== "undefined") localStorage.setItem("messages", JSON.stringify(messages));
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return;
+    localStorage.setItem(`messages_${currentRoomId}`, JSON.stringify(messages));
+  }
 }
 
 export function clearMessages(): void {
   if (typeof window !== "undefined") {
-    localStorage.setItem("messages", "{}");
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return;
+    localStorage.setItem(`messages_${currentRoomId}`, "{}");
     window.dispatchEvent(new Event("messages"));
   }
 }
 
 export function addMessage(message: Omit<Message, "id" | "datetime">): string {
   if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return "";
     const messages = getMessages();
     const datetime = new Date().toISOString();
     const id = `${message.user}_${datetime}:${Math.random().toString(36).substr(2, 9)}`;

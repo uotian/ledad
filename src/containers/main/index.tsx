@@ -24,9 +24,11 @@ export default function Main() {
     handleStorageChange();
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("messages", handleStorageChange);
+    window.addEventListener("roomChange", handleStorageChange);
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("messages", handleStorageChange);
+      window.removeEventListener("roomChange", handleStorageChange);
     };
   }, []);
 

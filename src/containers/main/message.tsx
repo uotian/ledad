@@ -39,7 +39,7 @@ function CommonMessageContent({ message, className }: CommonMessageContentProps)
 function MessageContentA({ message }: { message: Message }) {
   return (
     <div className="flex justify-start max-w-2/3">
-      <CommonMessageContent message={message} className="bg-card/80 text-card-foreground rounded-bl-none border-1" />
+      <CommonMessageContent message={message} className="bg-secondary/80 text-secondary-foreground rounded-bl-none border-1" />
     </div>
   );
 }

@@ -5,5 +5,5 @@ interface LogoProps {
 }
 
 export default function Logo({ className }: LogoProps) {
-  return <h1 className={cn("text-2xl font-bold tracking-widest", className)}>HooTalk</h1>;
+  return <h1 className={cn("mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80", className)}>HooTalk</h1>;
 }
