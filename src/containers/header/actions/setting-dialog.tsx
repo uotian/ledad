@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RadioGroupNeo from "@/components/myui/radio-group-neo";
@@ -14,12 +14,19 @@ interface Props {
 }
 
 export default function SettingDialog({ open, onOpenChange }: Props) {
-  // 設定値の状態管理（localStorageから初期値を読み込み）
-  const [langA, setLangAState] = useState(() => getLangA());
-  const [langB, setLangBState] = useState(() => getLangB());
-  const [voice, setVoiceState] = useState(() => getVoice());
-  const [mainUser, setMainUserState] = useState(() => getMainUser());
-  const [intervalSec, setIntervalSecState] = useState(() => getIntervalSec().toString());
+  const [langA, setLangAState] = useState(Object.keys(langAMap)[0]);
+  const [langB, setLangBState] = useState(Object.keys(langBMap)[0]);
+  const [voice, setVoiceState] = useState("alloy");
+  const [mainUser, setMainUserState] = useState("B");
+  const [intervalSec, setIntervalSecState] = useState("60");
+
+  useEffect(() => {
+    setLangAState(getLangA());
+    setLangBState(getLangB());
+    setVoiceState(getVoice());
+    setMainUserState(getMainUser());
+    setIntervalSecState(getIntervalSec().toString());
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

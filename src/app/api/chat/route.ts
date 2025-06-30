@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-
-interface Message {
-  id: string;
-  user: string;
-  text: string;
-  translated?: string;
-  datetime: string;
-  status?: "processing" | "success" | "error";
-}
+import { Message } from "@/lib/types";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

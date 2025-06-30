@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Check, Edit } from "lucide-react";
-import { Room, getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom, deleteRoomChatHistory } from "@/lib/storage";
+import { getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom, deleteRoomChatHistory } from "@/lib/storage";
+import { Room } from "@/lib/types";
 
 interface Props {
   open: boolean;
@@ -38,9 +39,12 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
 
   const handleCreateRoom = () => {
     if (newRoomName.trim()) {
-      createRoom(newRoomName.trim());
+      const newRoom = createRoom(newRoomName.trim());
       setRoomsState(getRooms());
       setNewRoomName(getDefaultRoomName());
+      // 新しく作成したルームをアクティブにする
+      setCurrentRoomId(newRoom.id);
+      setCurrentRoomIdState(newRoom.id);
     }
   };
 

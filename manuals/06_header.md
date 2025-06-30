@@ -86,7 +86,7 @@ interface Props {
 }
 
 const Component: React.FC<Props> = ({ className }) => {
-  return <div className={`text-xl font-bold ${className}`}>HooTalk</div>;
+  return <div className={`text-xl font-bold ${className}`}>ledad</div>;
 };
 
 export default Component;

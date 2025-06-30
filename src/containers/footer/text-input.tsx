@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { addMessage, updateMessage } from "@/lib/storage";
-import translateAPI from "@/lib/translate-api";
+import translateAPI from "@/apis/translate-api";
 
-interface TextInputProps {
+interface Props {
   langFrom: string;
   langTo: string;
   user: string;
 }
 
-export default function TextInput({ langFrom, langTo, user }: TextInputProps) {
+export default function TextInput({ langFrom, langTo, user }: Props) {
   const [value, setValue] = useState("");
   const [translated0, setTranslated0] = useState("");
   const [composing, setComposing] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const text = value.trim();
@@ -26,11 +27,13 @@ export default function TextInput({ langFrom, langTo, user }: TextInputProps) {
       } else {
         e.preventDefault();
         setTranslated0(translated0 ? translated0 + "\n翻訳し送信中..." : "翻訳し送信中...");
-        const messageId = addMessage({ user, text, translated: "翻訳中..." });
+        const messageId = addMessage({ user, text, translated: "翻訳中...", status: "translating" });
         setValue("");
+        console.log("text, langFrom, langTo:", text, langFrom, langTo);
         const translated = await translateAPI({ text, langFrom, langTo });
         updateMessage(messageId, { translated, status: "success" });
         setTranslated0("");
+        textareaRef.current?.focus();
       }
     }
   };
@@ -41,6 +44,7 @@ export default function TextInput({ langFrom, langTo, user }: TextInputProps) {
         {translated0 || "翻訳結果が確認できます"}
       </div>
       <Textarea
+        ref={textareaRef}
         placeholder="入力してください"
         className="flex-1 bg-white/60 min-h-8 md:min-h-16 resize-none border border-foreground/60 md:border-1 rounded-t-none md:rounded-xl md:rounded-l-none text-xs md:text-sm "
         value={value}

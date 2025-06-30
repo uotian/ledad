@@ -1,10 +1,10 @@
-export interface TranslateRequest {
+export interface Request {
   text: string;
   langFrom: string;
   langTo: string;
 }
 
-export default async function access(request: TranslateRequest): Promise<string> {
+export default async function access(request: Request): Promise<string> {
   try {
     const response = await fetch("/api/translate", {
       method: "POST",

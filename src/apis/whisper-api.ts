@@ -1,9 +1,9 @@
-export interface WhisperRequest {
+export interface Request {
   audio: Blob;
   lang: string;
 }
 
-export default async function access(request: WhisperRequest): Promise<string> {
+export default async function access(request: Request): Promise<string> {
   try {
     const formData = new FormData();
     formData.append("audio", request.audio, "recording.webm");

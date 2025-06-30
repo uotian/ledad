@@ -21,11 +21,12 @@ export default function Footer() {
       <div className="container mx-auto p-4">
         {langA && langB && (
           <div className="flex items-center">
-            <MicInput langFrom={langA || "en"} langTo={langB || "ja"} user="A" />
+            <MicInput langFrom={langA} langTo={langB} user="A" />
             {mainUser === "A" ? <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div> : <div className="w-4 md:w-8" />}
-            <TextInput langFrom={langB || "ja"} langTo={langA || "en"} user={mainUser || "A"} />
+            {mainUser === "A" && <TextInput langFrom={langA} langTo={langB} user="A" />}
+            {mainUser === "B" && <TextInput langFrom={langB} langTo={langA} user="B" />}
             {mainUser === "B" ? <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div> : <div className="w-4 md:w-8" />}
-            <MicInput langFrom={langB} langTo={langA || "en"} user="B" />
+            <MicInput langFrom={langB} langTo={langA} user="B" />
           </div>
         )}
       </div>

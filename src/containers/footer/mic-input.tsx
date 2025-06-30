@@ -3,27 +3,27 @@
 import { useCallback } from "react";
 import { Square, MessageSquarePlus as Add, Circle } from "lucide-react";
 import { addMessage, updateMessage } from "@/lib/storage";
-import transcribleAPI from "@/lib/transcrible-api";
-import translateAPI from "@/lib/translate-api";
+import transcribleAPI from "@/apis/transcrible-api";
+import translateAPI from "@/apis/translate-api";
 
 import { Badge } from "@/components/ui/badge";
 import { useRecorder } from "@/hooks/use-recorder";
 import { cn } from "@/lib/utils";
 
-interface MicInputProps {
+interface Props {
   langFrom: string;
   langTo: string;
   user: string;
 }
 
-export default function MicInput({ langFrom, langTo, user }: MicInputProps) {
+export default function MicInput({ langFrom, langTo, user }: Props) {
   const convert = useCallback(
     async (audio: Blob) => {
       try {
         const messageId = addMessage({ user, text: "音声認識中..." });
         const text = await transcribleAPI({ audio, lang: langFrom });
         if (text.trim()) {
-          updateMessage(messageId, { text, translated: "翻訳中...", status: "processing" });
+          updateMessage(messageId, { text, translated: "翻訳中...", status: "translating" });
           const translated = await translateAPI({ text, langFrom, langTo });
           updateMessage(messageId, { translated, status: "success" });
         } else {

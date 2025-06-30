@@ -1,14 +1,14 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-interface BadgeNeoProps {
+interface Props {
   variant?: "default" | "destructive" | "secondary" | "outline";
   size?: "sm" | "md" | "lg";
   className?: string;
   children: React.ReactNode;
 }
 
-export default function BadgeNeo({ variant = "default", size = "md", className, children }: BadgeNeoProps) {
+export default function BadgeNeo({ variant = "default", size = "md", className, children }: Props) {
   const baseClasses = "inline-flex items-center justify-center rounded-full font-medium transition-colors";
 
   const sizeClasses = {

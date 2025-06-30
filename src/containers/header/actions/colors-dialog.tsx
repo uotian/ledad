@@ -97,7 +97,7 @@ export default function ColorsDialog({ open, onOpenChange }: ColorsDialogProps) 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[80vh] overflow-y-auto" style={{ maxWidth: "85vw", width: "85vw" }}>
         <DialogHeader>
-          <DialogTitle>HooTalk カラーパレット</DialogTitle>
+          <DialogTitle>ledad カラーパレット</DialogTitle>
           <DialogDescription>
             プロジェクトで使用されているすべての色定義を視覚的に確認できます。 ライトモードとダークモードで色が自動的に切り替わります。
           </DialogDescription>

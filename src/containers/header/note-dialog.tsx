@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { sendChatMessage } from "@/lib/chat-api";
-import { getMessages, getChatHistory, addChatHistory, ChatHistory } from "@/lib/storage";
+import { sendChatMessage } from "@/apis/chat-api";
+import { getMessages, getChatHistory, addChatHistory } from "@/lib/storage";
+import { ChatHistory } from "@/lib/types";
 import { MessageSquare } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -20,6 +21,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
   const [composing, setComposing] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const scrollEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // チャット履歴を読み込む
   useEffect(() => {
@@ -46,9 +48,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
         try {
           // localStorageからメッセージを取得してソート
           const messages = getMessages();
-          const sortedMessages = Object.values(messages).sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
-
-          const result = await sendChatMessage(text, sortedMessages);
+          const result = await sendChatMessage(text, messages);
           scrollToBottom();
 
           // チャット履歴に保存
@@ -63,6 +63,9 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
           setChatHistory(getChatHistory());
         } finally {
           setIsLoading(false);
+          setValue("");
+          // テキストエリアにフォーカスを戻す
+          textareaRef.current?.focus();
           scrollToBottom();
         }
       }
@@ -175,6 +178,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
         <DialogFooter className="flex-shrink-0">
           <div className="w-full">
             <Textarea
+              ref={textareaRef}
               placeholder="質問を入力してください..."
               value={value}
               onChange={(e) => setValue(e.target.value)}

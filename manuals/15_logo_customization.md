@@ -2,7 +2,7 @@
 
 ## 概要
 
-HooTalk のロゴを「lalad」に変更し、Google フォントの Lexend を適用、さらに文字の装飾効果を追加しました。また、Note with ChatGPT 機能も新たに追加されました。
+のロゴを「lalad」に変更し、Google フォントの Lexend を適用、さらに文字の装飾効果を追加しました。また、Note with ChatGPT 機能も新たに追加されました。
 
 ## 変更内容
 
@@ -13,7 +13,7 @@ HooTalk のロゴを「lalad」に変更し、Google フォントの Lexend を�
 **変更前**:
 
 ```tsx
-return <h1 className={cn("mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80", className)}>HooTalk</h1>;
+return <h1 className={cn("mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80", className)}>ledad</h1>;
 ```
 
 **変更後**:
@@ -29,7 +29,6 @@ return (
 
 **変更点**:
 
-- `HooTalk` → `lalad` に変更
 - 二つの a を鏡文字に変更（`scale-x-[-1]`）
 - e を 10 度回転（`rotate-10`）
 - 文字間隔の調整（`mr-0.5`, `mr-1`）
