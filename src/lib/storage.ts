@@ -267,3 +267,73 @@ export function deleteMessage(id: string): boolean {
   }
   return false;
 }
+
+// ------------------------------------------------------------
+// chat history
+// ------------------------------------------------------------
+
+export interface ChatHistory {
+  id: string;
+  prompt: string;
+  response: string;
+  datetime: string;
+}
+
+export function getChatHistory(): ChatHistory[] {
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return [];
+    return JSON.parse(localStorage.getItem(`chatHistory_${currentRoomId}`) || "[]");
+  }
+  return [];
+}
+
+export function setChatHistory(chatHistory: ChatHistory[]): void {
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return;
+    localStorage.setItem(`chatHistory_${currentRoomId}`, JSON.stringify(chatHistory));
+  }
+}
+
+export function addChatHistory(prompt: string, response: string): void {
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return;
+    const chatHistory = getChatHistory();
+    const newChat: ChatHistory = {
+      id: `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      prompt,
+      response,
+      datetime: new Date().toISOString(),
+    };
+    chatHistory.push(newChat);
+    setChatHistory(chatHistory);
+  }
+}
+
+export function clearChatHistory(): void {
+  if (typeof window !== "undefined") {
+    const currentRoomId = getCurrentRoomId();
+    if (!currentRoomId) return;
+    localStorage.setItem(`chatHistory_${currentRoomId}`, "[]");
+  }
+}
+
+export function deleteChatHistory(id: string): boolean {
+  if (typeof window !== "undefined") {
+    const chatHistory = getChatHistory();
+    const filteredHistory = chatHistory.filter((chat) => chat.id !== id);
+    if (filteredHistory.length !== chatHistory.length) {
+      setChatHistory(filteredHistory);
+      return true;
+    }
+  }
+  return false;
+}
+
+export function deleteRoomChatHistory(roomId: string): void {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(`chatHistory_${roomId}`);
+  }
+}

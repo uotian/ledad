@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import Header from "@/containers/header";
 import { ThemeProvider } from "@/components/theme-provider";
-import { initializeDefaultRoom } from "@/lib/storage";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,20 +14,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const lexend = Lexend({
+  variable: "--font-lexend",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "HooTalk",
   description: "AI-powered multilingual chat application",
 };
 
-// クライアントサイドでのみ実行される初期化関数
-if (typeof window !== "undefined") {
-  initializeDefaultRoom();
-}
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white/30 dark:bg-black/80`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased bg-white/30 dark:bg-black/80`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="overflow-y-auto">
             <Header />

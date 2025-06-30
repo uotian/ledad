@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Check, Edit } from "lucide-react";
-import { Room, getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom } from "@/lib/storage";
+import { Room, getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom, deleteRoomChatHistory } from "@/lib/storage";
 
 interface Props {
   open: boolean;
@@ -45,7 +45,10 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
   };
 
   const handleDeleteRoom = (roomId: string) => {
-    if (confirm("このルームを削除しますか？")) {
+    if (confirm("このルームを削除しますか？\n\n※このルームのメッセージとチャット履歴も削除されます。")) {
+      // ルームのチャット履歴を削除
+      deleteRoomChatHistory(roomId);
+      // ルームを削除
       deleteRoom(roomId);
       setRoomsState(getRooms());
       setCurrentRoomIdState(getCurrentRoomId());
