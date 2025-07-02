@@ -2,7 +2,7 @@ export class Recorder {
   private chunks: Blob[] = [];
   private recorder: MediaRecorder | null = null;
   private id: string;
-  private maxSize: number = 3.5 * 1024 * 1024; // 3.5MB制限（4MB未満に設定）
+  private maxSize: number = 3.9 * 1024 * 1024; // 3.9MB制限（4MB未満に設定）
 
   constructor(id: string) {
     this.id = id;
@@ -13,7 +13,7 @@ export class Recorder {
       this.chunks = [];
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          sampleRate: 24000, // 24kHz固定
+          sampleRate: 20000, // 20kHz固定
           channelCount: 1, // モノラル
           echoCancellation: true, // エコーキャンセレーション
           noiseSuppression: true, // ノイズ抑制
@@ -21,7 +21,7 @@ export class Recorder {
         },
       });
 
-      console.log("録音開始: 24kHz, モノラル");
+      console.log("録音開始: 20kHz, モノラル");
       this.recorder = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
       this.recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -53,7 +53,7 @@ export class Recorder {
 
             // 最終的なファイルサイズチェック
             const sizeMB = (audio.size / (1024 * 1024)).toFixed(2);
-            console.log(`録音完了: ${sizeMB}MB (24kHz, モノラル)`);
+            console.log(`録音完了: ${sizeMB}MB (20kHz, モノラル)`);
 
             if (audio.size > this.maxSize) {
               console.warn(`録音ファイルが大きすぎます: ${sizeMB}MB`);

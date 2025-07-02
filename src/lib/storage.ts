@@ -124,8 +124,7 @@ export const intervalSecMap2: Record<string, string> = {
   "30": "30秒",
   "60": "60秒",
   "120": "120秒",
-  "300": "300秒",
-  "600": "600秒",
+  "240": "240秒",
 };
 
 export function getIntervalSec2(): number {
