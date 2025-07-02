@@ -13,6 +13,8 @@
     "source.fixAll.eslint": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
   "javascript.preferences.importModuleSpecifier": "relative",
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
@@ -55,5 +57,21 @@
   "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.next/**", "**/dist/**"],
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/package-lock.json": true
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "importCost.largePackageSize": 100,
+  "importCost.mediumPackageSize": 50,
+  "importCost.smallPackageSize": 10
 }

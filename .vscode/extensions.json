@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    // 必須セット（CursorのAI機能を最大限活用）
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // 開発効率向上セット
+    "dsznajder.es7-react-js-snippets",
+    "christian-kohler.path-intellisense",
+    "wix.vscode-import-cost",
+
+    // UI/UX向上セット
+    "vscode-icons-team.vscode-icons",
+    "CoenraadS.bracket-pair-colorizer-2",
+    "usernamehw.errorlens",
+
+    // TypeScript/Next.js開発に追加で推奨
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json"
+  ]
+}

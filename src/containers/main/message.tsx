@@ -8,31 +8,46 @@ interface Props {
 }
 
 const CommonMessageContent = ({ message, className }: Props) => (
-  <div className={cn("w-full px-2 py-2 rounded-lg", className)}>
-    <div className="text-sm px-2 whitespace-pre-wrap flex items-center gap-2">{message.text.replace(/\n\n/g, "\n")}</div>
+  <div className={cn("w-full p-2 rounded-lg", className)}>
+    <details className="text-base px-2" open>
+      <summary className="cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-200">原文</summary>
+      <div className="whitespace-pre-wrap opacity-75">{message.text}</div>
+    </details>
     <Separator className="my-1 bg-background/30" />
-    {message.status === "translating" && <div className="text-sm px-2 whitespace-pre-wrap opacity-75">翻訳中...</div>}
-    {message.status === "success" && <div className="text-sm px-2 whitespace-pre-wrap opacity-75">{message.translated}</div>}
-    {message.status === "error" && <div className="text-sm px-2 text-destructive opacity-75">エラー</div>}
+    <details className="mt-2 text-base px-2" open>
+      <summary className="cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-200">翻訳</summary>
+      <div className="whitespace-pre-wrap opacity-75">{message.translated}</div>
+    </details>
   </div>
 );
 
 const MessageContentA = ({ message }: { message: Message }) => (
-  <div className="flex justify-start max-w-2/3">
+  <div className="flex justify-start max-w-4/5">
     <CommonMessageContent message={message} className="bg-secondary/80 text-secondary-foreground rounded-bl-none" />
   </div>
 );
 
 const MessageContentB = ({ message }: { message: Message }) => (
-  <div className="flex justify-end max-w-2/3">
+  <div className="flex justify-end max-w-4/5">
     <CommonMessageContent message={message} className="bg-primary/80 text-primary-foreground rounded-br-none" />
   </div>
 );
 
 export default function MessageItem({ message, className }: Props) {
   return (
-    <div className={cn("flex flex-col", message.user === "A" ? "items-start" : "items-end", className)}>
-      <div className="text-xs mb-1 px-1">{new Date(message.datetime).toLocaleString("ja-JP")}</div>
+    <div className={cn("flex flex-col gap-1", message.user === "A" ? "items-start" : "items-end", className)}>
+      <div className="flex items-center gap-2 text-xs px-1">
+        <div>{new Date(message.timestamp * 1000).toLocaleString("ja-JP")}</div>
+        {message.status?.includes("error") ? (
+          <div className="text-red-800">{message.status}</div>
+        ) : message.status?.includes("success") ? (
+          <div className="text-blue-800">{message.status}</div>
+        ) : message.status?.includes("completed") ? (
+          <div className="text-green-800">{message.status}</div>
+        ) : (
+          <div className="text-blue-800">{message.status}</div>
+        )}
+      </div>
       {message.user === "A" && <MessageContentA message={message} />}
       {message.user === "B" && <MessageContentB message={message} />}
     </div>

@@ -23,11 +23,44 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
   const scrollEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const focusTextarea = () => {
+    if (textareaRef.current) {
+      // 少し遅延を入れて確実にフォーカスを戻す
+      setTimeout(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+          textarea.focus();
+          // カーソルを末尾に移動
+          const length = textarea.value.length;
+          textarea.setSelectionRange(length, length);
+        }
+      }, 100);
+    }
+  };
+
   // チャット履歴を読み込む
   useEffect(() => {
     if (open) {
       setChatHistory(getChatHistory());
+      // ダイアログが開いた時にフォーカスを設定
+      setTimeout(() => {
+        focusTextarea();
+      }, 200);
     }
+  }, [open]);
+
+  // ルーム変更時にチャット履歴を更新
+  useEffect(() => {
+    const handleRoomChange = () => {
+      if (open) {
+        setChatHistory(getChatHistory());
+      }
+    };
+
+    window.addEventListener("roomChange", handleRoomChange);
+    return () => {
+      window.removeEventListener("roomChange", handleRoomChange);
+    };
   }, [open]);
 
   // チャット履歴が更新された時にスクロール
@@ -41,7 +74,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
 
   const handleSendChat = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const text = value.trim();
-    if (text && e.key === "Enter" && !composing) {
+    if (text && e.key === "Enter" && !composing && !isLoading) {
       if (!e.shiftKey) {
         e.preventDefault();
         setIsLoading(true);
@@ -49,6 +82,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
           // localStorageからメッセージを取得してソート
           const messages = getMessages();
           const result = await sendChatMessage(text, messages);
+          console.log("result", result);
           scrollToBottom();
 
           // チャット履歴に保存
@@ -65,7 +99,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
           setIsLoading(false);
           setValue("");
           // テキストエリアにフォーカスを戻す
-          textareaRef.current?.focus();
+          focusTextarea();
           scrollToBottom();
         }
       }
@@ -89,7 +123,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
       >
         <DialogHeader className="mb-2 flex-shrink-0">
           <DialogTitle>Note with ChatGPT</DialogTitle>
-          <DialogDescription></DialogDescription>
+          <DialogDescription>ChatGPTとチャットして、質問や回答を記録できます。</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto min-h-0 -mx-4 px-4 pb-4">

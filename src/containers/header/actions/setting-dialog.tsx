@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RadioGroupNeo from "@/components/myui/radio-group-neo";
-import { langAMap, langBMap, voiceMap, mainUserMap, intervalSecMap } from "@/lib/storage";
-import { getLangA, getLangB, getVoice, getMainUser, getIntervalSec } from "@/lib/storage";
-import { setLangA, setLangB, setVoice, setMainUser, setIntervalSec } from "@/lib/storage";
+import { langAMap, langBMap, voiceMap, mainUserMap, intervalSecMap1, intervalSecMap2 } from "@/lib/storage";
+import { getLangA, getLangB, getVoice, getMainUser, getIntervalSec1, getIntervalSec2 } from "@/lib/storage";
+import { setLangA, setLangB, setVoice, setMainUser, setIntervalSec1, setIntervalSec2 } from "@/lib/storage";
 
 interface Props {
   open: boolean;
@@ -18,14 +18,16 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
   const [langB, setLangBState] = useState(Object.keys(langBMap)[0]);
   const [voice, setVoiceState] = useState("alloy");
   const [mainUser, setMainUserState] = useState("B");
-  const [intervalSec, setIntervalSecState] = useState("60");
+  const [intervalSec1, setIntervalSecState1] = useState("60");
+  const [intervalSec2, setIntervalSecState2] = useState("60");
 
   useEffect(() => {
     setLangAState(getLangA());
     setLangBState(getLangB());
     setVoiceState(getVoice());
     setMainUserState(getMainUser());
-    setIntervalSecState(getIntervalSec().toString());
+    setIntervalSecState1(getIntervalSec1().toString());
+    setIntervalSecState2(getIntervalSec2().toString());
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,23 +36,30 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
     setLangB(langB);
     setVoice(voice);
     setMainUser(mainUser);
-    setIntervalSec(intervalSec);
+    setIntervalSec1(intervalSec1);
+    setIntervalSec2(intervalSec2);
     window.location.reload();
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`w-full p-6 rounded-lg shadow-lg`}>
+      <DialogContent className={`w-full p-6 rounded-lg shadow-lg`} style={{ maxWidth: "85vw", width: "85vw" }}>
         <DialogHeader className="mb-4">
           <DialogTitle>設定</DialogTitle>
+          <DialogDescription>アプリケーションの言語設定、音声設定、自動送信間隔などを変更できます。</DialogDescription>
         </DialogHeader>
 
         <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-          <RadioGroupNeo name="Aの言語" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
-          <RadioGroupNeo name="Bの言語" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
-          <RadioGroupNeo name="メインユーザー" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
+          <div className="flex gap-24">
+            <RadioGroupNeo name="メインユーザー" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
+            <RadioGroupNeo name="ユーザーAの言語" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
+            <RadioGroupNeo name="ユーザーBの言語" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
+          </div>
+          <div className="flex gap-24">
+            <RadioGroupNeo name="録音間隔(速報)" valueMap={intervalSecMap1} defaultValue={intervalSec1} onValueChange={setIntervalSecState1} />
+            <RadioGroupNeo name="録音間隔(最大)" valueMap={intervalSecMap2} defaultValue={intervalSec2} onValueChange={setIntervalSecState2} />
+          </div>
           <RadioGroupNeo name="Voice" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
-          <RadioGroupNeo name="自動送信間隔" valueMap={intervalSecMap} defaultValue={intervalSec} onValueChange={setIntervalSecState} />
 
           <DialogFooter className="flex items-center gap-2 mt-4">
             <div className="flex-1" />

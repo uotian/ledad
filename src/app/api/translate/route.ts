@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
 
     const responseContent = completion.choices[0].message.content || "{}";
     const result = JSON.parse(responseContent);
-    console.log(result);
 
     return NextResponse.json({ translated: result.translated.join("\n") });
   } catch (error) {

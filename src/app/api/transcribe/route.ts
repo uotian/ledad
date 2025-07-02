@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
       file: audioFile,
       model: "gpt-4o-transcribe",
       language: lang,
+      response_format: "json",
     });
 
     const text = transcription.text

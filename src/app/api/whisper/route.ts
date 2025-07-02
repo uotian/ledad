@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     body.append("file", audioFile, "recording.webm");
     body.append("model", "whisper-1");
     body.append("language", lang);
+    body.append("response_format", "verbose_json");
     const headers = { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` };
     const res = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers, body });
 
@@ -20,13 +21,12 @@ export async function POST(request: NextRequest) {
       console.error("Whisper API error:", errorText);
       throw new Error(`Whisper API error: ${res.status}`);
     }
-
-    const text = (await res.json()).text
-      .replace(/([.!?])\s*([A-Z])/g, "$1\n$2")
-      .replace(/([。！？])/g, "$1\n")
-      .replace(/\n+/g, "\n")
-      .trim();
-    return NextResponse.json({ text });
+    const data = await res.json();
+    const results: Array<{ start: number; text: string }> = [];
+    for (const segment of data.segments) {
+      results.push({ start: segment.start, text: segment.text });
+    }
+    return NextResponse.json({ results });
   } catch (error) {
     console.error("音声認識エラー:", error);
     return NextResponse.json({ error: "音声認識中にエラーが発生しました" }, { status: 500 });

@@ -3,12 +3,21 @@ export interface WidgetTypes {
 }
 
 export interface Message {
-  id: string;
   user: string;
-  text: string;
+  timestamp: number;
+  text?: string;
   translated?: string;
-  datetime: string;
-  status?: "processing" | "translating" | "success" | "error";
+  status?:
+    | "recording"
+    | "converting"
+    | "translating"
+    | "success"
+    | "recording error"
+    | "converting error"
+    | "translating error"
+    | "completing error"
+    | "error"
+    | "completed";
 }
 
 export interface Room {

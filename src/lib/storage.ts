@@ -42,6 +42,22 @@ export function setLangB(value: string): void {
 
 export const langMap: Record<string, string> = { ...langAMap, ...langBMap };
 
+export function getLang(): string {
+  const lang = localStorage.getItem("lang");
+  if (lang) return lang;
+
+  // SSR時はデフォルト値を返す
+  if (typeof window === "undefined") return Object.keys(langMap)[0];
+
+  const browserLang = navigator.language.slice(0, 2);
+  if (browserLang in langMap) return browserLang;
+  return Object.keys(langMap)[0];
+}
+
+export function setLang(value: string): void {
+  localStorage.setItem("lang", value);
+}
+
 // ------------------------------------------------------------
 // mainUser
 // ------------------------------------------------------------
@@ -81,21 +97,40 @@ export function setVoice(value: string): void {
 }
 
 // ------------------------------------------------------------
-// intervalSec
+// intervalSec1
 // ------------------------------------------------------------
 
-export const intervalSecMap: Record<string, string> = {
+export const intervalSecMap1: Record<string, string> = {
+  "5": "5秒",
   "10": "10秒",
   "30": "30秒",
   "60": "60秒",
 };
 
-export function getIntervalSec(): number {
-  return parseInt(localStorage.getItem("intervalSec") || "60");
+export function getIntervalSec1(): number {
+  return parseInt(localStorage.getItem("intervalSec1") || "5");
 }
 
-export function setIntervalSec(value: string): void {
-  localStorage.setItem("intervalSec", value);
+export function setIntervalSec1(value: string): void {
+  localStorage.setItem("intervalSec1", value);
+}
+
+// ------------------------------------------------------------
+// intervalSec2
+// ------------------------------------------------------------
+
+export const intervalSecMap2: Record<string, string> = {
+  "60": "60秒",
+  "300": "300秒",
+  "600": "600秒",
+};
+
+export function getIntervalSec2(): number {
+  return parseInt(localStorage.getItem("intervalSec2") || "300");
+}
+
+export function setIntervalSec2(value: string): void {
+  localStorage.setItem("intervalSec2", value);
 }
 
 // ------------------------------------------------------------
@@ -142,6 +177,7 @@ export function deleteRoom(roomId: string): boolean {
     setRooms(roomsNew);
     if (getCurrentRoomId() === roomId) setCurrentRoomId("");
     localStorage.removeItem(`messages_${roomId}`);
+    localStorage.removeItem(`chatHistory_${roomId}`);
     return true;
   }
   return false;
@@ -171,7 +207,7 @@ export function getMessageMap(): Record<string, Message> {
 
 export function getMessages(): Message[] {
   const messages = getMessageMap();
-  return Object.values(messages).sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
+  return Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
 }
 
 export function setMessageMap(messages: Record<string, Message>): void {
@@ -180,34 +216,51 @@ export function setMessageMap(messages: Record<string, Message>): void {
   localStorage.setItem(`messages_${currentRoomId}`, JSON.stringify(messages));
 }
 
-export function addMessage(message: Omit<Message, "id" | "datetime">): string {
+export function addMessage(message: Message): string {
   const messageMap = getMessageMap();
-  const id = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const datetime = new Date().toISOString();
-  messageMap[id] = { ...message, id, datetime };
+  const id = `${message.user}_${message.timestamp}`;
+  messageMap[id] = message;
   setMessageMap(messageMap);
   window.dispatchEvent(new Event("messages"));
   return id;
 }
 
-export function updateMessage(id: string, updates: Partial<Message>): void {
+function mergeText(text1: string | undefined, text2: string | undefined): string | undefined {
+  if (text1 === undefined) return text2;
+  if (text2 === undefined) return text1;
+  return text1 + "\n" + text2;
+}
+
+export function updateMessage(id: string, message: Partial<Message>): void {
+  // id: string, status: Message["status"], text2?: string, translated2?: string): void {
   const messageMap = getMessageMap();
-  if (messageMap[id]) {
-    messageMap[id] = { ...messageMap[id], ...updates };
+  const message0 = messageMap[id];
+  if (message0 && message0.status !== "completed") {
+    message.text = mergeText(message0.text, message.text);
+    message.translated = mergeText(message0.translated, message.translated);
+    messageMap[id] = { ...message0, ...message };
     setMessageMap(messageMap);
     window.dispatchEvent(new Event("messages"));
   }
 }
 
-export function deleteMessage(id: string): boolean {
+export function replaceMessage(id: string, message: Partial<Message>): void {
+  const messageMap = getMessageMap();
+  const message0 = messageMap[id];
+  if (message0) {
+    messageMap[id] = { ...message0, ...message };
+    setMessageMap(messageMap);
+    window.dispatchEvent(new Event("messages"));
+  }
+}
+
+export function deleteMessage(id: string): void {
   const messageMap = getMessageMap();
   if (messageMap[id]) {
     delete messageMap[id];
     setMessageMap(messageMap);
     window.dispatchEvent(new Event("messages"));
-    return true;
   }
-  return false;
 }
 
 // ------------------------------------------------------------
@@ -215,12 +268,16 @@ export function deleteMessage(id: string): boolean {
 // ------------------------------------------------------------
 
 export function getChatHistory(): ChatHistory[] {
-  const chatHistory = localStorage.getItem("chatHistory");
+  const currentRoomId = getCurrentRoomId();
+  if (!currentRoomId) return [];
+  const chatHistory = localStorage.getItem(`chatHistory_${currentRoomId}`);
   return chatHistory ? JSON.parse(chatHistory) : [];
 }
 
 export function setChatHistory(chatHistory: ChatHistory[]): void {
-  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  const currentRoomId = getCurrentRoomId();
+  if (!currentRoomId) return;
+  localStorage.setItem(`chatHistory_${currentRoomId}`, JSON.stringify(chatHistory));
 }
 
 export function addChatHistory(prompt: string, response: string): void {
@@ -233,7 +290,9 @@ export function addChatHistory(prompt: string, response: string): void {
 }
 
 export function clearChatHistory(): void {
-  localStorage.removeItem("chatHistory");
+  const currentRoomId = getCurrentRoomId();
+  if (!currentRoomId) return;
+  localStorage.removeItem(`chatHistory_${currentRoomId}`);
 }
 
 export function deleteChatHistory(id: string): boolean {

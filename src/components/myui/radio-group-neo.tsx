@@ -18,7 +18,7 @@ export default function RadioGroupNeo({ name, valueMap, defaultValue, onValueCha
         {radioValues.map((item) => {
           const uniqueId = `${name}-${item.value}`;
           return (
-            <div key={item.value} className="flex items-center gap-2 md:min-w-30">
+            <div key={item.value} className="flex items-center gap-2">
               <RadioGroupItem value={item.value} id={uniqueId} />
               <Label htmlFor={uniqueId}>{item.label}</Label>
             </div>

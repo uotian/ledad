@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Check, Edit } from "lucide-react";
-import { getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom, deleteRoomChatHistory } from "@/lib/storage";
+import { getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom } from "@/lib/storage";
 import { Room } from "@/lib/types";
 
 interface Props {
@@ -50,8 +50,6 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
 
   const handleDeleteRoom = (roomId: string) => {
     if (confirm("このルームを削除しますか？\n\n※このルームのメッセージとチャット履歴も削除されます。")) {
-      // ルームのチャット履歴を削除
-      deleteRoomChatHistory(roomId);
       // ルームを削除
       deleteRoom(roomId);
       setRoomsState(getRooms());
@@ -96,6 +94,7 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
       <DialogContent className="max-w-md w-full p-6 rounded-lg shadow-lg">
         <DialogHeader className="mb-4">
           <DialogTitle>ルーム管理</DialogTitle>
+          <DialogDescription>チャットルームの作成、編集、削除、切り替えができます。</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">

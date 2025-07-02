@@ -27,11 +27,11 @@ export default function TextInput({ langFrom, langTo, user }: Props) {
       } else {
         e.preventDefault();
         setTranslated0(translated0 ? translated0 + "\n翻訳し送信中..." : "翻訳し送信中...");
-        const messageId = addMessage({ user, text, translated: "翻訳中...", status: "translating" });
+        const timestamp = Math.floor(Date.now() / 1000);
+        const messageId = addMessage({ user, timestamp, text, status: "translating" });
         setValue("");
-        console.log("text, langFrom, langTo:", text, langFrom, langTo);
         const translated = await translateAPI({ text, langFrom, langTo });
-        updateMessage(messageId, { translated, status: "success" });
+        updateMessage(messageId, { translated, status: "completed" });
         setTranslated0("");
         textareaRef.current?.focus();
       }
