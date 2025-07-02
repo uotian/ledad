@@ -45,7 +45,7 @@ export default function MessageItem({ message, className }: Props) {
         ) : message.status?.includes("completed") ? (
           <div className="text-green-800 dark:text-green-100">{message.status}</div>
         ) : (
-          <div className="text-blue-800">{message.status}</div>
+          <div className="text-blue-800 dark:text-blue-100">{message.status}</div>
         )}
       </div>
       {message.user === "A" && <MessageContentA message={message} />}

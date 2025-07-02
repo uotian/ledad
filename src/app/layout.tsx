@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
-import Header from "@/containers/header";
 import { ThemeProvider } from "@/lib/theme-provider";
 
 const geistSans = Geist({
@@ -29,10 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased bg-white/30 dark:bg-black/80`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="overflow-y-auto">
-            <Header />
-            {children}
-          </div>
+          <div>{children}</div>
         </ThemeProvider>
       </body>
     </html>

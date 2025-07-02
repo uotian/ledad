@@ -83,8 +83,8 @@
   --chart-5: oklch(65% 0.15 240);
 
   /* サイドバー - 基本色とプライマリ・セカンダリに統一 */
-  --sidebar: oklch(82% 0.04 90);
-  --sidebar-foreground: oklch(35% 0.02 90);
+  --sidebar: oklch(20% 0.025 87.362);
+  --sidebar-foreground: oklch(85% 0.02 87.362);
   --sidebar-primary: oklch(65% 0.15 50);
   --sidebar-primary-foreground: oklch(95% 0.01 50);
   --sidebar-accent: oklch(75% 0.03 240);
@@ -107,8 +107,8 @@
   /* プライマリ・セカンダリ */
   --primary: oklch(70% 0.15 87.362);
   --primary-foreground: oklch(15% 0.02 87.362);
-  --secondary: oklch(25% 0.03 87.362);
-  --secondary-foreground: oklch(85% 0.02 87.362);
+  --secondary: oklch(50% 0.08 240);
+  --secondary-foreground: oklch(95% 0.01 240);
 
   /* ミュート・アクセント */
   --muted: oklch(22% 0.02 87.362);

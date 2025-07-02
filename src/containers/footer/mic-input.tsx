@@ -144,7 +144,7 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
 
   return (
     <div className="flex">
-      <div onClick={stop} className={cn(baseClasses, "rounded-l-xl border-x-0 bg-foreground pl-1 font-bold")}>
+      <div onClick={stop} className={cn(baseClasses, "rounded-l-xl border-x-0 bg-foreground text-background pl-1 font-bold")}>
         <span className="text-xs lg:text-sm">{langFrom.toUpperCase()}</span>
       </div>
       <div onClick={recorder2 ? stop : start} className={cn(baseClasses, " bg-red-800 cursor-pointer border-x-0", recorder2 && "animate-pulse")}>

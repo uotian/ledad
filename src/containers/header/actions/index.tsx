@@ -3,12 +3,17 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 // import { Palette } from "lucide-react";
-import { Moon, Sun, Settings } from "lucide-react";
+import { Moon, Sun, Settings, PanelRightOpen, PanelRightClose } from "lucide-react";
 import ButtonSquare from "@/components/myui/button-square";
 import SettingDialog from "./setting-dialog";
 import ColorsDialog from "./colors-dialog";
 
-export default function Actions() {
+interface ActionsProps {
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+}
+
+export default function Actions({ sidebarOpen, toggleSidebar }: ActionsProps) {
   const [colorsDialogOpen, setColorsDialogOpen] = useState(false);
   const [settingDialogOpen, setSettingDialogOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -20,14 +25,19 @@ export default function Actions() {
 
   return (
     <div className="flex items-center">
+      {/* サイドバートグルボタン */}
+
       {/* <ButtonSquare size="sm" className="rounded-r-none border-l-0" onClick={() => setColorsDialogOpen(true)}>
         <Palette className="w-4 h-4" strokeWidth={1.5} />
       </ButtonSquare> */}
-      <ButtonSquare size="sm" className="rounded-r-none border-l-0" onClick={() => setSettingDialogOpen(true)}>
+      <ButtonSquare size="sm" className="rounded-r-none border-r-0" onClick={() => setSettingDialogOpen(true)}>
         <Settings className="w-4 h-4" strokeWidth={1.5} />
       </ButtonSquare>
-      <ButtonSquare size="sm" className="rounded-l-none border-l-0" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      <ButtonSquare size="sm" className="rounded-none" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
         {mounted && theme === "dark" ? <Sun className="h-5 w-5" strokeWidth={1} /> : <Moon className="h-5 w-5" strokeWidth={1} />}
+      </ButtonSquare>
+      <ButtonSquare size="sm" className="rounded-l-none border-l-0" onClick={toggleSidebar}>
+        {sidebarOpen ? <PanelRightClose className="w-4 h-4" strokeWidth={1.5} /> : <PanelRightOpen className="w-4 h-4" strokeWidth={1.5} />}
       </ButtonSquare>
       <ColorsDialog open={colorsDialogOpen} onOpenChange={setColorsDialogOpen} />
       <SettingDialog open={settingDialogOpen} onOpenChange={setSettingDialogOpen} />
