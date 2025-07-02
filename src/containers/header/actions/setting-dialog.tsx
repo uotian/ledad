@@ -44,18 +44,16 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`w-full p-6 rounded-lg shadow-lg`} style={{ maxWidth: "85vw", width: "85vw" }}>
-        <DialogHeader className="mb-4">
+        <DialogHeader className="mb-8">
           <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>
-            You can change language settings, voice settings, auto-send intervals, and other application preferences.
-          </DialogDescription>
+          <DialogDescription>You can change language, voice sending intervals, and others.</DialogDescription>
         </DialogHeader>
 
-        <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-12" onSubmit={handleSubmit}>
           <div className="flex gap-24">
             <RadioGroupNeo name="Main User" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
-            <RadioGroupNeo name="User A Language" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
-            <RadioGroupNeo name="User B Language" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
+            <RadioGroupNeo name="Lang for User A" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
+            <RadioGroupNeo name="Lang for User B" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
           </div>
           <div className="flex gap-24">
             <RadioGroupNeo

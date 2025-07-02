@@ -39,11 +39,11 @@ export default function MessageItem({ message, className }: Props) {
       <div className="flex items-center gap-2 text-xs px-1">
         <div>{new Date(message.timestamp * 1000).toLocaleString("ja-JP")}</div>
         {message.status?.includes("error") ? (
-          <div className="text-red-800">{message.status}</div>
+          <div className="text-red-800 dark:text-red-100">{message.status}</div>
         ) : message.status?.includes("success") ? (
-          <div className="text-blue-800">{message.status}</div>
+          <div className="text-blue-800 dark:text-blue-100">{message.status}</div>
         ) : message.status?.includes("completed") ? (
-          <div className="text-green-800">{message.status}</div>
+          <div className="text-green-800 dark:text-green-100">{message.status}</div>
         ) : (
           <div className="text-blue-800">{message.status}</div>
         )}
