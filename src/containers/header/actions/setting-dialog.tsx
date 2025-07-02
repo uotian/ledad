@@ -45,19 +45,31 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`w-full p-6 rounded-lg shadow-lg`} style={{ maxWidth: "85vw", width: "85vw" }}>
         <DialogHeader className="mb-4">
-          <DialogTitle>設定</DialogTitle>
-          <DialogDescription>アプリケーションの言語設定、音声設定、自動送信間隔などを変更できます。</DialogDescription>
+          <DialogTitle>Settings</DialogTitle>
+          <DialogDescription>
+            You can change language settings, voice settings, auto-send intervals, and other application preferences.
+          </DialogDescription>
         </DialogHeader>
 
         <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
           <div className="flex gap-24">
-            <RadioGroupNeo name="メインユーザー" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
-            <RadioGroupNeo name="ユーザーAの言語" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
-            <RadioGroupNeo name="ユーザーBの言語" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
+            <RadioGroupNeo name="Main User" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
+            <RadioGroupNeo name="User A Language" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
+            <RadioGroupNeo name="User B Language" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
           </div>
           <div className="flex gap-24">
-            <RadioGroupNeo name="録音間隔(速報)" valueMap={intervalSecMap1} defaultValue={intervalSec1} onValueChange={setIntervalSecState1} />
-            <RadioGroupNeo name="録音間隔(最大)" valueMap={intervalSecMap2} defaultValue={intervalSec2} onValueChange={setIntervalSecState2} />
+            <RadioGroupNeo
+              name="Recording Interval (Fast)"
+              valueMap={intervalSecMap1}
+              defaultValue={intervalSec1}
+              onValueChange={setIntervalSecState1}
+            />
+            <RadioGroupNeo
+              name="Recording Interval (Max)"
+              valueMap={intervalSecMap2}
+              defaultValue={intervalSec2}
+              onValueChange={setIntervalSecState2}
+            />
           </div>
           <RadioGroupNeo name="Voice" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
 
@@ -65,7 +77,7 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
             <div className="flex-1" />
             <DialogClose asChild>
               <Button type="submit" className="cursor-pointer">
-                保存
+                Save
               </Button>
             </DialogClose>
           </DialogFooter>

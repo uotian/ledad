@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Palette, Moon, Sun, Settings } from "lucide-react";
+// import { Palette } from "lucide-react";
+import { Moon, Sun, Settings } from "lucide-react";
 import ButtonSquare from "@/components/myui/button-square";
 import SettingDialog from "./setting-dialog";
 import ColorsDialog from "./colors-dialog";
-import Lang from "./lang";
 
 export default function Actions() {
   const [colorsDialogOpen, setColorsDialogOpen] = useState(false);
@@ -20,11 +20,10 @@ export default function Actions() {
 
   return (
     <div className="flex items-center">
-      <Lang />
-      <ButtonSquare size="sm" className="rounded-none border-l-0" onClick={() => setColorsDialogOpen(true)}>
+      {/* <ButtonSquare size="sm" className="rounded-r-none border-l-0" onClick={() => setColorsDialogOpen(true)}>
         <Palette className="w-4 h-4" strokeWidth={1.5} />
-      </ButtonSquare>
-      <ButtonSquare size="sm" className="rounded-none border-l-0" onClick={() => setSettingDialogOpen(true)}>
+      </ButtonSquare> */}
+      <ButtonSquare size="sm" className="rounded-r-none border-l-0" onClick={() => setSettingDialogOpen(true)}>
         <Settings className="w-4 h-4" strokeWidth={1.5} />
       </ButtonSquare>
       <ButtonSquare size="sm" className="rounded-l-none border-l-0" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>

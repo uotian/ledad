@@ -101,6 +101,7 @@ export function setVoice(value: string): void {
 // ------------------------------------------------------------
 
 export const intervalSecMap1: Record<string, string> = {
+  "3": "3秒",
   "5": "5秒",
   "10": "10秒",
   "30": "30秒",
@@ -120,13 +121,15 @@ export function setIntervalSec1(value: string): void {
 // ------------------------------------------------------------
 
 export const intervalSecMap2: Record<string, string> = {
+  "30": "30秒",
   "60": "60秒",
+  "120": "120秒",
   "300": "300秒",
   "600": "600秒",
 };
 
 export function getIntervalSec2(): number {
-  return parseInt(localStorage.getItem("intervalSec2") || "300");
+  return parseInt(localStorage.getItem("intervalSec2") || "120");
 }
 
 export function setIntervalSec2(value: string): void {

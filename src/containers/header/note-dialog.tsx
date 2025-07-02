@@ -90,7 +90,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
           setChatHistory(getChatHistory());
         } catch (error) {
           console.error("Chat error:", error);
-          const errorMessage = "エラーが発生しました: " + (error as Error).message;
+          const errorMessage = "An error occurred: " + (error as Error).message;
 
           // エラーも履歴に保存
           addChatHistory(text, errorMessage);
@@ -107,7 +107,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
   };
 
   const formatDateTime = (datetime: string) => {
-    return new Date(datetime).toLocaleString("ja-JP", {
+    return new Date(datetime).toLocaleString("en-US", {
       month: "2-digit",
       day: "2-digit",
       hour: "2-digit",
@@ -123,7 +123,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
       >
         <DialogHeader className="mb-2 flex-shrink-0">
           <DialogTitle>Note with ChatGPT</DialogTitle>
-          <DialogDescription>ChatGPTとチャットして、質問や回答を記録できます。</DialogDescription>
+          <DialogDescription>Chat with ChatGPT and record your questions and answers.</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto min-h-0 -mx-4 px-4 pb-4">
@@ -138,11 +138,11 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
                   </div>
                   <div className="space-y-0 text-sm">
                     <div className="bg-background/50 break-words mb-2">
-                      <span className="font-medium text-primary">質問: </span>
+                      <span className="font-medium text-primary">Question: </span>
                       <div className="whitespace-pre-wrap bg-background/50 break-words">{chat.prompt}</div>
                     </div>
                     <div className="bg-background/50 break-words">
-                      <span className="font-medium text-secondary">回答: </span>
+                      <span className="font-medium text-secondary">Answer: </span>
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -194,12 +194,12 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
               </div>
               <div className="space-y-0 text-sm">
                 <div className="bg-background/50 break-words mb-2">
-                  <span className="font-medium text-primary">質問: </span>
+                  <span className="font-medium text-primary">Question: </span>
                   <div className="whitespace-pre-wrap bg-background/50 break-words">{value}</div>
                 </div>
                 <div className="bg-background/50 break-words">
-                  <span className="font-medium text-secondary">回答: </span>
-                  <div className="animate-pulse text-muted-foreground">回答中...</div>
+                  <span className="font-medium text-secondary">Answer: </span>
+                  <div className="animate-pulse text-muted-foreground">Generating answer...</div>
                 </div>
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function NoteDialog({ open, onOpenChange }: Props) {
           <div className="w-full">
             <Textarea
               ref={textareaRef}
-              placeholder="質問を入力してください..."
+              placeholder="Enter your question..."
               value={value}
               onChange={(e) => setValue(e.target.value)}
               className="w-full resize-none bg-white/60 text-sm"
