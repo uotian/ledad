@@ -11,7 +11,17 @@ export class Recorder {
   async start(): Promise<void> {
     try {
       this.chunks = [];
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 24000, // 24kHz固定
+          channelCount: 1, // モノラル
+          echoCancellation: true, // エコーキャンセレーション
+          noiseSuppression: true, // ノイズ抑制
+          autoGainControl: true, // 自動ゲイン制御
+        },
+      });
+
+      console.log("録音開始: 24kHz, モノラル");
       this.recorder = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
       this.recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -42,8 +52,11 @@ export class Recorder {
             audio = new Blob(this.chunks, { type: "audio/webm;codecs=opus" });
 
             // 最終的なファイルサイズチェック
+            const sizeMB = (audio.size / (1024 * 1024)).toFixed(2);
+            console.log(`録音完了: ${sizeMB}MB (24kHz, モノラル)`);
+
             if (audio.size > this.maxSize) {
-              console.warn(`録音ファイルが大きすぎます: ${(audio.size / (1024 * 1024)).toFixed(2)}MB`);
+              console.warn(`録音ファイルが大きすぎます: ${sizeMB}MB`);
             }
           }
           this.chunks = [];
