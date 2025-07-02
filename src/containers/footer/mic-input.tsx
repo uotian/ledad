@@ -44,17 +44,15 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
 
   const convert2 = (audio: Blob, messageId: string, timestamp: number) => {
     console.log("最終結果のアップロードです！！！！！", messageId, timestamp);
-    convertAPI(timestamp, { audio, lang: langFrom })
-      .then((results) => {
-        const text = results.map((result) => result.text).join("\n");
-        if (text.trim()) {
-          translateAPI({ text, langFrom, langTo }).then((translated) => {
-            replaceMessage(messageId, { text, translated, status: "completed" });
-          });
-          console.log("最終結果のアップ完了", messageId, timestamp);
-        }
-      })
-      .catch(() => updateMessage(messageId, { status: "completing error" }));
+    convertAPI(timestamp, { audio, lang: langFrom }).then((results) => {
+      const text = results.map((result) => result.text).join("\n");
+      if (text.trim()) {
+        translateAPI({ text, langFrom, langTo }).then((translated) => {
+          replaceMessage(messageId, { text, translated, status: "completed" });
+        });
+        console.log("最終結果のアップ完了", messageId, timestamp);
+      }
+    });
   };
 
   const restart = () => {

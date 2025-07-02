@@ -10,13 +10,13 @@ interface Props {
 const CommonMessageContent = ({ message, className }: Props) => (
   <div className={cn("w-full p-2 rounded-lg", className)}>
     <details className="text-base px-2" open>
-      <summary className="cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-200">原文</summary>
-      <div className="whitespace-pre-wrap opacity-75">{message.text}</div>
+      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">original</summary>
+      <div className="whitespace-pre-wrap opacity-80">{message.text}</div>
     </details>
     <Separator className="my-1 bg-background/30" />
     <details className="mt-2 text-base px-2" open>
-      <summary className="cursor-pointer opacity-75 hover:opacity-100 transition-opacity duration-200">翻訳</summary>
-      <div className="whitespace-pre-wrap opacity-75">{message.translated}</div>
+      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">translation</summary>
+      <div className="whitespace-pre-wrap opacity-80">{message.translated}</div>
     </details>
   </div>
 );
