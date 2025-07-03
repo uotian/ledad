@@ -1,29 +1,40 @@
 import { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { SpeakerButton } from "./speak/button";
 
 interface Props {
   message: Message;
   className?: string;
 }
 
-const CommonMessageContent = ({ message, className }: Props) => (
-  <div className={cn("w-full p-2 rounded-lg", className)}>
-    <details className="text-base px-2" open>
-      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
-        original
-      </summary>
-      <div className="whitespace-pre-wrap opacity-80">{message.text}</div>
-    </details>
-    <Separator className="my-1 bg-background/30" />
-    <details className="mt-2 text-base px-2" open>
-      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
-        translation
-      </summary>
-      <div className="whitespace-pre-wrap opacity-80">{message.translated}</div>
-    </details>
-  </div>
-);
+const CommonMessageContent = ({ message, className }: Props) => {
+  return (
+    <div className={cn("w-full p-2 rounded-lg", className)}>
+      <details className="text-base pl-2" open>
+        <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
+          <span>original</span>
+        </summary>
+        <div className="flex items-center justify-between gap-2">
+          <div className="whitespace-pre-wrap opacity-80">{message.text}</div>
+          <SpeakerButton text={message.text || ""} />
+        </div>
+      </details>
+      <Separator className="my-1 bg-background/30" />
+      <details className="mt-2 text-base pl-2" open>
+        <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
+          <span>translation</span>
+        </summary>
+        <div className="flex items-center justify-between gap-2">
+          <div className="whitespace-pre-wrap opacity-80">
+            {message.translated}
+          </div>
+          <SpeakerButton text={message.translated || ""} />
+        </div>
+      </details>
+    </div>
+  );
+};
 
 const MessageContentA = ({ message }: { message: Message }) => (
   <div className="flex justify-start max-w-4/5">
