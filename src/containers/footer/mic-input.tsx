@@ -10,8 +10,8 @@ import {
   getIntervalSec1,
   getIntervalSec2,
 } from "@/lib/storage";
-import convertAPI from "@/apis/transcrible-mini-api";
-// import convertAPI from "@/apis/transcrible-api";
+// import convertAPI from "@/apis/transcrible-mini-api";
+import convertAPI from "@/apis/transcrible-api";
 // import convertAPI from "@/apis/whisper-api";
 import translateAPI from "@/apis/translate-api";
 import { Recorder } from "@/lib/recorder";
