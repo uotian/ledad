@@ -37,7 +37,9 @@ interface ChatMessageSkeletonProps {
 
 export function ChatMessageSkeleton({ w, h, type }: ChatMessageSkeletonProps) {
   return (
-    <div className={`flex ${type === "sent" ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`flex ${type === "sent" ? "justify-end" : "justify-start"}`}
+    >
       <div className={`${w} ${h} rounded-lg`}>
         <Skeleton className="w-full h-full rounded-lg" />
       </div>
@@ -61,13 +63,17 @@ export default function Home() {
   return (
     <div className="bg-background overflow-y-auto">
       {/* ヘッダー - 固定 */}
-      <header className="fixed top-0 left-0 right-0 z-50">{/* ヘッダーコンテンツ */}</header>
+      <header className="fixed top-0 left-0 right-0 z-50">
+        {/* ヘッダーコンテンツ */}
+      </header>
 
       {/* メインコンテンツ - チャットエリア - 固定高さでスクロール */}
       <main className="pt-20 pb-24 h-[100vh]">{/* メッセージエリア */}</main>
 
       {/* フッター - メッセージ入力エリア - 固定 */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50">{/* フッターコンテンツ */}</footer>
+      <footer className="fixed bottom-0 left-0 right-0 z-50">
+        {/* フッターコンテンツ */}
+      </footer>
     </div>
   );
 }

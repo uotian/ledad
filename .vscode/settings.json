@@ -54,7 +54,12 @@
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.next/**", "**/dist/**"],
+  "tailwindCSS.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/dist/**"
+  ],
   "files.associations": {
     "*.css": "tailwindcss"
   },

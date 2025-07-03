@@ -22,15 +22,22 @@ export class Recorder {
       });
 
       console.log("録音開始: 16kHz, モノラル");
-      this.recorder = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
+      this.recorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm;codecs=opus",
+      });
       this.recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
           this.chunks.push(e.data);
 
           // ファイルサイズをチェック
-          const totalSize = this.chunks.reduce((sum, chunk) => sum + chunk.size, 0);
+          const totalSize = this.chunks.reduce(
+            (sum, chunk) => sum + chunk.size,
+            0
+          );
           if (totalSize > this.maxSize) {
-            console.warn("録音ファイルが大きくなりすぎました。自動停止します。");
+            console.warn(
+              "録音ファイルが大きくなりすぎました。自動停止します。"
+            );
             this.stop();
           }
         }

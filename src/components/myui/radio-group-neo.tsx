@@ -8,13 +8,25 @@ interface Props {
   onValueChange?: (value: string) => void;
 }
 
-export default function RadioGroupNeo({ name, valueMap, defaultValue, onValueChange }: Props) {
-  const radioValues = Object.entries(valueMap).map(([value, label]) => ({ value, label }));
+export default function RadioGroupNeo({
+  name,
+  valueMap,
+  defaultValue,
+  onValueChange,
+}: Props) {
+  const radioValues = Object.entries(valueMap).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
   return (
     <div className="space-y-4">
       <Label className="font-bold">{name}</Label>
-      <RadioGroup defaultValue={defaultValue || radioValues[0]?.value} className="flex gap-6 flex-wrap" onValueChange={onValueChange}>
+      <RadioGroup
+        defaultValue={defaultValue || radioValues[0]?.value}
+        className="flex gap-6 flex-wrap"
+        onValueChange={onValueChange}
+      >
         {radioValues.map((item) => {
           const uniqueId = `${name}-${item.value}`;
           return (

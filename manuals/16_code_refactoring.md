@@ -104,7 +104,10 @@ export interface Request {
   status: string;
 }
 
-export async function sendChatMessage(prompt: string, messages?: Message[]): Promise<Request> {
+export async function sendChatMessage(
+  prompt: string,
+  messages?: Message[]
+): Promise<Request> {
   // 実装
 }
 ```
@@ -172,17 +175,14 @@ export async function sendChatMessage(prompt: string, messages?: Message[]): Pro
 ## 今後の改善点
 
 1. **エラーハンドリングの強化**
-
    - より詳細なエラーメッセージ
    - ユーザーフレンドリーなエラー表示
 
 2. **テストの追加**
-
    - ユニットテストの実装
    - 統合テストの追加
 
 3. **ドキュメントの充実**
-
    - API 仕様書の作成
    - コンポーネント仕様書の追加
 

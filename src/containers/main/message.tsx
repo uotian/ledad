@@ -10,12 +10,16 @@ interface Props {
 const CommonMessageContent = ({ message, className }: Props) => (
   <div className={cn("w-full p-2 rounded-lg", className)}>
     <details className="text-base px-2" open>
-      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">original</summary>
+      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
+        original
+      </summary>
       <div className="whitespace-pre-wrap opacity-80">{message.text}</div>
     </details>
     <Separator className="my-1 bg-background/30" />
     <details className="mt-2 text-base px-2" open>
-      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">translation</summary>
+      <summary className="cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 text-xs">
+        translation
+      </summary>
       <div className="whitespace-pre-wrap opacity-80">{message.translated}</div>
     </details>
   </div>
@@ -23,29 +27,47 @@ const CommonMessageContent = ({ message, className }: Props) => (
 
 const MessageContentA = ({ message }: { message: Message }) => (
   <div className="flex justify-start max-w-4/5">
-    <CommonMessageContent message={message} className="bg-secondary/80 text-secondary-foreground rounded-bl-none" />
+    <CommonMessageContent
+      message={message}
+      className="bg-secondary/80 text-secondary-foreground rounded-bl-none"
+    />
   </div>
 );
 
 const MessageContentB = ({ message }: { message: Message }) => (
   <div className="flex justify-end max-w-4/5">
-    <CommonMessageContent message={message} className="bg-primary/80 text-primary-foreground rounded-br-none" />
+    <CommonMessageContent
+      message={message}
+      className="bg-primary/80 text-primary-foreground rounded-br-none"
+    />
   </div>
 );
 
 export default function MessageItem({ message, className }: Props) {
   return (
-    <div className={cn("flex flex-col gap-1", message.user === "A" ? "items-start" : "items-end", className)}>
+    <div
+      className={cn(
+        "flex flex-col gap-1",
+        message.user === "A" ? "items-start" : "items-end",
+        className
+      )}
+    >
       <div className="flex items-center gap-2 text-xs px-1">
         <div>{new Date(message.timestamp * 1000).toLocaleString("ja-JP")}</div>
         {message.status?.includes("error") ? (
           <div className="text-red-800 dark:text-red-100">{message.status}</div>
         ) : message.status?.includes("success") ? (
-          <div className="text-blue-800 dark:text-blue-100">{message.status}</div>
+          <div className="text-blue-800 dark:text-blue-100">
+            {message.status}
+          </div>
         ) : message.status?.includes("completed") ? (
-          <div className="text-green-800 dark:text-green-100">{message.status}</div>
+          <div className="text-green-800 dark:text-green-100">
+            {message.status}
+          </div>
         ) : (
-          <div className="text-blue-800 dark:text-blue-100">{message.status}</div>
+          <div className="text-blue-800 dark:text-blue-100">
+            {message.status}
+          </div>
         )}
       </div>
       {message.user === "A" && <MessageContentA message={message} />}

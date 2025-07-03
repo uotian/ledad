@@ -23,11 +23,22 @@ export const metadata: Metadata = {
   description: "AI-powered multilingual chat application",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased bg-white/30 dark:bg-black/80`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased bg-white/30 dark:bg-black/80`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
           <div>{children}</div>
         </ThemeProvider>
       </body>

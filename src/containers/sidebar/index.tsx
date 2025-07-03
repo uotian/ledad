@@ -9,9 +9,12 @@ import { MessageSquare, X } from "lucide-react";
 import Markdown from "./markdown";
 interface SidebarProps {
   setSidebarOpen: (open: boolean) => void;
+  sidebarOpen: boolean;
 }
+import { PanelRightOpen, PanelRightClose } from "lucide-react";
+import ButtonSquare from "@/components/myui/button-square";
 
-export default function Sidebar({ setSidebarOpen }: SidebarProps) {
+export default function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
   const [value, setValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [composing, setComposing] = useState(false);
@@ -64,7 +67,9 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
     scrollEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendChat = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleSendChat = async (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     const text = value.trim();
     if (text && e.key === "Enter" && !composing && !isLoading) {
       if (!e.shiftKey) {
@@ -110,15 +115,16 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
   return (
     <div className="relative flex flex-col h-full bg-sidebar text-sidebar-foreground">
       {/* ヘッダー - 上部固定 */}
-      <button
-        onClick={() => setSidebarOpen(false)}
-        className="absolute top-2 right-2 p-2 rounded-md transition-colors cursor-pointer hover:opacity-80"
-      >
-        <X className="w-4 h-4" />
-      </button>
+      <div className="container mx-auto absolute top-7 right-9 h-6 w-6 cursor-pointer">
+        <PanelRightClose
+          className="w-4 h-4"
+          strokeWidth={1.5}
+          onClick={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* チャット履歴 - スクロール可能エリア */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div className="flex-1 overflow-y-auto px-8 py-6">
         {chatHistory.length > 0 && (
           <div className="space-y-8">
             {chatHistory.map((chat) => (
@@ -130,7 +136,9 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
                 <div className="space-y-0 text-sm">
                   <div className="break-words mb-2">
                     <span className="font-medium text-primary">Question: </span>
-                    <div className="whitespace-pre-wrap break-words">{chat.prompt}</div>
+                    <div className="whitespace-pre-wrap break-words">
+                      {chat.prompt}
+                    </div>
                   </div>
                   <div className="break-words">
                     <span className="font-medium text-secondary">Answer: </span>
@@ -156,7 +164,9 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
               </div>
               <div className="break-words">
                 <span className="font-medium text-secondary">Answer: </span>
-                <div className="animate-pulse text-muted-foreground">Generating answer...</div>
+                <div className="animate-pulse text-muted-foreground">
+                  Generating answer...
+                </div>
               </div>
             </div>
           </div>
@@ -182,7 +192,9 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
           onCompositionEnd={() => setComposing(false)}
         />
       </div>
-      <div className="absolute bottom-6 right-8 text-right text-sidebar/80 text-xs">AI Anayzer</div>
+      <div className="absolute bottom-6 right-8 text-right text-sidebar/80 text-xs">
+        AI Anayzer
+      </div>
     </div>
   );
 }

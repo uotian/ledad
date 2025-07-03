@@ -8,8 +8,14 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function BadgeNeo({ variant = "default", size = "md", className, children }: Props) {
-  const baseClasses = "inline-flex items-center justify-center rounded-full font-medium transition-colors";
+export default function BadgeNeo({
+  variant = "default",
+  size = "md",
+  className,
+  children,
+}: Props) {
+  const baseClasses =
+    "inline-flex items-center justify-center rounded-full font-medium transition-colors";
 
   const sizeClasses = {
     sm: "h-5 w-5 text-xs",
@@ -24,5 +30,16 @@ export default function BadgeNeo({ variant = "default", size = "md", className, 
     outline: "border border-input bg-background text-foreground",
   };
 
-  return <div className={cn(baseClasses, sizeClasses[size], variantClasses[variant], className)}>{children}</div>;
+  return (
+    <div
+      className={cn(
+        baseClasses,
+        sizeClasses[size],
+        variantClasses[variant],
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
 }

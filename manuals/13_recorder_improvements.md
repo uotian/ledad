@@ -32,7 +32,8 @@ mr.ondataavailable = (e) => {
   if (e.data.size > 0) chunks.current.push(e.data);
 };
 mr.onstop = () => {
-  if (chunks.current.length > 0) convert(new Blob(chunks.current, { type: "audio/webm;codecs=opus" }));
+  if (chunks.current.length > 0)
+    convert(new Blob(chunks.current, { type: "audio/webm;codecs=opus" }));
   chunks.current = [];
 };
 ```
@@ -58,7 +59,8 @@ export const intervalSecMap: Record<string, string> = {
 };
 
 export function getIntervalSec(): number {
-  if (typeof window !== "undefined") return parseInt(localStorage.getItem("intervalSec") || "60");
+  if (typeof window !== "undefined")
+    return parseInt(localStorage.getItem("intervalSec") || "60");
   return 60;
 }
 

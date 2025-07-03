@@ -1,12 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Check, Edit } from "lucide-react";
-import { getRooms, getCurrentRoomId, setCurrentRoomId, createRoom, deleteRoom, updateRoom } from "@/lib/storage";
+import {
+  getRooms,
+  getCurrentRoomId,
+  setCurrentRoomId,
+  createRoom,
+  deleteRoom,
+  updateRoom,
+} from "@/lib/storage";
 import { Room } from "@/lib/types";
 
 interface Props {
@@ -49,7 +62,11 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
   };
 
   const handleDeleteRoom = (roomId: string) => {
-    if (confirm("Are you sure you want to delete this room?\n\n※Messages and chat history in this room will also be deleted.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete this room?\n\n※Messages and chat history in this room will also be deleted."
+      )
+    ) {
       // ルームを削除
       deleteRoom(roomId);
       setRoomsState(getRooms());
@@ -94,26 +111,48 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
       <DialogContent className="max-w-md w-full p-6 rounded-lg shadow-lg">
         <DialogHeader className="mb-4">
           <DialogTitle>Room Management</DialogTitle>
-          <DialogDescription>You can create, edit, delete, and switch chat rooms.</DialogDescription>
+          <DialogDescription>
+            You can create, edit, delete, and switch chat rooms.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
           {/* 新しいルーム作成 */}
           <div className="flex items-center gap-2">
-            <Input placeholder="New room name" value={newRoomName} onChange={(e) => setNewRoomName(e.target.value)} />
-            <Button size="sm" onClick={handleCreateRoom} disabled={!newRoomName.trim()} className="cursor-pointer">
+            <Input
+              placeholder="New room name"
+              value={newRoomName}
+              onChange={(e) => setNewRoomName(e.target.value)}
+            />
+            <Button
+              size="sm"
+              onClick={handleCreateRoom}
+              disabled={!newRoomName.trim()}
+              className="cursor-pointer"
+            >
               <Plus className="w-4 h-4" />
             </Button>
           </div>
 
           <Separator />
-          {rooms.length === 0 && <p className="text-sm text-red-800 dark:text-yellow-200">Please create a room.</p>}
-          {!currentRoomId && <p className="text-sm text-red-800 dark:text-yellow-200">Please select a room from the list below.</p>}
+          {rooms.length === 0 && (
+            <p className="text-sm text-red-800 dark:text-yellow-200">
+              Please create a room.
+            </p>
+          )}
+          {!currentRoomId && (
+            <p className="text-sm text-red-800 dark:text-yellow-200">
+              Please select a room from the list below.
+            </p>
+          )}
 
           {/* ルーム一覧 */}
           <div className="space-y-2 max-h-60 overflow-y-auto text-sm">
             {rooms.map((room) => (
-              <div key={room.id} className="flex items-center justify-between px-2 py-2 rounded-md">
+              <div
+                key={room.id}
+                className="flex items-center justify-between px-2 py-2 rounded-md"
+              >
                 <div className="flex items-center gap-2 w-full">
                   {editingRoomId === room.id ? (
                     <div className="flex-1 flex items-center gap-2 w-full">
@@ -127,7 +166,11 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
                         autoFocus
                         className="h-8 text-sm"
                       />
-                      <Button size="sm" onClick={handleSaveEdit} className="cursor-pointer">
+                      <Button
+                        size="sm"
+                        onClick={handleSaveEdit}
+                        className="cursor-pointer"
+                      >
                         <Check className="w-4 h-4" />
                       </Button>
                     </div>
@@ -140,17 +183,34 @@ export default function RoomDialog({ open, onOpenChange }: Props) {
 
                 {editingRoomId !== room.id && (
                   <div className="flex items-center gap-2">
-                    {room.id === currentRoomId && <Check className="w-4 h-4 text-primary" />}
+                    {room.id === currentRoomId && (
+                      <Check className="w-4 h-4 text-primary" />
+                    )}
                     {room.id !== currentRoomId && (
-                      <Button size="sm" variant="outline" onClick={() => handleSwitchRoom(room.id)} className="cursor-pointer">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleSwitchRoom(room.id)}
+                        className="cursor-pointer"
+                      >
                         Select
                       </Button>
                     )}
-                    <Button size="sm" variant="outline" onClick={() => handleStartEdit(room)} className="cursor-pointer">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleStartEdit(room)}
+                      className="cursor-pointer"
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
                     {room.id !== currentRoomId && (
-                      <Button size="sm" variant="outline" onClick={() => handleDeleteRoom(room.id)} className="cursor-pointer">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteRoom(room.id)}
+                        className="cursor-pointer"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     )}

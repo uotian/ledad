@@ -151,6 +151,7 @@ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/insta
 Node.jsのインストールが完了したら、以下のような開発環境の構築を検討してください：
 
 1. **プロジェクトの初期化**
+
    ```bash
    mkdir my-project
    cd my-project
@@ -158,6 +159,7 @@ Node.jsのインストールが完了したら、以下のような開発環境�
    ```
 
 2. **よく使用されるパッケージのインストール**
+
    ```bash
    npm install express    # Webフレームワーク
    npm install nodemon    # 開発用サーバー
@@ -174,4 +176,4 @@ Node.jsのインストールが完了したら、以下のような開発環境�
 - [Node.js公式サイト](https://nodejs.org/)
 - [nvm GitHub](https://github.com/nvm-sh/nvm)
 - [Homebrew公式サイト](https://brew.sh/)
-- [npm公式サイト](https://www.npmjs.com/) 
+- [npm公式サイト](https://www.npmjs.com/)

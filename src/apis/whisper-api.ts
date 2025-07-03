@@ -6,7 +6,10 @@ export interface Request {
 // ファイルサイズ制限（4MB）
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 
-export default async function access(timestamp: number, request: Request): Promise<Array<{ start: number; text: string }>> {
+export default async function access(
+  timestamp: number,
+  request: Request
+): Promise<Array<{ start: number; text: string }>> {
   try {
     // ファイルサイズチェック
     if (request.audio.size > MAX_FILE_SIZE) {
@@ -33,7 +36,8 @@ export default async function access(timestamp: number, request: Request): Promi
     }
 
     const { results } = await response.json();
-    if (!results) return [{ start: timestamp, text: "音声認識結果が取得できませんでした" }];
+    if (!results)
+      return [{ start: timestamp, text: "音声認識結果が取得できませんでした" }];
 
     const results2: Array<{ start: number; text: string }> = [];
     for (const result of results) {
@@ -42,7 +46,9 @@ export default async function access(timestamp: number, request: Request): Promi
     }
 
     // 各要素のtextを取得して"\n"で結合
-    const combinedText = results2.map((result: { start: number; text: string }) => result.text).join("\n");
+    const combinedText = results2
+      .map((result: { start: number; text: string }) => result.text)
+      .join("\n");
     console.log("結合されたテキスト:", combinedText);
 
     return results2;

@@ -9,8 +9,16 @@ export async function POST(request: NextRequest) {
     const audioFile = formData.get("audio") as File;
     const lang = formData.get("lang") as string;
 
-    if (!audioFile) return NextResponse.json({ error: "音声ファイルが必要です" }, { status: 400 });
-    if (!lang) return NextResponse.json({ error: "言語設定が必要です" }, { status: 400 });
+    if (!audioFile)
+      return NextResponse.json(
+        { error: "音声ファイルが必要です" },
+        { status: 400 }
+      );
+    if (!lang)
+      return NextResponse.json(
+        { error: "言語設定が必要です" },
+        { status: 400 }
+      );
 
     // ファイルサイズチェック
     if (audioFile.size > MAX_FILE_SIZE) {
@@ -28,7 +36,11 @@ export async function POST(request: NextRequest) {
     body.append("language", lang);
     body.append("response_format", "verbose_json");
     const headers = { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` };
-    const res = await fetch("https://api.openai.com/v1/audio/transcriptions", { method: "POST", headers, body });
+    const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+      method: "POST",
+      headers,
+      body,
+    });
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -36,10 +48,16 @@ export async function POST(request: NextRequest) {
 
       // エラーレスポンスの詳細ハンドリング
       if (res.status === 413) {
-        return NextResponse.json({ error: "音声ファイルが大きすぎます。短い音声でお試しください。" }, { status: 413 });
+        return NextResponse.json(
+          { error: "音声ファイルが大きすぎます。短い音声でお試しください。" },
+          { status: 413 }
+        );
       }
       if (res.status === 400) {
-        return NextResponse.json({ error: "音声ファイルの形式が正しくありません。" }, { status: 400 });
+        return NextResponse.json(
+          { error: "音声ファイルの形式が正しくありません。" },
+          { status: 400 }
+        );
       }
 
       throw new Error(`Whisper API error: ${res.status}`);
@@ -53,6 +71,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ results });
   } catch (error) {
     console.error("音声認識エラー:", error);
-    return NextResponse.json({ error: "音声認識中にエラーが発生しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: "音声認識中にエラーが発生しました" },
+      { status: 500 }
+    );
   }
 }

@@ -10,7 +10,10 @@ export async function POST(request: NextRequest) {
   try {
     const { prompt, messages } = await request.json();
     if (!prompt) {
-      return NextResponse.json({ error: "プロンプトが必要です" }, { status: 400 });
+      return NextResponse.json(
+        { error: "プロンプトが必要です" },
+        { status: 400 }
+      );
     }
     console.log("messages", messages);
 
@@ -63,6 +66,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("チャットエラー:", error);
-    return NextResponse.json({ error: "チャット中にエラーが発生しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: "チャット中にエラーが発生しました" },
+      { status: 500 }
+    );
   }
 }

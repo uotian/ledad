@@ -5,7 +5,10 @@ export async function POST(request: NextRequest) {
     const { text, voice = "alloy" } = await request.json();
 
     if (!text) {
-      return NextResponse.json({ error: "テキストが必要です" }, { status: 400 });
+      return NextResponse.json(
+        { error: "テキストが必要です" },
+        { status: 400 }
+      );
     }
 
     const response = await fetch("https://api.openai.com/v1/audio/speech", {
@@ -38,6 +41,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("発声エラー:", error);
-    return NextResponse.json({ error: "発声中にエラーが発生しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: "発声中にエラーが発生しました" },
+      { status: 500 }
+    );
   }
 }

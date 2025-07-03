@@ -4,13 +4,20 @@ import { ButtonHTMLAttributes } from "react";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "red" | "blue" | "gray";
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   children?: React.ReactNode;
 }
 
-export default function ButtonSquare({ size = "md", className, children, ...props }: Props) {
-  const baseClasses = "inline-flex items-center justify-center rounded-lg cursor-pointer focus:outline-none transition-all duration-200";
-  const colorClasses = "bg-foreground/60 hover:bg-foreground/40 border-[1px] border text-background ";
+export default function ButtonSquare({
+  size = "md",
+  className,
+  children,
+  ...props
+}: Props) {
+  const baseClasses =
+    "inline-flex items-center justify-center rounded-lg cursor-pointer focus:outline-none transition-all duration-200";
+  const colorClasses =
+    "bg-foreground/60 hover:bg-foreground/40 border-[1px] border text-background ";
 
   const sizeClasses = {
     xs: "h-8 w-8",
@@ -21,7 +28,10 @@ export default function ButtonSquare({ size = "md", className, children, ...prop
   };
 
   return (
-    <button className={cn(baseClasses, sizeClasses[size], colorClasses, className)} {...props}>
+    <button
+      className={cn(baseClasses, sizeClasses[size], colorClasses, className)}
+      {...props}
+    >
       {children}
     </button>
   );

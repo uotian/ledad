@@ -224,7 +224,10 @@ export function addMessage(message: Message): string {
   return id;
 }
 
-function mergeText(text1: string | undefined, text2: string | undefined): string | undefined {
+function mergeText(
+  text1: string | undefined,
+  text2: string | undefined
+): string | undefined {
   if (text1 === undefined) return text2;
   if (text2 === undefined) return text1;
   return text1 + "\n" + text2;
@@ -276,7 +279,10 @@ export function getChatHistory(): ChatHistory[] {
 export function setChatHistory(chatHistory: ChatHistory[]): void {
   const currentRoomId = getCurrentRoomId();
   if (!currentRoomId) return;
-  localStorage.setItem(`chatHistory_${currentRoomId}`, JSON.stringify(chatHistory));
+  localStorage.setItem(
+    `chatHistory_${currentRoomId}`,
+    JSON.stringify(chatHistory)
+  );
 }
 
 export function addChatHistory(prompt: string, response: string): void {

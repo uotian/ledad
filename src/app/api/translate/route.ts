@@ -10,7 +10,10 @@ export async function POST(request: NextRequest) {
   try {
     const { text, langFrom, langTo } = await request.json();
     if (!text || !langFrom || !langTo) {
-      return NextResponse.json({ error: "テキスト、翻訳元言語、翻訳先言語が必要です" }, { status: 400 });
+      return NextResponse.json(
+        { error: "テキスト、翻訳元言語、翻訳先言語が必要です" },
+        { status: 400 }
+      );
     }
     const fromLangName = langMap[langFrom] || langFrom;
     const toLangName = langMap[langTo] || langTo;
@@ -47,6 +50,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ translated: result.translated.join("\n") });
   } catch (error) {
     console.error("翻訳エラー:", error);
-    return NextResponse.json({ error: "翻訳中にエラーが発生しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: "翻訳中にエラーが発生しました" },
+      { status: 500 }
+    );
   }
 }

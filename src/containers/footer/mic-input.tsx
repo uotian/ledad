@@ -3,8 +3,15 @@
 import { useState, useRef } from "react";
 import { Square, MessageSquarePlus as Add, Circle } from "lucide-react";
 import { useTimer } from "react-timer-hook";
-import { addMessage, updateMessage, replaceMessage, getIntervalSec1, getIntervalSec2 } from "@/lib/storage";
-import convertAPI from "@/apis/transcrible-api";
+import {
+  addMessage,
+  updateMessage,
+  replaceMessage,
+  getIntervalSec1,
+  getIntervalSec2,
+} from "@/lib/storage";
+import convertAPI from "@/apis/transcrible-mini-api";
+// import convertAPI from "@/apis/transcrible-api";
 // import convertAPI from "@/apis/whisper-api";
 import translateAPI from "@/apis/translate-api";
 import { Recorder } from "@/lib/recorder";
@@ -32,8 +39,12 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
         if (text.trim()) {
           updateMessage(messageId, { text, status: "translating" });
           translateAPI({ text, langFrom, langTo })
-            .then((translated) => updateMessage(messageId, { translated, status: "success" }))
-            .catch(() => updateMessage(messageId, { status: "translating error" }));
+            .then((translated) =>
+              updateMessage(messageId, { translated, status: "success" })
+            )
+            .catch(() =>
+              updateMessage(messageId, { status: "translating error" })
+            );
           console.log("速報アップ完了", messageId, timestamp);
         } else {
           updateMessage(messageId, { status: "converting error" });
@@ -76,8 +87,13 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
     setTimeout(() => {
       const start_timestamp = Math.floor(Date.now() / 1000);
       setTimeout(() => {
-        if (timer2.isRunning && timer2.minutes * 60 + timer2.seconds > getIntervalSec1()) {
-          timer1.restart(new Date((start_timestamp + getIntervalSec1()) * 1000));
+        if (
+          timer2.isRunning &&
+          timer2.minutes * 60 + timer2.seconds > getIntervalSec1()
+        ) {
+          timer1.restart(
+            new Date((start_timestamp + getIntervalSec1()) * 1000)
+          );
         }
       }, 0);
       const newRecorder = new Recorder(`mic-${langFrom}-${langTo}`);
@@ -108,7 +124,11 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
   const start = () => {
     const start_timestamp = Math.floor(Date.now() / 1000);
     timestamp.current = start_timestamp;
-    messageId.current = addMessage({ user, timestamp: start_timestamp, status: "recording" });
+    messageId.current = addMessage({
+      user,
+      timestamp: start_timestamp,
+      status: "recording",
+    });
 
     // setTimerでtimer.restartを安定化させる
     setTimeout(() => {
@@ -129,34 +149,66 @@ export default function MicInput({ langFrom, langTo, user }: Props) {
   };
 
   const timer1 = useTimer({
-    expiryTimestamp: new Date((Math.floor(Date.now() / 1000) + getIntervalSec1()) * 1000),
+    expiryTimestamp: new Date(
+      (Math.floor(Date.now() / 1000) + getIntervalSec1()) * 1000
+    ),
     onExpire: expire,
     autoStart: false,
   });
 
   const timer2 = useTimer({
-    expiryTimestamp: new Date((Math.floor(Date.now() / 1000) + getIntervalSec2()) * 1000),
+    expiryTimestamp: new Date(
+      (Math.floor(Date.now() / 1000) + getIntervalSec2()) * 1000
+    ),
     onExpire: stop,
     autoStart: false,
   });
 
-  const baseClasses = "h-8 w-8 lg:h-12 lg:w-12 border border-foreground/60 relative flex items-center justify-center opacity-60 text-white";
+  const baseClasses =
+    "h-10 w-10 lg:h-12 lg:w-12 border border-foreground/60 relative flex items-center justify-center opacity-60 text-white";
 
   return (
     <div className="flex">
-      <div onClick={stop} className={cn(baseClasses, "rounded-l-xl border-x-0 bg-foreground text-background pl-1 font-bold")}>
-        <span className="text-xs lg:text-sm">{langFrom.toUpperCase()}</span>
+      <div
+        onClick={stop}
+        className={cn(
+          baseClasses,
+          "flex-col rounded-l-md lg:rounded-l-xl border-x-0 bg-foreground text-background pl-1 font-bold"
+        )}
+      >
+        <div className="text-base lg:text-xl">{user}</div>
+        <div className="text-2xs lg:text-xs font-normal -mt-1">{langFrom}</div>
       </div>
-      <div onClick={recorder2 ? stop : start} className={cn(baseClasses, " bg-red-800 cursor-pointer border-x-0", recorder2 && "animate-pulse")}>
-        {recorder2 ? <Square className="fill-current w-3 lg:w-4 h-3 lg:h-4" /> : <Circle className="text-white w-3 lg:w-4 h-3 lg:h-4 fill-current" />}
+      <div
+        onClick={recorder2 ? stop : start}
+        className={cn(
+          baseClasses,
+          " bg-red-800 cursor-pointer border-x-0",
+          recorder2 && "animate-pulse"
+        )}
+      >
+        {recorder2 ? (
+          <Square className="fill-current w-3 lg:w-4 h-3 lg:h-4" />
+        ) : (
+          <Circle className="text-white w-3 lg:w-4 h-3 lg:h-4 fill-current" />
+        )}
       </div>
       <div
         onClick={restart}
-        className={cn(baseClasses, "rounded-r-xl border-l-0 ", recorder2 ? "bg-blue-800 cursor-pointer" : "bg-muted cursor-not-allowed")}
+        className={cn(
+          baseClasses,
+          "rounded-r-md lg:rounded-r-xl border-l-0 ",
+          recorder2
+            ? "bg-blue-800 cursor-pointer"
+            : "bg-muted cursor-not-allowed"
+        )}
       >
         <Add className="w-4 lg:w-5 h-4 lg:h-5" strokeWidth={3} />
         {timer2.isRunning && (timer2.seconds > 0 || timer2.minutes > 0) && (
-          <Badge variant="destructive" className="absolute -bottom-2 -right-2 rounded-full w-6 h-6 border border-foreground/60">
+          <Badge
+            variant="destructive"
+            className="absolute -bottom-2 -right-2 rounded-full w-6 h-6 border border-foreground/60"
+          >
             {timer2.minutes * 60 + timer2.seconds}
           </Badge>
         )}

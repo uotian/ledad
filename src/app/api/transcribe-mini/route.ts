@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     console.log("OpenAI API 呼び出し開始");
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
-      model: "gpt-4o-transcribe",
+      model: "gpt-4o-mini-transcribe",
       language: lang,
       response_format: "json",
     });

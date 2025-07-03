@@ -1,12 +1,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RadioGroupNeo from "@/components/myui/radio-group-neo";
-import { langAMap, langBMap, voiceMap, mainUserMap, intervalSecMap1, intervalSecMap2 } from "@/lib/storage";
-import { getLangA, getLangB, getVoice, getMainUser, getIntervalSec1, getIntervalSec2 } from "@/lib/storage";
-import { setLangA, setLangB, setVoice, setMainUser, setIntervalSec1, setIntervalSec2 } from "@/lib/storage";
+import {
+  langAMap,
+  langBMap,
+  voiceMap,
+  mainUserMap,
+  intervalSecMap1,
+  intervalSecMap2,
+} from "@/lib/storage";
+import {
+  getLangA,
+  getLangB,
+  getVoice,
+  getMainUser,
+  getIntervalSec1,
+  getIntervalSec2,
+} from "@/lib/storage";
+import {
+  setLangA,
+  setLangB,
+  setVoice,
+  setMainUser,
+  setIntervalSec1,
+  setIntervalSec2,
+} from "@/lib/storage";
 
 interface Props {
   open: boolean;
@@ -43,17 +72,37 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`w-full p-6 rounded-lg shadow-lg`} style={{ maxWidth: "85vw", width: "85vw" }}>
+      <DialogContent
+        className={`w-full p-6 rounded-lg shadow-lg`}
+        style={{ maxWidth: "85vw", width: "85vw" }}
+      >
         <DialogHeader className="mb-8">
           <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>You can change language, voice sending intervals, and others.</DialogDescription>
+          <DialogDescription>
+            You can change language, voice sending intervals, and others.
+          </DialogDescription>
         </DialogHeader>
 
         <form className="flex flex-col gap-12" onSubmit={handleSubmit}>
           <div className="flex gap-24">
-            <RadioGroupNeo name="Main User" valueMap={mainUserMap} defaultValue={mainUser} onValueChange={setMainUserState} />
-            <RadioGroupNeo name="Lang for User A" valueMap={langAMap} defaultValue={langA} onValueChange={setLangAState} />
-            <RadioGroupNeo name="Lang for User B" valueMap={langBMap} defaultValue={langB} onValueChange={setLangBState} />
+            <RadioGroupNeo
+              name="Main User"
+              valueMap={mainUserMap}
+              defaultValue={mainUser}
+              onValueChange={setMainUserState}
+            />
+            <RadioGroupNeo
+              name="Lang for User A"
+              valueMap={langAMap}
+              defaultValue={langA}
+              onValueChange={setLangAState}
+            />
+            <RadioGroupNeo
+              name="Lang for User B"
+              valueMap={langBMap}
+              defaultValue={langB}
+              onValueChange={setLangBState}
+            />
           </div>
           <div className="flex gap-24">
             <RadioGroupNeo
@@ -69,7 +118,12 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
               onValueChange={setIntervalSecState2}
             />
           </div>
-          <RadioGroupNeo name="Voice" valueMap={voiceMap} defaultValue={voice} onValueChange={setVoiceState} />
+          <RadioGroupNeo
+            name="Voice"
+            valueMap={voiceMap}
+            defaultValue={voice}
+            onValueChange={setVoiceState}
+          />
 
           <DialogFooter className="flex items-center gap-2 mt-4">
             <div className="flex-1" />

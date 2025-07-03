@@ -13,16 +13,33 @@
 **変更前**:
 
 ```tsx
-return <h1 className={cn("mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80", className)}>ledad</h1>;
+return (
+  <h1
+    className={cn(
+      "mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80",
+      className
+    )}
+  >
+    ledad
+  </h1>
+);
 ```
 
 **変更後**:
 
 ```tsx
 return (
-  <h1 className={cn("mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80 font-lexend", className)}>
-    l<span className="inline-block transform scale-x-[-1] rotate-10 mr-0.5">e</span>d
-    <span className="inline-block transform scale-x-[-1] mr-1">a</span>d
+  <h1
+    className={cn(
+      "mt-2 text-xl md:text-3xl font-bold tracking-widest text-foreground/80 font-lexend",
+      className
+    )}
+  >
+    l
+    <span className="inline-block transform scale-x-[-1] rotate-10 mr-0.5">
+      e
+    </span>
+    d<span className="inline-block transform scale-x-[-1] mr-1">a</span>d
   </h1>
 );
 ```
@@ -93,13 +110,19 @@ const handleSendChat = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       setIsLoading(true);
       try {
         const messages = getMessages();
-        const sortedMessages = Object.values(messages).sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
+        const sortedMessages = Object.values(messages).sort(
+          (a, b) =>
+            new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+        );
         const result = await sendChatMessage(text, sortedMessages);
         addChatHistory(text, result.response);
         setChatHistory(getChatHistory());
       } catch (error) {
         console.error("Chat error:", error);
-        addChatHistory(text, "エラーが発生しました: " + (error as Error).message);
+        addChatHistory(
+          text,
+          "エラーが発生しました: " + (error as Error).message
+        );
         setChatHistory(getChatHistory());
       } finally {
         setIsLoading(false);
@@ -177,7 +200,10 @@ export function deleteRoomChatHistory(roomId: string): void;
 
 ```tsx
 // 追加されたUI要素
-<div className="bg-foreground/80 text-background p-1 px-2 rounded-md cursor-pointer hover:bg-foreground/60" onClick={() => setNoteDialogOpen(true)}>
+<div
+  className="bg-foreground/80 text-background p-1 px-2 rounded-md cursor-pointer hover:bg-foreground/60"
+  onClick={() => setNoteDialogOpen(true)}
+>
   <Notebook className="w-3 h-3" />
 </div>
 ```
@@ -192,7 +218,11 @@ export function deleteRoomChatHistory(roomId: string): void;
 - 確認メッセージの改善
 
 ```tsx
-if (confirm("このルームを削除しますか？\n\n※このルームのメッセージとチャット履歴も削除されます。")) {
+if (
+  confirm(
+    "このルームを削除しますか？\n\n※このルームのメッセージとチャット履歴も削除されます。"
+  )
+) {
   deleteRoomChatHistory(roomId);
   deleteRoom(roomId);
   // ...

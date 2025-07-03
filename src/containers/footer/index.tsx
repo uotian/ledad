@@ -22,10 +22,22 @@ export default function Footer() {
         {langA && langB && (
           <div className="flex items-center">
             <MicInput langFrom={langA} langTo={langB} user="A" />
-            {mainUser === "A" ? <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div> : <div className="w-4 md:w-8" />}
-            {mainUser === "A" && <TextInput langFrom={langA} langTo={langB} user="A" />}
-            {mainUser === "B" && <TextInput langFrom={langB} langTo={langA} user="B" />}
-            {mainUser === "B" ? <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div> : <div className="w-4 md:w-8" />}
+            {mainUser === "A" ? (
+              <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div>
+            ) : (
+              <div className="w-4 md:w-8" />
+            )}
+            {mainUser === "A" && (
+              <TextInput langFrom={langA} langTo={langB} user="A" />
+            )}
+            {mainUser === "B" && (
+              <TextInput langFrom={langB} langTo={langA} user="B" />
+            )}
+            {mainUser === "B" ? (
+              <div className="w-4 md:w-8 h-1/2 border-foreground/60 border-b"></div>
+            ) : (
+              <div className="w-4 md:w-8" />
+            )}
             <MicInput langFrom={langB} langTo={langA} user="B" />
           </div>
         )}

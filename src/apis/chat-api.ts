@@ -5,7 +5,10 @@ export interface Request {
   status: string;
 }
 
-export async function sendChatMessage(prompt: string, messages?: Message[]): Promise<Request> {
+export async function sendChatMessage(
+  prompt: string,
+  messages?: Message[]
+): Promise<Request> {
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
@@ -13,7 +16,8 @@ export async function sendChatMessage(prompt: string, messages?: Message[]): Pro
       body: JSON.stringify({ prompt, messages }),
     });
 
-    if (!response.ok) return { response: "チャットに失敗しました", status: "error" };
+    if (!response.ok)
+      return { response: "チャットに失敗しました", status: "error" };
 
     const data = await response.json();
     return data;

@@ -154,7 +154,11 @@ const switchTheme = () => {
 };
 
 {
-  theme === "dark" ? <Sun className="h-5 w-5" strokeWidth={1} /> : <Moon className="h-5 w-5" strokeWidth={1} />;
+  theme === "dark" ? (
+    <Sun className="h-5 w-5" strokeWidth={1} />
+  ) : (
+    <Moon className="h-5 w-5" strokeWidth={1} />
+  );
 }
 ```
 
@@ -197,7 +201,6 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
 **追加された機能**：
 
 - **disabled 状態のサポート**：
-
   - `disabled`プロパティを追加
   - disabled 時は`cursor-not-allowed`と`opacity-50`を適用
   - 通常時は`cursor-pointer`を適用
@@ -211,16 +214,19 @@ export default function SettingDialog({ open, onOpenChange }: Props) {
 **新規ファイル**: `src/components/ui/badge.tsx`
 
 ```tsx
-const badgeVariants = cva("inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium...", {
-  variants: {
-    variant: {
-      default: "border-transparent bg-primary text-primary-foreground",
-      secondary: "border-transparent bg-secondary text-secondary-foreground",
-      destructive: "border-transparent bg-destructive text-white",
-      outline: "text-foreground",
+const badgeVariants = cva(
+  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium...",
+  {
+    variants: {
+      variant: {
+        default: "border-transparent bg-primary text-primary-foreground",
+        secondary: "border-transparent bg-secondary text-secondary-foreground",
+        destructive: "border-transparent bg-destructive text-white",
+        outline: "text-foreground",
+      },
     },
-  },
-});
+  }
+);
 ```
 
 **用途**：

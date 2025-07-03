@@ -27,7 +27,7 @@ export default function Main() {
     };
   }, []);
   return (
-    <main className="pt-14 pb-20 h-[100vh] overflow-y-auto">
+    <main className="pt-14 pb-20 px-4 h-[100vh] overflow-y-auto">
       {messages.length === 0 ? (
         <NoMessage className="container mx-auto p-4 h-full" />
       ) : (

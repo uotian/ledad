@@ -1,9 +1,11 @@
 # shadcn/ui セットアップマニュアル
 
 ## 概要
+
 このマニュアルでは、Next.jsプロジェクトにshadcn/uiを導入し、ダークモード機能を設定する手順を説明します。
 
 ## 前提条件
+
 - Next.js 15.3.4以上
 - Tailwind CSS v4
 - TypeScript
@@ -11,23 +13,27 @@
 ## 1. shadcn/uiの初期化
 
 ### 1.1 初期化コマンドの実行
+
 ```bash
 npx shadcn@latest init
 ```
 
 ### 1.2 設定オプション
+
 - **Base color**: Slate（推奨）
 - **Style**: New York
 - **CSS variables**: 有効
 - **Tailwind CSS**: v4（自動検出）
 
 ### 1.3 生成されるファイル
+
 - `components.json` - shadcn/uiの設定ファイル
 - `src/lib/utils.ts` - ユーティリティ関数
 
 ## 2. コンポーネントの追加
 
 ### 2.1 基本コンポーネントの追加
+
 以下のコマンドで必要なコンポーネントを追加します：
 
 ```bash
@@ -51,7 +57,9 @@ npx shadcn@latest add separator
 ```
 
 ### 2.2 生成されるファイル
+
 各コンポーネントは `src/components/ui/` ディレクトリに生成されます：
+
 - `dialog.tsx`
 - `label.tsx`
 - `radio-group.tsx`
@@ -62,25 +70,31 @@ npx shadcn@latest add separator
 ## 3. ダークモードの設定
 
 ### 3.1 next-themesのインストール
+
 ```bash
 npm install next-themes
 ```
 
 ### 3.2 ThemeProviderコンポーネントの作成
+
 `src/components/theme-provider.tsx` を作成：
 
 ```tsx
-"use client"
+"use client";
 
-import * as React from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+export function ThemeProvider({
+  children,
+  ...props
+}: React.ComponentProps<typeof NextThemesProvider>) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 ```
 
 ### 3.3 layout.tsxの更新
+
 `src/app/layout.tsx` を以下のように更新：
 
 ```tsx
@@ -129,6 +143,7 @@ export default function RootLayout({
 ```
 
 **重要な変更点：**
+
 - `html`タグに `suppressHydrationWarning` を追加
 - `ThemeProvider` で `body` の内容を囲む
 - 設定オプション：
@@ -140,30 +155,32 @@ export default function RootLayout({
 ### 3.4 テーマ切り替えボタンの追加
 
 #### 3.4.1 dropdown-menuコンポーネントの追加
+
 ```bash
 npx shadcn@latest add dropdown-menu
 ```
 
 #### 3.4.2 ThemeToggleコンポーネントの作成
+
 `src/components/theme-toggle.tsx` を作成：
 
 ```tsx
-"use client"
+"use client";
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -186,11 +203,12 @@ export function ThemeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 ```
 
 ### 3.5 ページでの使用例
+
 `src/app/page.tsx` でThemeToggleを使用：
 
 ```tsx
@@ -204,7 +222,7 @@ export default function Home() {
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
-      
+
       {/* 既存のコンテンツ */}
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         {/* ... */}
@@ -217,16 +235,24 @@ export default function Home() {
 ## 4. コンポーネントの使用方法
 
 ### 4.1 基本的なインポート
+
 ```tsx
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 ```
 
 ### 4.2 使用例
+
 ```tsx
 // ボタン
 <Button variant="default">クリック</Button>
@@ -254,6 +280,7 @@ import { Separator } from "@/components/ui/separator"
 ## 5. 設定ファイル
 
 ### 5.1 components.json
+
 ```json
 {
   "$schema": "https://ui.shadcn.com/schema.json",
@@ -281,21 +308,25 @@ import { Separator } from "@/components/ui/separator"
 ## 6. トラブルシューティング
 
 ### 6.1 よくある問題
+
 - **Hydrationエラー**: `suppressHydrationWarning` が `html` タグに設定されているか確認
 - **テーマが切り替わらない**: `ThemeProvider` が正しく設定されているか確認
 - **コンポーネントが見つからない**: `@/components/ui/` のパスが正しいか確認
 
 ### 6.2 追加のコンポーネント
+
 新しいコンポーネントを追加する場合：
+
 ```bash
 npx shadcn@latest add [component-name]
 ```
 
 ## 7. 参考リンク
+
 - [shadcn/ui公式ドキュメント](https://ui.shadcn.com/)
 - [next-themes公式ドキュメント](https://github.com/pacocoursey/next-themes)
 - [Tailwind CSS公式ドキュメント](https://tailwindcss.com/)
 
 ---
 
-このマニュアルに従って設定することで、美しく一貫性のあるUIコンポーネントとダークモード機能を持つNext.jsアプリケーションを作成できます。 
+このマニュアルに従って設定することで、美しく一貫性のあるUIコンポーネントとダークモード機能を持つNext.jsアプリケーションを作成できます。

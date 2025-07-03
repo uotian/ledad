@@ -40,4 +40,4 @@ npm run dev
 
 ---
 
-以上でNext.js（App Router）+ TypeScript + Tailwind CSSのセットアップは完了です。 
+以上でNext.js（App Router）+ TypeScript + Tailwind CSSのセットアップは完了です。

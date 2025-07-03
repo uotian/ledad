@@ -21,14 +21,25 @@ export default function TextInput({ langFrom, langTo, user }: Props) {
     const text = value.trim();
     if (text && e.key === "Enter" && !composing) {
       if (e.shiftKey) {
-        setTranslated0(translated0 ? translated0 + "\nTranslating..." : "Translating...");
+        setTranslated0(
+          translated0 ? translated0 + "\nTranslating..." : "Translating..."
+        );
         const translated = await translateAPI({ text, langFrom, langTo });
         setTranslated0(translated);
       } else {
         e.preventDefault();
-        setTranslated0(translated0 ? translated0 + "\nTranslating and sending..." : "Translating and sending...");
+        setTranslated0(
+          translated0
+            ? translated0 + "\nTranslating and sending..."
+            : "Translating and sending..."
+        );
         const timestamp = Math.floor(Date.now() / 1000);
-        const messageId = addMessage({ user, timestamp, text, status: "translating" });
+        const messageId = addMessage({
+          user,
+          timestamp,
+          text,
+          status: "translating",
+        });
         setValue("");
         const translated = await translateAPI({ text, langFrom, langTo });
         updateMessage(messageId, { translated, status: "completed" });
@@ -39,14 +50,14 @@ export default function TextInput({ langFrom, langTo, user }: Props) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full">
-      <div className="flex-1 bg-muted/60 min-h-8 md:min-h-16 px-3 py-2 border border-foreground/60 rounded-md border-b-0 md:border-1 md:border-r-0 rounded-b-none md:rounded-xl md:rounded-r-none overflow-y-auto text-xs md:text-sm whitespace-pre-wrap">
-        {translated0 || "Translation result can be checked"}
+    <div className="flex flex-col lg:flex-row w-full">
+      <div className="flex-1 bg-static2 text-static2 opacity-80 min-h-8 lg:min-h-16 px-3 py-2 border border-foreground/60 rounded-md border-b-0 lg:border-1 lg:border-r-0 rounded-b-none lg:rounded-xl lg:rounded-r-none overflow-y-auto text-xs lg:text-sm whitespace-pre-wrap">
+        {translated0 || "Translated output"}
       </div>
       <Textarea
         ref={textareaRef}
         placeholder="Please input"
-        className="flex-1 bg-white/60 min-h-8 md:min-h-16 resize-none border border-foreground/60 md:border-1 rounded-t-none md:rounded-xl md:rounded-l-none text-xs md:text-sm "
+        className="flex-1 bg-static1 text-static1 opacity-80 placeholder:text-stone-700  min-h-8 lg:min-h-16 resize-none border border-foreground/60 lg:border-1 rounded-t-none lg:rounded-xl lg:rounded-l-none text-xs lg:text-sm "
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}

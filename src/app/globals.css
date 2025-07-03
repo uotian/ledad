@@ -145,7 +145,13 @@
     @apply border-border outline-ring/50;
   }
   html {
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.08) 100%), url("/image.png");
+    background:
+      linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(0, 0, 0, 0.08) 100%
+      ),
+      url("/image.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -159,5 +165,31 @@
     min-height: 100vh;
     position: relative;
     z-index: 2;
+  }
+}
+
+@layer utilities {
+  .text-2xs {
+    font-size: 0.675rem; /* 8px */
+    line-height: 0.75rem; /* 12px */
+  }
+  .text-3xs {
+    font-size: 0.5rem; /* 8px */
+    line-height: 0.5rem; /* 12px */
+  }
+
+  /* 静的色のユーティリティクラス */
+  .bg-static1 {
+    background-color: oklch(80% 0.04 90) !important;
+  }
+  .bg-static2 {
+    background-color: oklch(35% 0.02 90) !important;
+  }
+
+  .text-static1 {
+    color: oklch(35% 0.02 90) !important;
+  }
+  .text-static2 {
+    color: oklch(80% 0.04 90) !important;
   }
 }
