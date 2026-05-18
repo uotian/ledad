@@ -1,11 +1,11 @@
 import { exchangeSDP } from "@/lib/transcript";
 import type { Lang } from "@/lib/types";
-import type { Langs, Refs, SetStates } from "../../types";
+import type { ItemLastRef, Langs, Refs, SetError, SetItems, SetStatus } from "../../types";
 import { cleanup } from "../../utils";
 import { onMessage } from "./on-message";
 
-export async function start({ refs, langs, setStates }: { refs: Refs; langs: Langs; setStates: SetStates }) {
-  const { setError, setStatus } = setStates;
+export async function start({ refs, langs, setStatus, setError, setItems, itemLast }: { refs: Refs; langs: Langs; setStatus: SetStatus; setError: SetError; setItems: SetItems; itemLast: ItemLastRef }) {
+  itemLast.current = null;
   setStatus("requesting");
   setError(null);
   try {
@@ -14,7 +14,7 @@ export async function start({ refs, langs, setStates }: { refs: Refs; langs: Lan
     const connection = setupConnection(refs.connection, mic);
     const channel = setupChannel(refs, connection);
     channel.addEventListener("open", () => { if (refs.channel.current === channel) setStatus("listening"); });
-    channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, setStates); });
+    channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, itemLast, setError, setItems); });
     channel.addEventListener("error", () => { if (refs.channel.current === channel) setError("接続中にエラーが発生しました。もう一度開始してください。"); });
     await connect(connection, langs.from);
   } catch (error) {

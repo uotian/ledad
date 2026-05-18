@@ -7,13 +7,13 @@ export type Refs = {
   channel: RefObject<RTCDataChannel | null>;
 };
 
-export type SetStates = {
-  setStatus: Dispatch<SetStateAction<Status>>;
-  setError: Dispatch<SetStateAction<string | null>>;
-  setItems: Dispatch<SetStateAction<Item[]>>;
-};
+export type ItemLastRef = RefObject<Item | null>;
 
 export type Langs = {
   from: Lang;
   to: Lang;
 };
+
+export type SetStatus = Dispatch<SetStateAction<Status>>;
+export type SetError = Dispatch<SetStateAction<string | null>>;
+export type SetItems = Dispatch<SetStateAction<Item[]>>;

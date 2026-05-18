@@ -18,6 +18,7 @@ export type RealtimeEvent = {
   event_id?: string;
   item_id?: string;
   type?: string;
+  delta?: string;
   transcript?: string;
   error?: {
     message?: string;
