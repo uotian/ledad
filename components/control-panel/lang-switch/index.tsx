@@ -44,9 +44,7 @@ function SelectLang({ className, label, disabled, onChange, value }: { className
       onChange={(event) => onChange(event.target.value as Lang)}
     >
       {LANGS.map((lang) => (
-        <option key={lang} value={lang}>
-          {lang}
-        </option>
+        <option key={lang} value={lang}>{lang}</option>
       ))}
     </select>
   );

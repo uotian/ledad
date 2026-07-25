@@ -6,13 +6,13 @@ export function onMessage(message: MessageEvent<string>, langs: Langs, itemLast:
   try {
     const event = JSON.parse(message.data) as RealtimeEvent;
     if (event.type === "error") {
-      setError(event.error?.message ?? "Realtime APIでエラーが発生しました。");
+      setError(event.error?.message ?? "Realtime API error.");
     } else if (event.type === "conversation.item.input_audio_transcription.delta") {
-      console.log(event)
+      // console.log(event)
       handleDelta(event, langs, itemLast, setItems);
     }
   } catch {
-    setError("音声認識イベントの読み取りに失敗しました。");
+    setError("Could not read speech event.");
   }
 }
 
@@ -35,7 +35,7 @@ function handleDelta(event: RealtimeEvent, langs: Langs, itemLast: ItemLastRef, 
 function splitDelta(delta: string) {
   const charsEnd = [".", "。", "?", "？", "!", "！"];
   const charsTranslate = [...charsEnd, ",", "、"];
-  const deltas = [];
+  const deltas: { text: string; isEnd: boolean; shouldTranslate: boolean }[] = [];
   let text = "";
   for (const char of delta) {
     text += char;

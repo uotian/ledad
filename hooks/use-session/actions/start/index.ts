@@ -15,13 +15,13 @@ export async function start({ refs, langs, setStatus, setError, setItems, itemLa
     const channel = setupChannel(refs, connection);
     channel.addEventListener("open", () => { if (refs.channel.current === channel) setStatus("listening"); });
     channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, itemLast, setError, setItems); });
-    channel.addEventListener("error", () => { if (refs.channel.current === channel) setError("接続中にエラーが発生しました。もう一度開始してください。"); });
+    channel.addEventListener("error", () => { if (refs.channel.current === channel) setError("Connection error. Please start again."); });
     await connect(connection, langs.from);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     cleanup(refs);
     setStatus("idle");
-    setError(`開始に失敗しました: ${message}`);
+    setError(`Could not start: ${message}`);
   }
 }
 
@@ -46,7 +46,7 @@ function setupChannel(refs: Refs, connection: RTCPeerConnection) {
 
 async function connect(connection: RTCPeerConnection, langFrom: Lang) {
   const offer = await connection.createOffer();
-  if (!offer.sdp) throw new Error("Realtime接続用のSDPを作成できませんでした。");
+  if (!offer.sdp) throw new Error("Could not create SDP for Realtime connection.");
   await connection.setLocalDescription(offer);
   const answer = await exchangeSDP({ langFrom, sdp: offer.sdp });
   await connection.setRemoteDescription({ type: "answer", sdp: answer });

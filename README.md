@@ -1,6 +1,26 @@
 # ledad
 
-Realtime speech transcription and translation web app.
+[日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
+
+Browser-based web app for real-time speech transcription and translation using microphone input.
+
+## Features
+
+- Browser microphone input
+- Real-time speech transcription
+- Translation of transcribed text
+- Source and target language switching
+- Start, stop, and clear session controls
+
+## Usage
+
+Choose the source and target languages in the control panel at the bottom of the screen.
+
+Press `Start` to request microphone permission and start transcription. When speech is recognized, transcription and translation appear in the main panel.
+
+Press `Stop` to stop microphone input and the Realtime connection.
+
+Press `Clear` to clear the displayed history.
 
 ## Requirements
 
@@ -9,33 +29,31 @@ Realtime speech transcription and translation web app.
 
 ## Setup
 
-Create `.env.local`.
+Create `.env.local` and set your OpenAI API key.
 
 ```bash
 OPENAI_API_KEY=your_api_key
 ```
 
-Install dependencies and start the app.
+Install dependencies.
 
 ```bash
 npm install
-npm run dev
 ```
 
-Open http://localhost:3000.
-
-## What It Does
-
-- Captures microphone audio in the browser.
-- Connects to OpenAI Realtime over WebRTC for speech transcription.
-- Sends completed transcripts to OpenAI for translation.
-- Lets you switch source and target languages before starting a session.
-
-## Scripts
+Start the development server.
 
 ```bash
 npm run dev
-npm run lint
-npm run typecheck
-npm run build
 ```
+
+Open this URL in your browser.
+
+```txt
+http://localhost:3000
+```
+
+## Notes
+
+- You need to allow microphone access in the browser.
+- OpenAI API usage may incur costs.
