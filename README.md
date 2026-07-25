@@ -2,7 +2,15 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
+![ledad real-time transcription and translation demo](docs/assets/ledad-demo.gif)
+
 Browser-based web app for real-time speech transcription and translation using microphone input.
+
+## How it works
+
+The browser streams microphone audio to the OpenAI Realtime API over WebRTC. Next.js Route Handlers negotiate the Realtime connection and send transcript text to the Responses API for translation, keeping the OpenAI API key on the server. The audio buffer is committed automatically every 15 seconds so longer speech is finalized and translated without manual input.
+
+Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Responses APIs.
 
 ## Features
 

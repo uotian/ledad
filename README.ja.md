@@ -2,7 +2,15 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
+![ledadのリアルタイム文字起こし・翻訳デモ](docs/assets/ledad-demo.gif)
+
 ブラウザのマイク入力を使って、音声をリアルタイムに文字起こしし、別言語へ翻訳するWebアプリです。
+
+## 仕組み
+
+ブラウザからWebRTCでOpenAI Realtime APIへ音声を送り、文字起こしイベントをリアルタイムに受信します。Realtime接続の確立と文字起こし結果の翻訳にはNext.jsのRoute Handlerを使用し、OpenAI APIキーはサーバー側だけで扱います。長い発話も手動操作なしで確定・翻訳できるよう、音声バッファを15秒ごとに自動で確定します。
+
+使用技術：Next.js 16、React 19、TypeScript、OpenAI Realtime API／Responses API
 
 ## 主な機能
 

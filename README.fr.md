@@ -2,7 +2,15 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
+![Démonstration de la transcription et de la traduction en temps réel de ledad](docs/assets/ledad-demo.gif)
+
 Application web qui utilise le microphone du navigateur pour transcrire la parole en temps réel et la traduire dans une autre langue.
+
+## Fonctionnement
+
+Le navigateur transmet le son du microphone à l’API OpenAI Realtime via WebRTC. Des Route Handlers Next.js établissent la connexion Realtime et envoient le texte transcrit à l’API Responses pour le traduire, tout en conservant la clé API OpenAI côté serveur. Le tampon audio est validé automatiquement toutes les 15 secondes afin que les prises de parole longues soient finalisées et traduites sans intervention manuelle.
+
+Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Realtime et Responses.
 
 ## Fonctionnalités principales
 

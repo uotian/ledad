@@ -2,7 +2,15 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
+![ledad 实时语音转写和翻译演示](docs/assets/ledad-demo.gif)
+
 这是一个使用浏览器麦克风输入，将语音实时转写并翻译成其他语言的 Web 应用。
+
+## 工作原理
+
+浏览器通过 WebRTC 将麦克风音频传输至 OpenAI Realtime API。Next.js Route Handler 负责建立 Realtime 连接，并将转写文本发送至 Responses API 进行翻译，OpenAI API 密钥仅保留在服务器端。音频缓冲区每 15 秒自动提交一次，使较长的语音无需手动操作即可完成转写和翻译。
+
+使用技术：Next.js 16、React 19、TypeScript，以及 OpenAI Realtime API 和 Responses API。
 
 ## 主要功能
 
