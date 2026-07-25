@@ -10,7 +10,7 @@ Application web qui utilise le microphone du navigateur pour transcrire la parol
 - Transcription vocale en temps réel
 - Traduction du texte transcrit
 - Changement de la langue source et de la langue cible
-- Commandes pour démarrer, arrêter et effacer une session
+- Commandes pour démarrer, arrêter, valider et effacer une session
 
 ## Utilisation
 
@@ -19,6 +19,8 @@ Choisissez la langue source et la langue cible dans le panneau de contrôle en b
 Appuyez sur `Start` pour demander l'autorisation d'utiliser le microphone et commencer la transcription. Quand la parole est reconnue, la transcription et la traduction s'affichent dans le panneau principal.
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
+
+Appuyez sur `Commit` pour valider le tampon audio actuel et finaliser la transcription en cours pour la traduction. Pendant une session, le tampon audio est également validé automatiquement toutes les 15 secondes.
 
 Appuyez sur `Clear` pour effacer l'historique affiché.
 

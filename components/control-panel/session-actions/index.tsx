@@ -1,26 +1,39 @@
-import { Eraser, Play, Square } from "lucide-react";
+import { ArrowDownToLine, Eraser, Play, Square } from "lucide-react";
 import type { Session } from "@/hooks/use-session";
 import { Button } from "@/components/control-panel/session-actions/button";
 import { cn } from "@/lib/utils";
 
 export function SessionActions({ session, className }: { session: Session; className?: string }) {
+  const isActive = session.status !== "idle";
+
   return (
     <div className={cn("flex items-center gap-2", className)}>
+      {isActive ? (
+        <Button
+          className="bg-yellow-400/50 text-white/75 hover:bg-yellow-400/70"
+          disabled={session.status === "idle"}
+          icon={Square}
+          iconClassName="fill-current"
+          label="Stop"
+          onClick={session.stop}
+          variant="secondary"
+        />
+      ) : (
+        <Button
+          className="bg-green-400/30 text-white/75 hover:bg-green-400/60"
+          disabled={session.status !== "idle"}
+          icon={Play}
+          iconClassName="fill-current"
+          label="Start"
+          onClick={session.start}
+        />
+      )}
       <Button
-        className="bg-green-400/30 text-white/75 hover:bg-green-400/60"
-        disabled={session.status !== "idle"}
-        icon={Play}
-        iconClassName="fill-current"
-        label="Start"
-        onClick={session.start}
-      />
-      <Button
-        className="bg-yellow-400/50 text-white/75 hover:bg-yellow-400/70"
-        disabled={session.status === "idle"}
-        icon={Square}
-        iconClassName="fill-current"
-        label="Stop"
-        onClick={session.stop}
+        className="bg-blue-400/30 text-white/75 hover:bg-blue-400/60"
+        disabled={session.status !== "listening"}
+        icon={ArrowDownToLine}
+        label="Commit"
+        onClick={session.commit}
         variant="secondary"
       />
       <Button

@@ -17,6 +17,8 @@ export type Item = {
 export type RealtimeEvent = {
   event_id?: string;
   item_id?: string;
+  content_index?: number;
+  obfuscation?: string;
   type?: string;
   delta?: string;
   transcript?: string;

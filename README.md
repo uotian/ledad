@@ -10,7 +10,7 @@ Browser-based web app for real-time speech transcription and translation using m
 - Real-time speech transcription
 - Translation of transcribed text
 - Source and target language switching
-- Start, stop, and clear session controls
+- Start, stop, commit, and clear session controls
 
 ## Usage
 
@@ -19,6 +19,8 @@ Choose the source and target languages in the control panel at the bottom of the
 Press `Start` to request microphone permission and start transcription. When speech is recognized, transcription and translation appear in the main panel.
 
 Press `Stop` to stop microphone input and the Realtime connection.
+
+Press `Commit` to commit the current audio buffer and finalize the current transcript for translation. During a session, the audio buffer is also committed automatically every 15 seconds.
 
 Press `Clear` to clear the displayed history.
 

@@ -7,9 +7,16 @@ export function onMessage(message: MessageEvent<string>, langs: Langs, itemLast:
     const event = JSON.parse(message.data) as RealtimeEvent;
     if (event.type === "error") {
       setError(event.error?.message ?? "Realtime API error.");
-    } else if (event.type === "conversation.item.input_audio_transcription.delta") {
-      // console.log(event)
-      handleDelta(event, langs, itemLast, setItems);
+    } else {
+      const eventLog = { ...event };
+      delete eventLog.item_id;
+      delete eventLog.event_id;
+      delete eventLog.obfuscation;
+      delete eventLog.content_index;
+      console.log(eventLog);
+      if (event.type === "conversation.item.input_audio_transcription.delta") {
+        handleDelta(event, langs, itemLast, setItems);
+      }
     }
   } catch {
     setError("Could not read speech event.");
@@ -22,9 +29,8 @@ function handleDelta(event: RealtimeEvent, langs: Langs, itemLast: ItemLastRef, 
       const item = updateTranscript(delta.text, itemLast, setItems);
       if (item) {
         if (delta.isEnd) {
-          itemLast.current = null;
-          void updateTranslation(item, langs, itemLast, setItems);
-        } else if (delta.shouldTranslate) {
+          finalizeTranscript(itemLast, langs, setItems);
+        } else if (delta.shouldTranslate || event.delta === " ") {
           void updateTranslation(item, langs, itemLast, setItems);
         }
       }
@@ -63,7 +69,15 @@ function updateTranscript(delta: string, itemLast: ItemLastRef, setItems: SetIte
   return itemNew;
 }
 
-async function updateTranslation(item: Item, langs: Langs, itemLast: ItemLastRef, setItems: SetItems) {
+export function finalizeTranscript(itemLast: ItemLastRef, langs: Langs, setItems: SetItems) {
+  const item = itemLast.current;
+  if (item) {
+    itemLast.current = null;
+    void updateTranslation(item, langs, itemLast, setItems);
+  }
+}
+
+export async function updateTranslation(item: Item, langs: Langs, itemLast: ItemLastRef, setItems: SetItems) {
   const translation = await translate({ langFrom: langs.from, langTo: langs.to, text: item.transcript });
   if (itemLast.current?.id === item.id) {
     itemLast.current = { ...itemLast.current, translation };

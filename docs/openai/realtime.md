@@ -190,7 +190,7 @@ include: ["item.input_audio_transcription.logprobs"]
 
 クライアントからサーバーに送るイベント。WebRTCでは DataChannel 経由で送る。
 
-このアプリでは今のところ明示的な client event はほぼ送っていない。WebRTC の音声トラック自体が入力音声として流れている。
+このアプリでは手動Commit時に client event を送る。入力音声自体はWebRTCの音声トラックとして流れている。
 
 ### input_audio_buffer.append
 
@@ -315,7 +315,7 @@ WebRTCでは音声トラックを送っているため、このアプリでは�
 
 commit によって作られた user message item に関するIDが返る。
 
-このアプリでは現時点で手動commitを使わない方針なので、通常は見ない。
+このアプリでは、手動Commitボタンの送信に対するサーバー応答として存在する。表示Itemの確定には使わない。
 
 ### input_audio_buffer.cleared
 
@@ -419,7 +419,9 @@ crypto.randomUUID()
 
 `delta: "."` が来たからといって `input_audio_buffer.commit` を送る必要はない。
 
-`commit` は音声バッファ確定の制御イベントであり、文表示の区切りとは別物。今の用途では、まずdeltaをアプリ側で区切る。
+`commit` は音声バッファ確定の制御イベントであり、文表示の区切りとは別物。
+
+このアプリでは、会話の切れ目など任意のタイミングで手動Commitボタンから送る。表示は引き続きdeltaをアプリ側で区切り、`completed` が来る前提にはしない。
 
 ## 現在の最小セッション設定
 
