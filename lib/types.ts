@@ -8,6 +8,11 @@ export const LANGS = ["en", "ja", "zh", "fr"] as const;
 
 export type Lang = (typeof LANGS)[number];
 
+export type Settings = {
+  prompt: string;
+  keywords: string[];
+};
+
 export type Item = {
   id: string;
   transcript: string;

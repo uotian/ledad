@@ -49,6 +49,7 @@ function createArgs() {
   return {
     refs,
     langs: { from: "en" as const, to: "ja" as const },
+    settings: { prompt: "An international meeting.", keywords: ["GSP"] },
     setStatus: vi.fn(),
     setError: vi.fn(),
     setItems: vi.fn(),
@@ -76,7 +77,7 @@ describe("session start", () => {
     expect(args.setStatus).toHaveBeenNthCalledWith(2, "connecting");
     expect(browser.getUserMedia).toHaveBeenCalledWith({ audio: true });
     expect(browser.connection.addTrack).toHaveBeenCalled();
-    expect(exchangeSDP).toHaveBeenCalledWith({ langFrom: "en", sdp: "offer-sdp" });
+    expect(exchangeSDP).toHaveBeenCalledWith({ langFrom: "en", sdp: "offer-sdp", settings: args.settings });
     expect(browser.connection.setRemoteDescription).toHaveBeenCalledWith({ type: "answer", sdp: "answer-sdp" });
 
     browser.listeners.get("open")?.(new Event("open"));

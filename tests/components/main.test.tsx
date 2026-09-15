@@ -31,12 +31,14 @@ vi.mock("@/hooks/use-session", () => ({
 vi.mock("next/font/google", () => ({ Outfit: () => ({ className: "outfit" }) }));
 
 import { Main } from "@/components/main";
+import { defaultSettings } from "@/lib/settings";
 
 describe("Main", () => {
   it("wires language state into the session and renders the application shell", () => {
     render(<Main />);
 
-    expect(state.useSession).toHaveBeenCalledWith("fr", "zh");
+    expect(state.useSession).toHaveBeenCalledWith("fr", "zh", defaultSettings);
+    expect(screen.getByRole("button", { name: "Settings" })).toBeEnabled();
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
     expect(screen.getByText("v0.2.2")).toBeInTheDocument();
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();

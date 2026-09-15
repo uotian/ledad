@@ -23,6 +23,8 @@ vi.mock("@/hooks/use-session/actions/start/on-message", () => ({
 
 import { useSession } from "@/hooks/use-session";
 
+const settings = { prompt: "A meeting.", keywords: ["GSP"] };
+
 describe("useSession", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -40,10 +42,11 @@ describe("useSession", () => {
   });
 
   it("starts, periodically commits, and translates the active item", async () => {
-    const { result } = renderHook(() => useSession("en", "ja"));
+    const { result } = renderHook(() => useSession("en", "ja", settings));
 
     await act(async () => result.current.start());
     expect(result.current.status).toBe("listening");
+    expect(mocks.start).toHaveBeenCalledWith(expect.objectContaining({ settings }));
 
     act(() => vi.advanceTimersByTime(15_000));
 
@@ -57,7 +60,7 @@ describe("useSession", () => {
   });
 
   it("delegates manual actions and cancels timers when stopped", async () => {
-    const { result, unmount } = renderHook(() => useSession("fr", "zh"));
+    const { result, unmount } = renderHook(() => useSession("fr", "zh", settings));
     await act(async () => result.current.start());
 
     act(() => result.current.commit());
@@ -80,7 +83,7 @@ describe("useSession", () => {
   });
 
   it("stops automatically after thirty minutes", async () => {
-    const { result } = renderHook(() => useSession("en", "ja"));
+    const { result } = renderHook(() => useSession("en", "ja", settings));
     await act(async () => result.current.start());
 
     act(() => vi.advanceTimersByTime(30 * 60 * 1000));
