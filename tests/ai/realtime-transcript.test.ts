@@ -24,9 +24,10 @@ describe("Realtime SDP exchange", () => {
       audio: {
         input: {
           transcription: {
-            model: "gpt-realtime-whisper",
-            language: "zh",
+            model: "gpt-live-transcribe",
+            languages: ["zh"],
           },
+          turn_detection: null,
         },
       },
     });

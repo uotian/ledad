@@ -8,15 +8,15 @@ export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang)
     type: "transcription",
     audio: {
       input: {
-        // format: { type: "audio/pcm", rate: 24000 },
-        noise_reduction: { type: "far_field" },
+        noise_reduction: { type: "far_field" },  // Options: { type: "near_field" } (close mic) | { type: "far_field" } (laptop/conference mic) | null (off).
         transcription: {
-          model: "gpt-realtime-whisper",
-          language: langFrom,
-          // delay: "minimal",
-          // prompt: "Expect words related to international news.", // Not supported with gpt-realtime-whisper.
+          model: "gpt-live-transcribe",
+          languages: [langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
+          delay: "minimal",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
+          prompt: "", // Optional background context; supported.
+          keywords: [], // Optional spelling hints, not required output; no <, >, CR, or LF.
         },
-        // turn_detection: { type: "server_vad" }, // Not supported with gpt-realtime-whisper.
+        turn_detection: null, // turn_detection: { type: "server_vad" }, // Currently times out with gpt-live-transcribe.
       },
     },
   }));
