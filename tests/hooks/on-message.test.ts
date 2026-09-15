@@ -107,4 +107,16 @@ describe("Realtime message handling", () => {
     expect(translate).not.toHaveBeenCalled();
     expect(state.items).toEqual([]);
   });
+
+  it("preserves the previous translation when a later request fails", async () => {
+    const item = { id: "active", transcript: "Hello world", translation: "こんにちは" };
+    const state = createState([item]);
+    state.itemLast.current = item;
+    translate.mockResolvedValueOnce(null);
+
+    await updateTranslation(item, { from: "en", to: "ja" }, state.itemLast, state.setItems);
+
+    expect(state.items).toEqual([item]);
+    expect(state.itemLast.current).toEqual(item);
+  });
 });

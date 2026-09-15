@@ -79,12 +79,14 @@ export function finalizeTranscript(itemLast: ItemLastRef, langs: Langs, setItems
 
 export async function updateTranslation(item: Item, langs: Langs, itemLast: ItemLastRef, setItems: SetItems) {
   const translation = await translate({ langFrom: langs.from, langTo: langs.to, text: item.transcript });
-  if (itemLast.current?.id === item.id) {
-    itemLast.current = { ...itemLast.current, translation };
+  if (translation !== null) {
+    if (itemLast.current?.id === item.id) {
+      itemLast.current = { ...itemLast.current, translation };
+    }
+    setItems((itemsCurrent) =>
+      itemsCurrent.map((itemCurrent) =>
+        itemCurrent.id === item.id ? { ...itemCurrent, translation } : itemCurrent,
+      ),
+    );
   }
-  setItems((itemsCurrent) =>
-    itemsCurrent.map((itemCurrent) =>
-      itemCurrent.id === item.id ? { ...itemCurrent, translation } : itemCurrent,
-    ),
-  );
 }

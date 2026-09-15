@@ -1,11 +1,25 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { translate } from "@/lib/translate";
+
+beforeEach(() => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+});
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe("browser translation client", () => {
+  it.each(["", " \n "])("does not request a translation for blank text", async (text) => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(translate({ langFrom: "ja", langTo: "en", text })).resolves.toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
   it("posts text with both languages and returns the translation", async () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json({ translation: "こんにちは" }));
     vi.stubGlobal("fetch", fetchMock);
@@ -25,15 +39,17 @@ describe("browser translation client", () => {
   it.each([
     Response.json({ error: "bad request" }, { status: 400 }),
     Response.json({}, { status: 200 }),
-  ])("returns a stable fallback for an unusable response", async (response) => {
+  ])("returns no translation for an unusable response", async (response) => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
 
-    await expect(translate({ langFrom: "ja", langTo: "en", text: "テスト" })).resolves.toBe("Translation failed.");
+    await expect(translate({ langFrom: "ja", langTo: "en", text: "テスト" })).resolves.toBeNull();
+    expect(console.error).toHaveBeenCalled();
   });
 
-  it("returns a stable fallback for a network error", async () => {
+  it("returns no translation for a network error", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
 
-    await expect(translate({ langFrom: "ja", langTo: "en", text: "テスト" })).resolves.toBe("Translation failed.");
+    await expect(translate({ langFrom: "ja", langTo: "en", text: "テスト" })).resolves.toBeNull();
+    expect(console.error).toHaveBeenCalled();
   });
 });
