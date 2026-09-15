@@ -48,7 +48,7 @@ For the lowest-latency streaming transcription path, use [`gpt-realtime-whisper`
       </td>
       <td>Existing Whisper integrations.</td>
       <td>
-        Not natively streaming in the same way as 
+        Not natively streaming in the same way as
         <code>gpt-realtime-whisper</code>.
       </td>
     </tr>
@@ -230,7 +230,7 @@ When log probabilities are available, request them with `include`:
 ## Related guides
 
 <a href="/api/docs/guides/realtime">
-  
+
 
 <span slot="icon">
       </span>
@@ -240,7 +240,7 @@ When log probabilities are available, request them with `include`:
 </a>
 
 <a href="/api/docs/guides/realtime-translation">
-  
+
 
 <span slot="icon">
       </span>
@@ -250,7 +250,7 @@ When log probabilities are available, request them with `include`:
 </a>
 
 <a href="/api/docs/guides/realtime-websocket">
-  
+
 
 <span slot="icon">
       </span>
@@ -260,7 +260,7 @@ When log probabilities are available, request them with `include`:
 </a>
 
 <a href="/api/docs/guides/realtime-vad">
-  
+
 
 <span slot="icon">
       </span>

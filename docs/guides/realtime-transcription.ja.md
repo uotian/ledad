@@ -229,7 +229,7 @@ Keywords: metoprolol, atorvastatin, A1C, systolic, diastolic
 ## 関連ガイド
 
 <a href="/api/docs/guides/realtime">
-  
+
 
 <span slot="icon">
       </span>
@@ -239,7 +239,7 @@ Keywords: metoprolol, atorvastatin, A1C, systolic, diastolic
 </a>
 
 <a href="/api/docs/guides/realtime-translation">
-  
+
 
 <span slot="icon">
       </span>
@@ -249,7 +249,7 @@ Keywords: metoprolol, atorvastatin, A1C, systolic, diastolic
 </a>
 
 <a href="/api/docs/guides/realtime-websocket">
-  
+
 
 <span slot="icon">
       </span>
@@ -259,7 +259,7 @@ Keywords: metoprolol, atorvastatin, A1C, systolic, diastolic
 </a>
 
 <a href="/api/docs/guides/realtime-vad">
-  
+
 
 <span slot="icon">
       </span>
