@@ -22,7 +22,7 @@ describe("settings", () => {
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "隋の楊堅について。" } });
     fireEvent.change(screen.getByLabelText("Keywords"), { target: { value: "楊堅\n 隋 \n楊堅\n" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ textSize: "M", langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
 
     first.unmount();
     render(<Settings />);
@@ -79,6 +79,19 @@ describe("settings", () => {
     openSettings();
     expect(screen.getByLabelText("Source language")).toHaveValue("ja");
     expect(screen.getByLabelText("Translation language")).toHaveValue("fr");
+  });
+
+  it("saves the text size and restores it when reopened", () => {
+    const first = render(<Settings />);
+    openSettings();
+    expect(screen.getByLabelText("Text size")).toHaveValue("M");
+    fireEvent.change(screen.getByLabelText("Text size"), { target: { value: "L" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ textSize: "L" });
+    first.unmount();
+    render(<Settings />);
+    openSettings();
+    expect(screen.getByLabelText("Text size")).toHaveValue("L");
   });
 
 });

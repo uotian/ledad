@@ -48,7 +48,7 @@ function createArgs() {
   };
   return {
     refs,
-    settings: { langFrom: "en" as const, langTo: "ja" as const, prompt: "An international meeting.", keywords: ["GSP"] },
+    settings: { textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, prompt: "An international meeting.", keywords: ["GSP"] },
     setStatus: vi.fn(),
     setError: vi.fn(),
     setItems: vi.fn(),

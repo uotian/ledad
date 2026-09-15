@@ -24,7 +24,7 @@ vi.mock("@/hooks/use-session/actions/start/on-message", () => ({
 import { useSession } from "@/hooks/use-session";
 import type { Settings } from "@/lib/types";
 
-const settings = { langFrom: "en" as const, langTo: "ja" as const, prompt: "A meeting.", keywords: ["GSP"] };
+const settings = { textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, prompt: "A meeting.", keywords: ["GSP"] };
 
 describe("useSession", () => {
   beforeEach(() => {

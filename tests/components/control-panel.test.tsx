@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ControlPanel } from "@/components/control-panel";
 import type { Session } from "@/hooks/use-session";
+import { defaultSettings } from "@/lib/settings";
 
 function createSession(overrides: Partial<Session> = {}): Session {
   return {
@@ -22,10 +23,11 @@ describe("ControlPanel", () => {
     const user = userEvent.setup();
     const session = createSession();
 
-    render(<ControlPanel session={session} />);
+    render(<ControlPanel session={session} settings={defaultSettings} />);
 
     expect(screen.getByRole("button", { name: "Commit" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Clear" })).not.toBeInTheDocument();
+    expect(screen.getByText("en → ja")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Start" }));
     expect(session.start).toHaveBeenCalledOnce();
   });
@@ -37,18 +39,16 @@ describe("ControlPanel", () => {
       items: [{ id: "2026-01-01T00:00:00.000Z", transcript: "Hello", translation: "こんにちは" }],
     });
 
-    render(<ControlPanel session={session} />);
+    render(<ControlPanel session={session} settings={defaultSettings} />);
 
     await user.click(screen.getByRole("button", { name: "Commit" }));
     await user.click(screen.getByRole("button", { name: "Stop" }));
-    await user.click(screen.getByRole("button", { name: "Clear" }));
     expect(session.commit).toHaveBeenCalledOnce();
     expect(session.stop).toHaveBeenCalledOnce();
-    expect(session.clear).toHaveBeenCalledOnce();
   });
 
   it("shows a session error next to its status", () => {
-    render(<ControlPanel session={createSession({ status: "requesting", error: "Microphone denied" })} />);
+    render(<ControlPanel session={createSession({ status: "requesting", error: "Microphone denied" })} settings={defaultSettings} />);
 
     expect(screen.getByText("requesting")).toBeInTheDocument();
     expect(screen.getByText("Microphone denied")).toBeInTheDocument();

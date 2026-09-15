@@ -11,10 +11,10 @@ export function Main() {
   const session = useSession(settings);
 
   return (
-    <main className="mx-auto h-dvh w-full max-w-7xl py-6 px-12 flex flex-col gap-4">
+    <main className="mx-auto h-dvh w-full max-w-7xl py-2 px-12 flex flex-col">
       <Header />
-      <MainPanel className="flex-1 min-h-0 overflow-y-auto" items={session.items} />
-      <ControlPanel session={session} />
+      <MainPanel className="flex-1 min-h-0 mb-3" items={session.items} onClear={session.clear} textSize={settings.textSize} />
+      <ControlPanel session={session} settings={settings} />
     </main>
   );
 }

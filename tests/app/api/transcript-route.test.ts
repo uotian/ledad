@@ -45,7 +45,7 @@ describe("POST /api/transcript", () => {
     vi.stubEnv("OPENAI_API_KEY", "secret");
     exchangeSDP.mockResolvedValue("answer-sdp");
 
-    const settings = { langFrom: "fr" as const, langTo: "ja" as const, prompt: "古代エジプトについて。", keywords: ["大ピラミッド"] };
+    const settings = { textSize: "M" as const, langFrom: "fr" as const, langTo: "ja" as const, prompt: "古代エジプトについて。", keywords: ["大ピラミッド"] };
     const response = await POST(request("offer-sdp", settings));
 
     expect(response.status).toBe(200);

@@ -6,7 +6,7 @@ export function Button({ className, disabled, icon: Icon, iconClassName, label, 
   return (
     <ButtonUI
       aria-label={label}
-      className={cn("rounded-full border-none", className)}
+      className={cn("rounded-full border-none cursor-pointer", className)}
       disabled={disabled}
       size="icon-lg"
       type="button"

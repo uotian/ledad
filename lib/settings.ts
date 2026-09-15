@@ -1,4 +1,4 @@
-import { LANGS, type Settings } from "@/lib/types";
+import { LANGS, TEXT_SIZES, type Settings } from "@/lib/types";
 
 const prompts = [
   "音声には非母語話者の発話が含まれる場合があります。",
@@ -6,6 +6,7 @@ const prompts = [
 ];
 
 export const defaultSettings: Settings = {
+  textSize: "M",
   langFrom: "en",
   langTo: "ja",
   prompt: prompts.join("\n"),
@@ -14,6 +15,7 @@ export const defaultSettings: Settings = {
 
 export function isSettings(value: unknown): value is Settings {
   return typeof value === "object" && value !== null
+    && "textSize" in value && TEXT_SIZES.some((size) => size === value.textSize)
     && "langFrom" in value && LANGS.some((lang) => lang === value.langFrom)
     && "langTo" in value && LANGS.some((lang) => lang === value.langTo)
     && "prompt" in value && typeof value.prompt === "string"

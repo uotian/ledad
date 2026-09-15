@@ -12,11 +12,11 @@ export function ItemBlock({ item }: { item: Item }) {
 
   return (
     <article className="py-1 flex flex-col gap-0.5">
-      <time className="text-xs text-orange-900/75" dateTime={item.id}>
+      <time className="text-[0.85em] text-orange-900/75" dateTime={item.id}>
         {time}
       </time>
-      <p className="text-sm text-blue-950/75">{item.transcript}</p>
-      <p className={cn("text-sm text-foreground/88", !item.translation && "animate-pulse")}>{item.translation || "..."}</p>
+      <p className="text-blue-950/75">{item.transcript}</p>
+      <p className={cn("text-foreground/88", !item.translation && "animate-pulse")}>{item.translation || "..."}</p>
     </article>
   );
 }

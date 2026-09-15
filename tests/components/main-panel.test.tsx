@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MainPanel } from "@/components/main-panel";
 
+const onClear = vi.fn();
+
 describe("MainPanel", () => {
   beforeEach(() => {
     Element.prototype.scrollIntoView = vi.fn();
@@ -12,13 +14,14 @@ describe("MainPanel", () => {
   });
 
   it("shows an instruction when the transcript is empty", () => {
-    render(<MainPanel items={[]} />);
+    render(<MainPanel textSize="M" onClear={onClear} items={[]} />);
 
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled();
   });
 
   it("renders transcripts and a pending translation state", () => {
-    render(<MainPanel items={[{
+    render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "",
@@ -30,18 +33,20 @@ describe("MainPanel", () => {
   });
 
   it("renders a completed translation", () => {
-    render(<MainPanel items={[{
+    render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "こんにちは",
     }]} />);
 
     expect(screen.getByText("こんにちは")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    expect(onClear).toHaveBeenCalledOnce();
   });
 
   it("temporarily pauses auto-scroll after manual scrolling", () => {
     vi.useFakeTimers();
-    const { container, rerender } = render(<MainPanel items={[{
+    const { container, rerender } = render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "こんにちは",
@@ -49,7 +54,7 @@ describe("MainPanel", () => {
     const initialCalls = vi.mocked(Element.prototype.scrollIntoView).mock.calls.length;
 
     fireEvent.wheel(container.querySelector("section") as HTMLElement);
-    rerender(<MainPanel items={[{
+    rerender(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
       transcript: "Hello again",
       translation: "こんにちは",
@@ -57,7 +62,7 @@ describe("MainPanel", () => {
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(initialCalls);
 
     vi.advanceTimersByTime(10_000);
-    rerender(<MainPanel items={[{
+    rerender(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
       transcript: "Hello once more",
       translation: "こんにちは",

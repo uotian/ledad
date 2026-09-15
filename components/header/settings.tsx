@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { SettingsIcon } from "lucide-react";
-import { LANGS, type Lang, type Settings } from "@/lib/types";
+import { LANGS, TEXT_SIZES, type Lang, type TextSize, type Settings } from "@/lib/types";
 import { Button } from "@/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
@@ -10,6 +10,7 @@ import { Textarea } from "@/ui/textarea";
 
 export function SettingsDialog({ settings, onSave }: { settings: Settings; onSave: (settings: Settings) => void }) {
   const [open, setOpen] = useState(false);
+  const [textSize, setTextSize] = useState(settings.textSize);
   const [langFrom, setLangFrom] = useState(settings.langFrom);
   const [langTo, setLangTo] = useState(settings.langTo);
   const [prompt, setPrompt] = useState(settings.prompt);
@@ -18,6 +19,7 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
 
   function changeOpen(nextOpen: boolean) {
     if (nextOpen) {
+      setTextSize(settings.textSize);
       setLangFrom(settings.langFrom);
       setLangTo(settings.langTo);
       setPrompt(settings.prompt);
@@ -34,7 +36,7 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        onSave({ langFrom, langTo, prompt, keywords });
+        onSave({ textSize, langFrom, langTo, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -44,14 +46,14 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
 
   return (
     <Dialog open={open} onOpenChange={changeOpen}>
-      <DialogTrigger render={<Button variant="ghost" size="icon" className="cursor-pointer" aria-label="Settings" />}>
+      <DialogTrigger render={<Button variant="ghost" size="icon" className="cursor-pointer rounded-full" aria-label="Settings" />}>
         <SettingsIcon aria-hidden="true" />
       </DialogTrigger>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
         <form onSubmit={save} className="grid gap-5">
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>Saved in this browser. Changes apply when you start a session.</DialogDescription>
+            <DialogDescription>Saved in this browser. Language and transcription changes apply when you start a session.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
@@ -66,6 +68,13 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
                 {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
               </select>
             </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="main-panel-text-size">Text size</Label>
+            <select id="main-panel-text-size" value={textSize} onChange={(event) => setTextSize(event.target.value as TextSize)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm" aria-describedby="text-size-hint">
+              {TEXT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+            </select>
+            <p id="text-size-hint" className="text-xs text-muted-foreground">Applies immediately to the transcript display.</p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>

@@ -8,7 +8,12 @@ export const LANGS = ["en", "ja", "zh", "fr"] as const;
 
 export type Lang = (typeof LANGS)[number];
 
+export const TEXT_SIZES = ["S", "M", "L"] as const;
+
+export type TextSize = (typeof TEXT_SIZES)[number];
+
 export type Settings = {
+  textSize: TextSize;
   langFrom: Lang;
   langTo: Lang;
   prompt: string;
