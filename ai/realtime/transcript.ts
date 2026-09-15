@@ -18,7 +18,7 @@ export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang)
         transcription: {
           model: "gpt-live-transcribe",
           languages: [langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
-          delay: "minimal",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
+          delay: "xhigh",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
           prompt: prompts.join(" "), // Optional background context; supported.
           keywords: [], // Optional spelling hints, not required output; no <, >, CR, or LF.
         },
