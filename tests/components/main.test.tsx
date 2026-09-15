@@ -28,6 +28,7 @@ vi.mock("@/hooks/use-session", () => ({
     return state.session;
   },
 }));
+vi.mock("next/font/google", () => ({ Outfit: () => ({ className: "outfit" }) }));
 
 import { Main } from "@/components/main";
 
@@ -37,7 +38,7 @@ describe("Main", () => {
 
     expect(state.useSession).toHaveBeenCalledWith("fr", "zh");
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
-    expect(screen.getByText("v0.2.1")).toBeInTheDocument();
+    expect(screen.getByText("v0.2.2")).toBeInTheDocument();
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start" })).toBeEnabled();
   });

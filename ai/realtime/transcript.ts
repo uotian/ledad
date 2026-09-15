@@ -1,6 +1,12 @@
 import "server-only";
 import type { Lang } from "@/lib/types";
 
+const prompts = [
+  "音声には非母語話者の発話が含まれる場合があります。",
+  "一文が長くなりすぎないよう、適度に区切ること。",
+  "Mr.やU.S.などの敬称や略語はMrやUSのようにピリオドなしで表記し、ピリオドは文末だけに使用すること。",
+];
+
 export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang) {
   const body = new FormData();
   body.set("sdp", offer);
@@ -13,7 +19,7 @@ export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang)
           model: "gpt-live-transcribe",
           languages: [langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
           delay: "minimal",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
-          prompt: "", // Optional background context; supported.
+          prompt: prompts.join(" "), // Optional background context; supported.
           keywords: [], // Optional spelling hints, not required output; no <, >, CR, or LF.
         },
         turn_detection: null, // turn_detection: { type: "server_vad" }, // Currently times out with gpt-live-transcribe.

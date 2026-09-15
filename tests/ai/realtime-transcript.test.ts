@@ -26,6 +26,7 @@ describe("Realtime SDP exchange", () => {
           transcription: {
             model: "gpt-live-transcribe",
             languages: ["zh"],
+            prompt: "音声には非母語話者の発話が含まれる場合があります。 一文が長くなりすぎないよう、適度に区切ること。 Mr.やU.S.などの敬称や略語はMrやUSのようにピリオドなしで表記し、ピリオドは文末だけに使用すること。",
           },
           turn_detection: null,
         },
