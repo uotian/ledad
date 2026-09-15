@@ -2,13 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 const state = vi.hoisted(() => ({
-  lang: {
-    langFrom: "fr" as const,
-    langTo: "zh" as const,
-    setLangFrom: vi.fn(),
-    setLangTo: vi.fn(),
-    swapLangs: vi.fn(),
-  },
   session: {
     items: [],
     error: null,
@@ -21,7 +14,6 @@ const state = vi.hoisted(() => ({
   useSession: vi.fn(),
 }));
 
-vi.mock("@/hooks/use-lang", () => ({ useLang: () => state.lang }));
 vi.mock("@/hooks/use-session", () => ({
   useSession: (...args: unknown[]) => {
     state.useSession(...args);
@@ -37,7 +29,7 @@ describe("Main", () => {
   it("wires language state into the session and renders the application shell", () => {
     render(<Main />);
 
-    expect(state.useSession).toHaveBeenCalledWith("fr", "zh", defaultSettings);
+    expect(state.useSession).toHaveBeenCalledWith(defaultSettings);
     expect(screen.getByRole("button", { name: "Settings" })).toBeEnabled();
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
     expect(screen.getByText("v0.2.2")).toBeInTheDocument();

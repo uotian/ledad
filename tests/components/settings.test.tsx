@@ -13,7 +13,7 @@ function openSettings() {
   fireEvent.click(screen.getByRole("button", { name: "Settings" }));
 }
 
-describe("transcription settings", () => {
+describe("settings", () => {
   it("uses the current prompts as defaults and restores saved settings after remounting", () => {
     const first = render(<Settings />);
     openSettings();
@@ -22,7 +22,7 @@ describe("transcription settings", () => {
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "隋の楊堅について。" } });
     fireEvent.change(screen.getByLabelText("Keywords"), { target: { value: "楊堅\n 隋 \n楊堅\n" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
 
     first.unmount();
     render(<Settings />);
@@ -67,4 +67,18 @@ describe("transcription settings", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Keywords cannot contain < or >.");
     expect(localStorage.getItem(settingsKey)).toBeNull();
   });
+  it("selects languages independently and restores both after saving", () => {
+    const first = render(<Settings />);
+    openSettings();
+    fireEvent.change(screen.getByLabelText("Source language"), { target: { value: "ja" } });
+    expect(screen.getByLabelText("Translation language")).toHaveValue("ja");
+    fireEvent.change(screen.getByLabelText("Translation language"), { target: { value: "fr" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    first.unmount();
+    render(<Settings />);
+    openSettings();
+    expect(screen.getByLabelText("Source language")).toHaveValue("ja");
+    expect(screen.getByLabelText("Translation language")).toHaveValue("fr");
+  });
+
 });

@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import { exchangeSDP } from "@/ai/realtime/transcript";
-import { readLang } from "@/lib/request";
 import { isSettings } from "@/lib/settings";
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
-  const langFrom = readLang(request, "X-Lang-From", "en");
   const payload: { sdp?: unknown; settings?: unknown } | null = await request.json().catch(() => null);
   let response: Response;
 
@@ -17,7 +15,7 @@ export async function POST(request: Request) {
     response = NextResponse.json({ error: "Invalid transcription settings." }, { status: 400 });
   } else {
     try {
-      const answer = await exchangeSDP(apiKey, payload.sdp, langFrom, payload.settings);
+      const answer = await exchangeSDP(apiKey, payload.sdp, payload.settings);
       response = new Response(answer);
     } catch (error) {
       response = NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 502 });

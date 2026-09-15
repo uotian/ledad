@@ -22,8 +22,9 @@ vi.mock("@/hooks/use-session/actions/start/on-message", () => ({
 }));
 
 import { useSession } from "@/hooks/use-session";
+import type { Settings } from "@/lib/types";
 
-const settings = { prompt: "A meeting.", keywords: ["GSP"] };
+const settings = { langFrom: "en" as const, langTo: "ja" as const, prompt: "A meeting.", keywords: ["GSP"] };
 
 describe("useSession", () => {
   beforeEach(() => {
@@ -42,7 +43,7 @@ describe("useSession", () => {
   });
 
   it("starts, periodically commits, and translates the active item", async () => {
-    const { result } = renderHook(() => useSession("en", "ja", settings));
+    const { result } = renderHook(() => useSession(settings));
 
     await act(async () => result.current.start());
     expect(result.current.status).toBe("listening");
@@ -60,7 +61,7 @@ describe("useSession", () => {
   });
 
   it("delegates manual actions and cancels timers when stopped", async () => {
-    const { result, unmount } = renderHook(() => useSession("fr", "zh", settings));
+    const { result, unmount } = renderHook(() => useSession({ ...settings, langFrom: "fr", langTo: "zh" }));
     await act(async () => result.current.start());
 
     act(() => result.current.commit());
@@ -83,7 +84,7 @@ describe("useSession", () => {
   });
 
   it("stops automatically after thirty minutes", async () => {
-    const { result } = renderHook(() => useSession("en", "ja", settings));
+    const { result } = renderHook(() => useSession(settings));
     await act(async () => result.current.start());
 
     act(() => vi.advanceTimersByTime(30 * 60 * 1000));
@@ -92,4 +93,19 @@ describe("useSession", () => {
     expect(result.current.status).toBe("idle");
     expect(result.current.error).toBe("Session stopped automatically after 30 minutes.");
   });
+  it("uses the current settings for manual commits and the next start", async () => {
+    const { result, rerender } = renderHook((settings: Settings) => useSession(settings), {
+      initialProps: { ...settings, langFrom: "en", langTo: "ja" },
+    });
+    await act(async () => result.current.start());
+    const nextSettings = { ...settings, langFrom: "fr" as const, langTo: "zh" as const };
+    rerender(nextSettings);
+    act(() => result.current.commit());
+    expect(mocks.finalizeTranscript).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
+    await act(async () => result.current.start());
+    expect(mocks.start).toHaveBeenLastCalledWith(expect.objectContaining({ settings: nextSettings }));
+    act(() => result.current.commit());
+    expect(mocks.finalizeTranscript).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
+  });
+
 });

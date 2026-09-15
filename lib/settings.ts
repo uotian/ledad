@@ -1,4 +1,4 @@
-import type { Settings } from "@/lib/types";
+import { LANGS, type Settings } from "@/lib/types";
 
 const prompts = [
   "音声には非母語話者の発話が含まれる場合があります。",
@@ -6,12 +6,16 @@ const prompts = [
 ];
 
 export const defaultSettings: Settings = {
+  langFrom: "en",
+  langTo: "ja",
   prompt: prompts.join("\n"),
   keywords: [],
 };
 
 export function isSettings(value: unknown): value is Settings {
   return typeof value === "object" && value !== null
+    && "langFrom" in value && LANGS.some((lang) => lang === value.langFrom)
+    && "langTo" in value && LANGS.some((lang) => lang === value.langTo)
     && "prompt" in value && typeof value.prompt === "string"
     && "keywords" in value && Array.isArray(value.keywords)
     && value.keywords.every((keyword: unknown) => typeof keyword === "string" && !/[<>\r\n]/.test(keyword));

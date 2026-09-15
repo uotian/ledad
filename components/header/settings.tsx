@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { SettingsIcon } from "lucide-react";
-import type { Settings } from "@/lib/types";
+import { LANGS, type Lang, type Settings } from "@/lib/types";
 import { Button } from "@/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
@@ -10,12 +10,16 @@ import { Textarea } from "@/ui/textarea";
 
 export function SettingsDialog({ settings, onSave }: { settings: Settings; onSave: (settings: Settings) => void }) {
   const [open, setOpen] = useState(false);
+  const [langFrom, setLangFrom] = useState(settings.langFrom);
+  const [langTo, setLangTo] = useState(settings.langTo);
   const [prompt, setPrompt] = useState(settings.prompt);
   const [keywordsText, setKeywordsText] = useState(settings.keywords.join("\n"));
   const [error, setError] = useState<string | null>(null);
 
   function changeOpen(nextOpen: boolean) {
     if (nextOpen) {
+      setLangFrom(settings.langFrom);
+      setLangTo(settings.langTo);
       setPrompt(settings.prompt);
       setKeywordsText(settings.keywords.join("\n"));
       setError(null);
@@ -30,7 +34,7 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        onSave({ prompt, keywords });
+        onSave({ langFrom, langTo, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -49,6 +53,20 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
             <DialogTitle>Settings</DialogTitle>
             <DialogDescription>Saved in this browser. Changes apply when you start a session.</DialogDescription>
           </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="lang-from">Source language</Label>
+              <select id="lang-from" value={langFrom} onChange={(event) => setLangFrom(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+                {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
+              </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lang-to">Translation language</Label>
+              <select id="lang-to" value={langTo} onChange={(event) => setLangTo(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+                {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
+              </select>
+            </div>
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>
             <Textarea id="transcription-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} className="min-h-36" placeholder="Describe the topic or recording context." />

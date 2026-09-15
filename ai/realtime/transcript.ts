@@ -1,7 +1,7 @@
 import "server-only";
-import type { Lang, Settings } from "@/lib/types";
+import type { Settings } from "@/lib/types";
 
-export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang, settings: Settings) {
+export async function exchangeSDP(apiKey: string, offer: string, settings: Settings) {
   const body = new FormData();
   body.set("sdp", offer);
   body.set("session", JSON.stringify({
@@ -11,7 +11,7 @@ export async function exchangeSDP(apiKey: string, offer: string, langFrom: Lang,
         noise_reduction: { type: "far_field" },  // Options: { type: "near_field" } (close mic) | { type: "far_field" } (laptop/conference mic) | null (off).
         transcription: {
           model: "gpt-live-transcribe",
-          languages: [langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
+          languages: [settings.langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
           delay: "xhigh",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
           prompt: settings.prompt, // Optional background context; supported.
           keywords: settings.keywords, // Optional spelling hints, not required output; no <, >, CR, or LF.

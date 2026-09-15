@@ -11,10 +11,10 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-function request(body = "offer-sdp", lang = "en", settings = defaultSettings) {
+function request(body = "offer-sdp", settings = defaultSettings) {
   return new Request("https://example.test/api/transcript", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Lang-From": lang },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sdp: body, settings }),
   });
 }
@@ -41,30 +41,21 @@ describe("POST /api/transcript", () => {
     await expect(response.json()).resolves.toEqual({ error: "No SDP for Realtime connection." });
   });
 
-  it("returns the upstream answer and validates the language", async () => {
+  it("returns the upstream answer with the selected settings", async () => {
     vi.stubEnv("OPENAI_API_KEY", "secret");
     exchangeSDP.mockResolvedValue("answer-sdp");
 
-    const settings = { prompt: "古代エジプトについて。", keywords: ["大ピラミッド"] };
-    const response = await POST(request("offer-sdp", "fr", settings));
+    const settings = { langFrom: "fr" as const, langTo: "ja" as const, prompt: "古代エジプトについて。", keywords: ["大ピラミッド"] };
+    const response = await POST(request("offer-sdp", settings));
 
     expect(response.status).toBe(200);
     await expect(response.text()).resolves.toBe("answer-sdp");
-    expect(exchangeSDP).toHaveBeenCalledWith("secret", "offer-sdp", "fr", settings);
-  });
-
-  it("falls back to English for an invalid language", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "secret");
-    exchangeSDP.mockResolvedValue("answer");
-
-    await POST(request("offer", "de"));
-
-    expect(exchangeSDP).toHaveBeenCalledWith("secret", "offer", "en", defaultSettings);
+    expect(exchangeSDP).toHaveBeenCalledWith("secret", "offer-sdp", settings);
   });
 
   it("rejects invalid keywords before calling OpenAI", async () => {
     vi.stubEnv("OPENAI_API_KEY", "secret");
-    const response = await POST(request("offer", "ja", { prompt: "", keywords: ["<invalid>"] }));
+    const response = await POST(request("offer", { ...defaultSettings, prompt: "", keywords: ["<invalid>"] }));
 
     expect(response.status).toBe(400);
     expect(exchangeSDP).not.toHaveBeenCalled();

@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import type { Status, Item, Lang, Settings } from "@/lib/types";
+import type { Status, Item, Settings } from "@/lib/types";
 import { start as startAction } from "./actions/start";
 import { stop as stopAction } from "./actions/stop";
 import { clear as clearAction } from "./actions/clear";
 import { commit as commitAction } from "./actions/commit";
-import type { Refs, Langs, ItemLastRef } from "./types";
+import type { Refs, ItemLastRef } from "./types";
 import { cleanup } from "./utils";
 import { finalizeTranscript, updateTranslation } from "./actions/start/on-message";
 
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000;  // 30 minutes
 const COMMIT_INTERVAL_MS = 15 * 1000;  // 15 seconds
 
-export function useSession(langFrom: Lang, langTo: Lang, settings: Settings) {
+export function useSession(settings: Settings) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
@@ -24,7 +24,7 @@ export function useSession(langFrom: Lang, langTo: Lang, settings: Settings) {
   const connection: Refs["connection"] = useRef(null);
   const channel: Refs["channel"] = useRef(null);
   const refs: Refs = useMemo(() => ({ mic, connection, channel }), [mic, connection, channel]);
-  const langs: Langs = { from: langFrom, to: langTo };
+  const langs = { from: settings.langFrom, to: settings.langTo };
 
   useEffect(() => {
     return () => {
@@ -37,7 +37,7 @@ export function useSession(langFrom: Lang, langTo: Lang, settings: Settings) {
   async function start() {
     clearSessionTimer();
     clearCommitTimer();
-    await startAction({ refs, langs, settings, setStatus, setError, setItems, itemLast });
+    await startAction({ refs, settings, setStatus, setError, setItems, itemLast });
     if (refs.channel.current) {
       commitTimer.current = setInterval(() => {
         const item = itemLast.current;

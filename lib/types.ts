@@ -9,6 +9,8 @@ export const LANGS = ["en", "ja", "zh", "fr"] as const;
 export type Lang = (typeof LANGS)[number];
 
 export type Settings = {
+  langFrom: Lang;
+  langTo: Lang;
   prompt: string;
   keywords: string[];
 };

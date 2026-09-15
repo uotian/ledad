@@ -10,11 +10,11 @@ describe("browser transcript client", () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response("answer-sdp", { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
 
-    const settings = { prompt: "A history lecture.", keywords: ["Egypt"] };
-    await expect(exchangeSDP({ langFrom: "fr", sdp: "offer-sdp", settings })).resolves.toBe("answer-sdp");
+    const settings = { langFrom: "fr" as const, langTo: "ja" as const, prompt: "A history lecture.", keywords: ["Egypt"] };
+    await expect(exchangeSDP({ sdp: "offer-sdp", settings })).resolves.toBe("answer-sdp");
     expect(fetchMock).toHaveBeenCalledWith("/api/transcript", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Lang-From": "fr" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sdp: "offer-sdp", settings }),
     });
   });
@@ -22,6 +22,6 @@ describe("browser transcript client", () => {
   it("throws the API error when SDP exchange fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ error: "upstream failed" }, { status: 502 })));
 
-    await expect(exchangeSDP({ langFrom: "en", sdp: "offer", settings: { prompt: "", keywords: [] } })).rejects.toThrow("upstream failed");
+    await expect(exchangeSDP({ sdp: "offer", settings: { langFrom: "en", langTo: "ja", prompt: "", keywords: [] } })).rejects.toThrow("upstream failed");
   });
 });

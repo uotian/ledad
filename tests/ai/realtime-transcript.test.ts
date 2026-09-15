@@ -10,7 +10,7 @@ describe("Realtime SDP exchange", () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response("answer-sdp", { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await expect(exchangeSDP("secret", "offer-sdp", "zh", { prompt: "中国史の解説です。", keywords: ["楊堅", "隋"] })).resolves.toBe("answer-sdp");
+    await expect(exchangeSDP("secret", "offer-sdp", { langFrom: "zh", langTo: "ja", prompt: "中国史の解説です。", keywords: ["楊堅", "隋"] })).resolves.toBe("answer-sdp");
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const body = init.body as FormData;
@@ -39,12 +39,12 @@ describe("Realtime SDP exchange", () => {
   it("surfaces the upstream response body on failure", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("invalid offer", { status: 400 })));
 
-    await expect(exchangeSDP("secret", "offer", "en", { prompt: "", keywords: [] })).rejects.toThrow("invalid offer");
+    await expect(exchangeSDP("secret", "offer", { langFrom: "en", langTo: "ja", prompt: "", keywords: [] })).rejects.toThrow("invalid offer");
   });
 
   it("uses a stable fallback when the upstream error body is empty", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("", { status: 500 })));
 
-    await expect(exchangeSDP("secret", "offer", "en", { prompt: "", keywords: [] })).rejects.toThrow("Could not connect to Realtime API.");
+    await expect(exchangeSDP("secret", "offer", { langFrom: "en", langTo: "ja", prompt: "", keywords: [] })).rejects.toThrow("Could not connect to Realtime API.");
   });
 });
