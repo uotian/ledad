@@ -5,6 +5,7 @@ export type Refs = {
   mic: RefObject<MediaStream | null>;
   connection: RefObject<RTCPeerConnection | null>;
   channel: RefObject<RTCDataChannel | null>;
+  finalRecorderStop?: RefObject<(() => void) | null>;
 };
 
 export type ItemLastRef = RefObject<Item | null>;

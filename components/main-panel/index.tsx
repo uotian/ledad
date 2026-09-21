@@ -19,7 +19,7 @@ export function MainPanel({ className, items, onClear, textSize }: { className?:
   useEffect(() => {
     if (isAutoScrollPausedRef.current) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [items.length, itemLast?.transcript, itemLast?.translation]);
+  }, [items.length, itemLast?.transcript, itemLast?.translation, itemLast?.status]);
 
   useEffect(() => {
     return () => {

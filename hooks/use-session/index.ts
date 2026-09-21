@@ -23,7 +23,8 @@ export function useSession(settings: Settings) {
   const mic: Refs["mic"] = useRef(null);
   const connection: Refs["connection"] = useRef(null);
   const channel: Refs["channel"] = useRef(null);
-  const refs: Refs = useMemo(() => ({ mic, connection, channel }), [mic, connection, channel]);
+  const finalRecorderStop: Refs["finalRecorderStop"] = useRef(null);
+  const refs: Refs = useMemo(() => ({ mic, connection, channel, finalRecorderStop }), [mic, connection, channel, finalRecorderStop]);
   const langs = { from: settings.langFrom, to: settings.langTo };
 
   useEffect(() => {

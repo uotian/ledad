@@ -80,7 +80,7 @@ describe("Main", () => {
     expect(state.useSession).toHaveBeenCalledWith(defaultSettings);
     expect(screen.getByRole("button", { name: "Settings" })).toBeEnabled();
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
-    expect(screen.getByText("v0.3.1")).toBeInTheDocument();
+    expect(screen.getByText("v0.4.0")).toBeInTheDocument();
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start" })).toBeEnabled();
   });

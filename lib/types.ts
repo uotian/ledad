@@ -24,6 +24,9 @@ export type Item = {
   id: string;
   transcript: string;
   translation: string;
+  status?: "draft" | "final";
+  startedAt?: string;
+  endedAt?: string;
 };
 
 export type RealtimeEvent = {

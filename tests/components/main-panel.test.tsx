@@ -44,6 +44,16 @@ describe("MainPanel", () => {
     expect(onClear).toHaveBeenCalledOnce();
   });
 
+  it("labels draft and final transcript states in the same timeline", () => {
+    render(<MainPanel textSize="M" onClear={onClear} items={[
+      { id: "2026-01-01T00:00:00.000Z", startedAt: "2026-01-01T00:00:00.000Z", status: "final", transcript: "Final", translation: "確定" },
+      { id: "2026-01-01T00:01:00.000Z", startedAt: "2026-01-01T00:01:00.000Z", status: "draft", transcript: "Draft", translation: "Live translation" },
+    ]} />);
+
+    expect(screen.getByText("確定版")).toBeInTheDocument();
+    expect(screen.getByText("速報")).toBeInTheDocument();
+  });
+
   it("temporarily pauses auto-scroll after manual scrolling", () => {
     vi.useFakeTimers();
     const { container, rerender } = render(<MainPanel textSize="M" onClear={onClear} items={[{

@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.4.0
+
+### 文字起こし・翻訳
+
+- 低遅延な `gpt-live-transcribe` の速報版と、60秒ごとの `gpt-transcribe` 確定版による二段階文字起こしを追加。
+- 確定した音声区間の完了済み速報 item を置換し、最新の入力中 item は速報のまま表示するよう改善。
+
 ## v0.3.1
 
 - `idle` 以外で Settings を開く際、停止確認を表示するように改善。

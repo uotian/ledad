@@ -3,6 +3,7 @@ import type { Settings } from "@/lib/types";
 import type { ItemLastRef, Refs, SetError, SetItems, SetStatus } from "../../types";
 import { cleanup } from "../../utils";
 import { onMessage } from "./on-message";
+import { createFinalRecorder } from "../../final-transcript";
 
 export async function start({ refs, settings, setStatus, setError, setItems, itemLast }: { refs: Refs; settings: Settings; setStatus: SetStatus; setError: SetError; setItems: SetItems; itemLast: ItemLastRef }) {
   const langs = { from: settings.langFrom, to: settings.langTo };
@@ -11,6 +12,9 @@ export async function start({ refs, settings, setStatus, setError, setItems, ite
   setError(null);
   try {
     const mic = await setupMic(refs.mic);
+    if (typeof MediaRecorder !== "undefined" && refs.finalRecorderStop) {
+      refs.finalRecorderStop.current = createFinalRecorder(mic, settings, langs, itemLast, setItems, setError);
+    }
     setStatus("connecting");
     const connection = setupConnection(refs.connection, mic);
     const channel = setupChannel(refs, connection);

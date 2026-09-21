@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.4.0
+
+### Transcription and translation
+
+- Added a two-stage transcription flow: low-latency `gpt-live-transcribe` drafts and 60-second `gpt-transcribe` final transcripts.
+- Replaced completed draft items within a finalized audio range while keeping the newest in-progress draft visible.
+
 ## v0.3.1
 
 - Ask to stop the session before opening Settings when it is not idle.

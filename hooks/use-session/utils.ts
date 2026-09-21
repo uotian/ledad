@@ -1,6 +1,8 @@
 import type { Refs } from "./types";
 
-export function cleanup({ mic, connection, channel }: Refs) {
+export function cleanup({ mic, connection, channel, finalRecorderStop }: Refs) {
+  finalRecorderStop?.current?.();
+  if (finalRecorderStop) finalRecorderStop.current = null;
   channel.current?.close();
   channel.current = null;
 

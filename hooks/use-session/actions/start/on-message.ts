@@ -59,7 +59,10 @@ function updateTranscript(delta: string, itemLast: ItemLastRef, setItems: SetIte
   const itemCurrent = itemLast.current;
   const itemNew = itemCurrent
     ? { ...itemCurrent, transcript: itemCurrent.transcript + delta }
-    : { id: new Date().toISOString(), transcript: delta, translation: "" };
+    : (() => {
+      const startedAt = new Date().toISOString();
+      return { id: startedAt, startedAt, transcript: delta, translation: "", status: "draft" as const };
+    })();
 
   itemLast.current = itemNew;
   setItems((items) => {
@@ -72,8 +75,10 @@ function updateTranscript(delta: string, itemLast: ItemLastRef, setItems: SetIte
 export function finalizeTranscript(itemLast: ItemLastRef, langs: Langs, setItems: SetItems) {
   const item = itemLast.current;
   if (item) {
+    const completed = { ...item, endedAt: new Date().toISOString() };
     itemLast.current = null;
-    void updateTranslation(item, langs, itemLast, setItems);
+    setItems((items) => items.map((current) => current.id === completed.id ? completed : current));
+    void updateTranslation(completed, langs, itemLast, setItems);
   }
 }
 
