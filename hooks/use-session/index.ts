@@ -6,9 +6,9 @@ import { start as startAction } from "./actions/start";
 import { stop as stopAction } from "./actions/stop";
 import { clear as clearAction } from "./actions/clear";
 import { commit as commitAction } from "./actions/commit";
-import type { Refs, ItemLastRef } from "./types";
+import type { Refs, ItemFlushLastRef } from "./types";
 import { cleanup } from "./utils";
-import { finalizeTranscript, updateTranslation } from "./actions/start/on-message";
+import { finalizeItemFlush, updateTranslation } from "./actions/start/on-message";
 
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000;  // 30 minutes
 const COMMIT_INTERVAL_MS = 15 * 1000;  // 15 seconds
@@ -17,7 +17,7 @@ export function useSession(settings: Settings) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
-  const itemLast: ItemLastRef = useRef(null);
+  const itemFlushLast: ItemFlushLastRef = useRef(null);
   const sessionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const commitTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const mic: Refs["mic"] = useRef(null);
@@ -37,12 +37,12 @@ export function useSession(settings: Settings) {
   async function start() {
     clearSessionTimer();
     clearCommitTimer();
-    await startAction({ refs, settings, setStatus, setError, setItems, itemLast });
+    await startAction({ refs, settings, setStatus, setError, setItems, itemFlushLast });
     if (refs.channel.current) {
       commitTimer.current = setInterval(() => {
-        const item = itemLast.current;
-        if (commitAction(refs, setError) && item) {
-          void updateTranslation(item, langs, itemLast, setItems);
+        const itemFlush = itemFlushLast.current;
+        if (commitAction(refs, setError) && itemFlush) {
+          void updateTranslation(itemFlush, langs, itemFlushLast, setItems);
         }
       }, COMMIT_INTERVAL_MS);
       sessionTimer.current = setTimeout(() => {
@@ -59,12 +59,12 @@ export function useSession(settings: Settings) {
   }
 
   function clear() {
-    clearAction(setError, setItems, itemLast);
+    clearAction(setError, setItems, itemFlushLast);
   }
 
   function commit() {
     if (commitAction(refs, setError)) {
-      finalizeTranscript(itemLast, langs, setItems);
+      finalizeItemFlush(itemFlushLast, langs, setItems);
     }
   }
 

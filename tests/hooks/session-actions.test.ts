@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { clear } from "@/hooks/use-session/actions/clear";
 import { commit } from "@/hooks/use-session/actions/commit";
 import { stop } from "@/hooks/use-session/actions/stop";
-import type { ItemLastRef, Refs } from "@/hooks/use-session/types";
+import type { ItemFlushLastRef, Refs } from "@/hooks/use-session/types";
 import { cleanup } from "@/hooks/use-session/utils";
 
 function createRefs({ readyState = "open", send = vi.fn() }: { readyState?: RTCDataChannelState; send?: ReturnType<typeof vi.fn> } = {}) {
@@ -32,13 +32,13 @@ describe("session actions", () => {
   it("clears errors, items, and the active transcript", () => {
     const setError = vi.fn();
     const setItems = vi.fn();
-    const itemLast = { current: { id: "1", transcript: "Hello", translation: "" } } as ItemLastRef;
+    const itemFlushLast = { current: { id: "1", startedAt: "2026-01-01T00:00:00.000Z", transcript: "Hello", translation: "", type: "flush" } } as ItemFlushLastRef;
 
-    clear(setError, setItems, itemLast);
+    clear(setError, setItems, itemFlushLast);
 
     expect(setError).toHaveBeenCalledWith(null);
     expect(setItems).toHaveBeenCalledWith([]);
-    expect(itemLast.current).toBeNull();
+    expect(itemFlushLast.current).toBeNull();
   });
 
   it("sends a commit event through an open channel", () => {

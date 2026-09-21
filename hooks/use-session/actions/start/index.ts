@@ -1,12 +1,12 @@
-import { exchangeSDP } from "@/lib/transcript";
+import { requestSDP } from "@/lib/transcribe/live";
 import type { Settings } from "@/lib/types";
-import type { ItemLastRef, Refs, SetError, SetItems, SetStatus } from "../../types";
+import type { ItemFlushLastRef, Refs, SetError, SetItems, SetStatus } from "../../types";
 import { cleanup } from "../../utils";
 import { onMessage } from "./on-message";
 
-export async function start({ refs, settings, setStatus, setError, setItems, itemLast }: { refs: Refs; settings: Settings; setStatus: SetStatus; setError: SetError; setItems: SetItems; itemLast: ItemLastRef }) {
+export async function start({ refs, settings, setStatus, setError, setItems, itemFlushLast }: { refs: Refs; settings: Settings; setStatus: SetStatus; setError: SetError; setItems: SetItems; itemFlushLast: ItemFlushLastRef }) {
   const langs = { from: settings.langFrom, to: settings.langTo };
-  itemLast.current = null;
+  itemFlushLast.current = null;
   setStatus("requesting");
   setError(null);
   try {
@@ -15,7 +15,7 @@ export async function start({ refs, settings, setStatus, setError, setItems, ite
     const connection = setupConnection(refs.connection, mic);
     const channel = setupChannel(refs, connection);
     channel.addEventListener("open", () => { if (refs.channel.current === channel) setStatus("listening"); });
-    channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, itemLast, setError, setItems); });
+    channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, itemFlushLast, setError, setItems); });
     channel.addEventListener("error", () => { if (refs.channel.current === channel) setError("Connection error. Please start again."); });
     await connect(connection, settings);
   } catch (error) {
@@ -49,6 +49,6 @@ async function connect(connection: RTCPeerConnection, settings: Settings) {
   const offer = await connection.createOffer();
   if (!offer.sdp) throw new Error("Could not create SDP for Realtime connection.");
   await connection.setLocalDescription(offer);
-  const answer = await exchangeSDP({ sdp: offer.sdp, settings });
-  await connection.setRemoteDescription({ type: "answer", sdp: answer });
+  const sdp = await requestSDP({ sdp: offer.sdp, settings });
+  await connection.setRemoteDescription({ type: "answer", sdp });
 }

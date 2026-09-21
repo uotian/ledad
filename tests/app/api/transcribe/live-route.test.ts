@@ -2,9 +2,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const exchangeSDP = vi.hoisted(() => vi.fn());
 
-vi.mock("@/ai/realtime/transcript", () => ({ exchangeSDP }));
+vi.mock("@/ai/transcribe", () => ({ exchangeSDP }));
 
-import { POST } from "@/app/api/transcript/route";
+import { POST } from "@/app/api/transcribe/live/route";
 import { defaultSettings } from "@/lib/settings";
 
 afterEach(() => {
@@ -12,14 +12,14 @@ afterEach(() => {
 });
 
 function request(body = "offer-sdp", settings = defaultSettings) {
-  return new Request("https://example.test/api/transcript", {
+  return new Request("https://example.test/api/transcribe/live", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sdp: body, settings }),
   });
 }
 
-describe("POST /api/transcript", () => {
+describe("POST /api/transcribe/live", () => {
   it("rejects requests when the API key is missing", async () => {
     vi.stubEnv("OPENAI_API_KEY", "");
 

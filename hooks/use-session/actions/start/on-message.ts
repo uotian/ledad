@@ -1,8 +1,9 @@
 import { translate } from "@/lib/translate";
+import { createItemFlush } from "@/lib/items";
 import type { Item, RealtimeEvent } from "@/lib/types";
-import type { ItemLastRef, Langs, SetError, SetItems } from "../../types";
+import type { ItemFlushLastRef, Langs, SetError, SetItems } from "../../types";
 
-export function onMessage(message: MessageEvent<string>, langs: Langs, itemLast: ItemLastRef, setError: SetError, setItems: SetItems) {
+export function onMessage(message: MessageEvent<string>, langs: Langs, itemFlushLast: ItemFlushLastRef, setError: SetError, setItems: SetItems) {
   try {
     const event = JSON.parse(message.data) as RealtimeEvent;
     if (event.type === "error") {
@@ -15,7 +16,7 @@ export function onMessage(message: MessageEvent<string>, langs: Langs, itemLast:
       delete eventLog.content_index;
       console.log(eventLog);
       if (event.type === "conversation.item.input_audio_transcription.delta") {
-        handleDelta(event, langs, itemLast, setItems);
+        handleDelta(event, langs, itemFlushLast, setItems);
       }
     }
   } catch {
@@ -23,15 +24,15 @@ export function onMessage(message: MessageEvent<string>, langs: Langs, itemLast:
   }
 }
 
-function handleDelta(event: RealtimeEvent, langs: Langs, itemLast: ItemLastRef, setItems: SetItems) {
+function handleDelta(event: RealtimeEvent, langs: Langs, itemFlushLast: ItemFlushLastRef, setItems: SetItems) {
   if (event.delta) {
     for (const delta of splitDelta(event.delta)) {
-      const item = updateTranscript(delta.text, itemLast, setItems);
-      if (item) {
+      const itemFlush = updateItemFlush(delta.text, itemFlushLast, setItems);
+      if (itemFlush) {
         if (delta.isEnd) {
-          finalizeTranscript(itemLast, langs, setItems);
+          finalizeItemFlush(itemFlushLast, langs, setItems);
         } else if (delta.shouldTranslate || event.delta === " ") {
-          void updateTranslation(item, langs, itemLast, setItems);
+          void updateTranslation(itemFlush, langs, itemFlushLast, setItems);
         }
       }
     }
@@ -55,33 +56,35 @@ function splitDelta(delta: string) {
   return deltas;
 }
 
-function updateTranscript(delta: string, itemLast: ItemLastRef, setItems: SetItems) {
-  const itemCurrent = itemLast.current;
-  const itemNew = itemCurrent
-    ? { ...itemCurrent, transcript: itemCurrent.transcript + delta }
-    : { id: new Date().toISOString(), transcript: delta, translation: "" };
+function updateItemFlush(delta: string, itemFlushLast: ItemFlushLastRef, setItems: SetItems) {
+  const itemFlushCurrent = itemFlushLast.current;
+  const itemFlushNew = itemFlushCurrent
+    ? { ...itemFlushCurrent, transcript: itemFlushCurrent.transcript + delta }
+    : createItemFlush({ id: crypto.randomUUID(), startedAt: new Date().toISOString(), transcript: delta });
 
-  itemLast.current = itemNew;
+  itemFlushLast.current = itemFlushNew;
   setItems((items) => {
-    if (!items.some((item) => item.id === itemNew.id)) return [...items, itemNew];
-    return items.map((item) => (item.id === itemNew.id ? itemNew : item));
+    if (!items.some((item) => item.id === itemFlushNew.id)) return [...items, itemFlushNew];
+    return items.map((item) => (item.id === itemFlushNew.id ? itemFlushNew : item));
   });
-  return itemNew;
+  return itemFlushNew;
 }
 
-export function finalizeTranscript(itemLast: ItemLastRef, langs: Langs, setItems: SetItems) {
-  const item = itemLast.current;
-  if (item) {
-    itemLast.current = null;
-    void updateTranslation(item, langs, itemLast, setItems);
+export function finalizeItemFlush(itemFlushLast: ItemFlushLastRef, langs: Langs, setItems: SetItems) {
+  const itemFlush = itemFlushLast.current;
+  if (itemFlush) {
+    const itemFlushEnded = { ...itemFlush, endedAt: new Date().toISOString() };
+    itemFlushLast.current = null;
+    setItems((items) => items.map((item) => item.id === itemFlushEnded.id ? itemFlushEnded : item));
+    void updateTranslation(itemFlushEnded, langs, itemFlushLast, setItems);
   }
 }
 
-export async function updateTranslation(item: Item, langs: Langs, itemLast: ItemLastRef, setItems: SetItems) {
+export async function updateTranslation(item: Item, langs: Langs, itemFlushLast: ItemFlushLastRef, setItems: SetItems) {
   const translation = await translate({ langFrom: langs.from, langTo: langs.to, text: item.transcript });
   if (translation !== null) {
-    if (itemLast.current?.id === item.id) {
-      itemLast.current = { ...itemLast.current, translation };
+    if (item.type === "flush" && itemFlushLast.current?.id === item.id) {
+      itemFlushLast.current = { ...itemFlushLast.current, translation };
     }
     setItems((itemsCurrent) =>
       itemsCurrent.map((itemCurrent) =>

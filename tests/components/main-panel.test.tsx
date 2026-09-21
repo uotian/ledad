@@ -23,11 +23,14 @@ describe("MainPanel", () => {
   it("renders transcripts and a pending translation state", () => {
     render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
+      startedAt: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "",
+      type: "flush",
     }]} />);
 
     expect(screen.getByText("Hello")).toBeInTheDocument();
+    expect(screen.getByText(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)).toBeInTheDocument();
     expect(screen.getByText("...")).toBeInTheDocument();
     expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
   });
@@ -35,8 +38,10 @@ describe("MainPanel", () => {
   it("renders a completed translation", () => {
     render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
+      startedAt: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "こんにちは",
+      type: "flush",
     }]} />);
 
     expect(screen.getByText("こんにちは")).toBeInTheDocument();
@@ -48,24 +53,30 @@ describe("MainPanel", () => {
     vi.useFakeTimers();
     const { container, rerender } = render(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
+      startedAt: "2026-01-01T00:00:00.000Z",
       transcript: "Hello",
       translation: "こんにちは",
+      type: "flush",
     }]} />);
     const initialCalls = vi.mocked(Element.prototype.scrollIntoView).mock.calls.length;
 
     fireEvent.wheel(container.querySelector("section") as HTMLElement);
     rerender(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
+      startedAt: "2026-01-01T00:00:00.000Z",
       transcript: "Hello again",
       translation: "こんにちは",
+      type: "flush",
     }]} />);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(initialCalls);
 
     vi.advanceTimersByTime(10_000);
     rerender(<MainPanel textSize="M" onClear={onClear} items={[{
       id: "2026-01-01T00:00:00.000Z",
+      startedAt: "2026-01-01T00:00:00.000Z",
       transcript: "Hello once more",
       translation: "こんにちは",
+      type: "flush",
     }]} />);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(initialCalls + 1);
   });

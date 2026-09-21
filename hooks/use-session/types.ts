@@ -1,5 +1,5 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
-import type { Item, Lang, Status } from "@/lib/types";
+import type { ItemFlush, Item, Lang, Status } from "@/lib/types";
 
 export type Refs = {
   mic: RefObject<MediaStream | null>;
@@ -7,7 +7,7 @@ export type Refs = {
   channel: RefObject<RTCDataChannel | null>;
 };
 
-export type ItemLastRef = RefObject<Item | null>;
+export type ItemFlushLastRef = RefObject<ItemFlush | null>;
 
 export type Langs = {
   from: Lang;

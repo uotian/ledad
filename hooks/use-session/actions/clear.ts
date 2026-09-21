@@ -1,7 +1,7 @@
-import type { ItemLastRef, SetError, SetItems } from "../types";
+import type { ItemFlushLastRef, SetError, SetItems } from "../types";
 
-export function clear(setError: SetError, setItems: SetItems, itemLast: ItemLastRef) {
+export function clear(setError: SetError, setItems: SetItems, itemFlushLast: ItemFlushLastRef) {
   setError(null);
-  itemLast.current = null;
+  itemFlushLast.current = null;
   setItems([]);
 }

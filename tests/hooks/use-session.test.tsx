@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   clear: vi.fn(),
   commit: vi.fn(),
   cleanup: vi.fn(),
-  finalizeTranscript: vi.fn(),
+  finalizeItemFlush: vi.fn(),
   updateTranslation: vi.fn(),
 }));
 
@@ -17,7 +17,7 @@ vi.mock("@/hooks/use-session/actions/clear", () => ({ clear: mocks.clear }));
 vi.mock("@/hooks/use-session/actions/commit", () => ({ commit: mocks.commit }));
 vi.mock("@/hooks/use-session/utils", () => ({ cleanup: mocks.cleanup }));
 vi.mock("@/hooks/use-session/actions/start/on-message", () => ({
-  finalizeTranscript: mocks.finalizeTranscript,
+  finalizeItemFlush: mocks.finalizeItemFlush,
   updateTranslation: mocks.updateTranslation,
 }));
 
@@ -30,9 +30,9 @@ describe("useSession", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     mocks.commit.mockReturnValue(true);
-    mocks.start.mockImplementation(async ({ refs, itemLast, setStatus }) => {
+    mocks.start.mockImplementation(async ({ refs, itemFlushLast, setStatus }) => {
       refs.channel.current = { close: vi.fn() };
-      itemLast.current = { id: "1", transcript: "Hello", translation: "" };
+      itemFlushLast.current = { id: "1", startedAt: "2026-01-01T00:00:00.000Z", transcript: "Hello", translation: "", type: "flush" };
       setStatus("listening");
     });
     mocks.stop.mockImplementation((_refs, setStatus) => setStatus("idle"));
@@ -53,7 +53,7 @@ describe("useSession", () => {
 
     expect(mocks.commit).toHaveBeenCalledOnce();
     expect(mocks.updateTranslation).toHaveBeenCalledWith(
-      { id: "1", transcript: "Hello", translation: "" },
+      { id: "1", startedAt: "2026-01-01T00:00:00.000Z", transcript: "Hello", translation: "", type: "flush" },
       { from: "en", to: "ja" },
       expect.any(Object),
       expect.any(Function),
@@ -65,7 +65,7 @@ describe("useSession", () => {
     await act(async () => result.current.start());
 
     act(() => result.current.commit());
-    expect(mocks.finalizeTranscript).toHaveBeenCalledWith(
+    expect(mocks.finalizeItemFlush).toHaveBeenCalledWith(
       expect.any(Object),
       { from: "fr", to: "zh" },
       expect.any(Function),
@@ -101,11 +101,11 @@ describe("useSession", () => {
     const nextSettings = { ...settings, langFrom: "fr" as const, langTo: "zh" as const };
     rerender(nextSettings);
     act(() => result.current.commit());
-    expect(mocks.finalizeTranscript).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
+    expect(mocks.finalizeItemFlush).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
     await act(async () => result.current.start());
     expect(mocks.start).toHaveBeenLastCalledWith(expect.objectContaining({ settings: nextSettings }));
     act(() => result.current.commit());
-    expect(mocks.finalizeTranscript).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
+    expect(mocks.finalizeItemFlush).toHaveBeenLastCalledWith(expect.any(Object), { from: "fr", to: "zh" }, expect.any(Function));
   });
 
 });

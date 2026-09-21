@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { exchangeSDP } from "@/ai/realtime/transcript";
+import { exchangeSDP } from "@/ai/transcribe";
 import { isSettings } from "@/lib/settings";
 
 export async function POST(request: Request) {

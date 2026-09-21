@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Refs } from "@/hooks/use-session/types";
 
-const exchangeSDP = vi.hoisted(() => vi.fn());
+const requestSDP = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/transcript", () => ({ exchangeSDP }));
+vi.mock("@/lib/transcribe/live", () => ({ requestSDP }));
 
 import { start } from "@/hooks/use-session/actions/start";
 
@@ -52,13 +52,13 @@ function createArgs() {
     setStatus: vi.fn(),
     setError: vi.fn(),
     setItems: vi.fn(),
-    itemLast: { current: { id: "old", transcript: "Old", translation: "" } },
+    itemFlushLast: { current: { id: "old", startedAt: "2026-01-01T00:00:00.000Z", transcript: "Old", translation: "", type: "flush" as const } },
   };
 }
 
 describe("session start", () => {
   beforeEach(() => {
-    exchangeSDP.mockResolvedValue("answer-sdp");
+    requestSDP.mockResolvedValue("answer-sdp");
   });
 
   afterEach(() => {
@@ -71,12 +71,12 @@ describe("session start", () => {
 
     await start(args);
 
-    expect(args.itemLast.current).toBeNull();
+    expect(args.itemFlushLast.current).toBeNull();
     expect(args.setStatus).toHaveBeenNthCalledWith(1, "requesting");
     expect(args.setStatus).toHaveBeenNthCalledWith(2, "connecting");
     expect(browser.getUserMedia).toHaveBeenCalledWith({ audio: true });
     expect(browser.connection.addTrack).toHaveBeenCalled();
-    expect(exchangeSDP).toHaveBeenCalledWith({ sdp: "offer-sdp", settings: args.settings });
+    expect(requestSDP).toHaveBeenCalledWith({ sdp: "offer-sdp", settings: args.settings });
     expect(browser.connection.setRemoteDescription).toHaveBeenCalledWith({ type: "answer", sdp: "answer-sdp" });
 
     browser.listeners.get("open")?.(new Event("open"));

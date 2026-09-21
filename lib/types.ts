@@ -20,11 +20,24 @@ export type Settings = {
   keywords: string[];
 };
 
-export type Item = {
+type ItemBase = {
   id: string;
+  startedAt: string;
+  endedAt?: string;
   transcript: string;
   translation: string;
 };
+
+export type ItemFlush = ItemBase & {
+  type: "flush";
+};
+
+export type ItemFinal = ItemBase & {
+  type: "final";
+  endedAt: string;
+};
+
+export type Item = ItemFlush | ItemFinal;
 
 export type RealtimeEvent = {
   event_id?: string;
