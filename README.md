@@ -27,11 +27,11 @@ Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Respons
 Click the gear icon (`Settings`) at the top right, adjust the following settings, and press `Save`. Settings are saved in this browser.
 
 - `Source language` / `Translation language`: English (`en`), Japanese (`ja`), Chinese (`zh`), or French (`fr`). The default is English → Japanese. The bottom control panel displays the selected language direction.
-- `Text size`: S, M, or L (default: M). Saving applies the size immediately to the main panel only.
+- `Text size`: S, M, or L (default: M).
 - `Prompt`: topic or recording context for transcription.
-- `Keywords`: names, technical terms, or acronyms as spelling hints, one per line. The characters `<` and `>` are not allowed.
+- `Keywords`: names, technical terms, or acronyms as spelling hints, one per line.
 
-Settings are saved in this browser. Opening settings while listening asks you to confirm stopping the session. OK stops the session and opens settings; Cancel keeps the session running. Language, prompt, and keyword changes apply to the next session. After saving, press Start to resume.
+Opening settings while the session is not idle asks you to confirm stopping it. Text size takes effect immediately after saving; all other settings apply when the next session starts.
 
 Press `Stop` to stop microphone input and the Realtime connection.
 

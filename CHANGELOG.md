@@ -2,6 +2,10 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.3.1
+
+- Ask to stop the session before opening Settings when it is not idle.
+
 ## v0.3.0
 
 ### Transcription and translation

@@ -66,6 +66,18 @@ describe("settings", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Keywords cannot contain < or >.");
     expect(localStorage.getItem(settingsKey)).toBeNull();
   });
+
+  it("keeps the dialog open when source and translation languages are the same", () => {
+    render(<Settings />);
+    openSettings();
+    fireEvent.change(screen.getByLabelText("Source language"), { target: { value: "ja" } });
+    expect(screen.getByLabelText("Translation language")).toHaveValue("ja");
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Source and translation languages must be different.");
+    expect(localStorage.getItem(settingsKey)).toBeNull();
+  });
+
   it("selects languages independently and restores both after saving", () => {
     const first = render(<Settings />);
     openSettings();

@@ -2,6 +2,10 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.3.1
+
+- `idle` 以外で Settings を開く際、停止確認を表示するように改善。
+
 ## v0.3.0
 
 ### 文字起こし・翻訳

@@ -6,7 +6,7 @@ import type { Session } from "@/hooks/use-session";
 import { useSettings } from "@/hooks/use-settings";
 import { LANGS, TEXT_SIZES, type Lang, type TextSize } from "@/lib/types";
 import { Button } from "@/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
 import { Textarea } from "@/ui/textarea";
 
@@ -22,7 +22,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
 
   function changeOpen(nextOpen: boolean) {
     if (nextOpen) {
-      if (session.status === "listening") {
+      if (session.status !== "idle") {
         if (!window.confirm("Stop the current session and open settings?")) return;
         session.stop();
       }
@@ -39,7 +39,9 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
   function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const keywords = [...new Set(keywordsText.split(/\r?\n/).map((keyword) => keyword.trim()).filter(Boolean))];
-    if (keywords.some((keyword) => /[<>\r\n]/.test(keyword))) {
+    if (langFrom === langTo) {
+      setError("Source and translation languages must be different.");
+    } else if (keywords.some((keyword) => /[<>\r\n]/.test(keyword))) {
       setError("Keywords cannot contain < or >.");
     } else {
       try {
@@ -60,7 +62,6 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
         <form onSubmit={save} className="grid gap-5">
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>Settings are saved in this browser. While listening, opening settings asks you to stop the session. Language, prompt, and keyword changes apply to the next session.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
@@ -78,10 +79,9 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
           </div>
           <div className="grid gap-2">
             <Label htmlFor="main-panel-text-size">Text size</Label>
-            <select id="main-panel-text-size" value={textSize} onChange={(event) => setTextSize(event.target.value as TextSize)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm" aria-describedby="text-size-hint">
+            <select id="main-panel-text-size" value={textSize} onChange={(event) => setTextSize(event.target.value as TextSize)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
               {TEXT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
-            <p id="text-size-hint" className="text-xs text-muted-foreground">Applies immediately to the transcript display.</p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>
@@ -89,8 +89,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
           </div>
           <div className="grid gap-2">
             <Label htmlFor="transcription-keywords">Keywords</Label>
-            <Textarea id="transcription-keywords" value={keywordsText} onChange={(event) => setKeywordsText(event.target.value)} className="min-h-28" aria-describedby="keywords-hint" placeholder={"OpenAI\nUnited Nations"} />
-            <p id="keywords-hint" className="text-xs text-muted-foreground">One keyword per line. Names and acronyms help with spelling.</p>
+            <Textarea id="transcription-keywords" value={keywordsText} onChange={(event) => setKeywordsText(event.target.value)} className="min-h-28" placeholder={"OpenAI\nUnited Nations"} />
           </div>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

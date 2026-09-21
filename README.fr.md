@@ -27,11 +27,11 @@ Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Rea
 Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les paramètres suivants et appuyez sur `Save`. Les paramètres sont enregistrés dans ce navigateur.
 
 - `Source language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
-- `Text size` : S, M ou L (M par défaut). Une fois enregistrée, la taille s’applique immédiatement au panneau principal uniquement.
+- `Text size` : S, M ou L (M par défaut).
 - `Prompt` : sujet ou contexte de l’enregistrement pour la transcription.
-- `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne. Les caractères `<` et `>` ne sont pas autorisés.
+- `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne.
 
-Les paramètres sont enregistrés dans ce navigateur. Pendant l’écoute, ouvrir les paramètres demande de confirmer l’arrêt de la session. OK arrête la session et ouvre les paramètres ; Annuler laisse la session en cours. Les changements de langues, de contexte et de mots-clés prennent effet à la prochaine session. Après avoir enregistré, appuyez sur Start pour reprendre.
+Ouvrir les paramètres lorsque la session n’est pas inactive demande de confirmer son arrêt. La taille du texte s’applique immédiatement après l’enregistrement ; les autres paramètres prennent effet au démarrage de la prochaine session.
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 

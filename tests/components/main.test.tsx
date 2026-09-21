@@ -35,8 +35,7 @@ describe("Main", () => {
     vi.restoreAllMocks();
   });
 
-  it.each(["idle", "requesting", "connecting"] as const)("opens settings without confirming or stopping while %s", (status) => {
-    state.session.status = status;
+  it("opens settings without confirming or stopping while idle", () => {
     const confirm = vi.spyOn(window, "confirm");
     render(<Main />);
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
@@ -45,8 +44,8 @@ describe("Main", () => {
     expect(state.session.stop).not.toHaveBeenCalled();
   });
 
-  it("keeps listening and settings closed when confirmation is cancelled", () => {
-    state.session.status = "listening";
+  it.each(["requesting", "connecting", "listening"] as const)("keeps %s and settings closed when confirmation is cancelled", (status) => {
+    state.session.status = status;
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
     render(<Main />);
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
@@ -55,14 +54,21 @@ describe("Main", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it.each(["Cancel", "Save"])("stops after confirmation and stays stopped after %s", (action) => {
-    state.session.status = "listening";
+  it.each(["requesting", "connecting", "listening"] as const)("stops %s after confirmation", (status) => {
+    state.session.status = status;
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
     render(<Main />);
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     expect(confirm).toHaveBeenCalledWith("Stop the current session and open settings?");
     expect(state.session.stop).toHaveBeenCalledOnce();
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it.each(["Cancel", "Save"])("stays stopped after %s", (action) => {
+    state.session.status = "listening";
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    render(<Main />);
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     fireEvent.click(screen.getByRole("button", { name: action }));
     expect(state.session.stop).toHaveBeenCalledOnce();
     expect(state.session.start).not.toHaveBeenCalled();
@@ -74,7 +80,7 @@ describe("Main", () => {
     expect(state.useSession).toHaveBeenCalledWith(defaultSettings);
     expect(screen.getByRole("button", { name: "Settings" })).toBeEnabled();
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
-    expect(screen.getByText("v0.3.0")).toBeInTheDocument();
+    expect(screen.getByText("v0.3.1")).toBeInTheDocument();
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start" })).toBeEnabled();
   });
