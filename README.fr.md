@@ -4,11 +4,13 @@
 
 ![Démonstration de la transcription et de la traduction en temps réel de ledad](docs/assets/ledad-demo.gif)
 
+Démonstration de l’interface avec des données d’exemple.
+
 Application web qui utilise le microphone du navigateur pour transcrire la parole en temps réel et la traduire dans une autre langue.
 
 ## Fonctionnement
 
-Le navigateur transmet le son du microphone à l’API OpenAI Realtime via WebRTC. Des Route Handlers Next.js établissent la connexion Realtime et envoient le texte transcrit à l’API Responses pour le traduire, tout en conservant la clé API OpenAI côté serveur. Le tampon audio est validé automatiquement toutes les 15 secondes afin que les prises de parole longues soient finalisées et traduites sans intervention manuelle.
+Le navigateur transmet le son du microphone à l’API OpenAI Realtime via WebRTC. La clé API OpenAI est gérée uniquement côté serveur. La transcription et la traduction se mettent à jour automatiquement pendant que vous continuez à parler.
 
 Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Realtime et Responses.
 
@@ -22,15 +24,20 @@ Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Rea
 
 ## Utilisation
 
-Choisissez la langue source et la langue cible dans le panneau de contrôle en bas de l'écran.
+Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les paramètres suivants et appuyez sur `Save`. Les paramètres sont enregistrés dans ce navigateur.
 
-Appuyez sur `Start` pour demander l'autorisation d'utiliser le microphone et commencer la transcription. Quand la parole est reconnue, la transcription et la traduction s'affichent dans le panneau principal.
+- `Source language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
+- `Text size` : S, M ou L (M par défaut). Une fois enregistrée, la taille s’applique immédiatement au panneau principal uniquement.
+- `Prompt` : sujet ou contexte de l’enregistrement pour la transcription.
+- `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne. Les caractères `<` et `>` ne sont pas autorisés.
+
+Les paramètres sont enregistrés dans ce navigateur. Pendant l’écoute, ouvrir les paramètres demande de confirmer l’arrêt de la session. OK arrête la session et ouvre les paramètres ; Annuler laisse la session en cours. Les changements de langues, de contexte et de mots-clés prennent effet à la prochaine session. Après avoir enregistré, appuyez sur Start pour reprendre.
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 
 Appuyez sur `Commit` pour valider le tampon audio actuel et finaliser la transcription en cours pour la traduction. Pendant une session, le tampon audio est également validé automatiquement toutes les 15 secondes.
 
-Appuyez sur `Clear` pour effacer l'historique affiché.
+Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
 
 ## Prérequis
 
@@ -66,4 +73,7 @@ http://localhost:3000
 ## Notes
 
 - Vous devez autoriser l'accès au microphone dans le navigateur.
+- Les sessions s’arrêtent automatiquement après 30 minutes. Appuyez à nouveau sur `Start` pour continuer.
 - L'utilisation de l'API OpenAI peut entraîner des frais.
+
+[Historique des modifications](CHANGELOG.md)

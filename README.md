@@ -4,11 +4,13 @@
 
 ![ledad real-time transcription and translation demo](docs/assets/ledad-demo.gif)
 
+UI demo with sample data.
+
 Browser-based web app for real-time speech transcription and translation using microphone input.
 
 ## How it works
 
-The browser streams microphone audio to the OpenAI Realtime API over WebRTC. Next.js Route Handlers negotiate the Realtime connection and send transcript text to the Responses API for translation, keeping the OpenAI API key on the server. The audio buffer is committed automatically every 15 seconds so longer speech is finalized and translated without manual input.
+The browser streams microphone audio to the OpenAI Realtime API over WebRTC. The OpenAI API key is handled only on the server. Transcription and translation update automatically as you continue speaking.
 
 Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Responses APIs.
 
@@ -22,15 +24,20 @@ Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Respons
 
 ## Usage
 
-Choose the source and target languages in the control panel at the bottom of the screen.
+Click the gear icon (`Settings`) at the top right, adjust the following settings, and press `Save`. Settings are saved in this browser.
 
-Press `Start` to request microphone permission and start transcription. When speech is recognized, transcription and translation appear in the main panel.
+- `Source language` / `Translation language`: English (`en`), Japanese (`ja`), Chinese (`zh`), or French (`fr`). The default is English → Japanese. The bottom control panel displays the selected language direction.
+- `Text size`: S, M, or L (default: M). Saving applies the size immediately to the main panel only.
+- `Prompt`: topic or recording context for transcription.
+- `Keywords`: names, technical terms, or acronyms as spelling hints, one per line. The characters `<` and `>` are not allowed.
+
+Settings are saved in this browser. Opening settings while listening asks you to confirm stopping the session. OK stops the session and opens settings; Cancel keeps the session running. Language, prompt, and keyword changes apply to the next session. After saving, press Start to resume.
 
 Press `Stop` to stop microphone input and the Realtime connection.
 
 Press `Commit` to commit the current audio buffer and finalize the current transcript for translation. During a session, the audio buffer is also committed automatically every 15 seconds.
 
-Press `Clear` to clear the displayed history.
+Press the eraser icon (`Clear`) at the bottom right of the main panel to clear the displayed history without stopping the session.
 
 ## Requirements
 
@@ -66,4 +73,7 @@ http://localhost:3000
 ## Notes
 
 - You need to allow microphone access in the browser.
+- Sessions stop automatically after 30 minutes. Press `Start` again to continue.
 - OpenAI API usage may incur costs.
+
+[Changelog](CHANGELOG.md)

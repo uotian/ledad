@@ -12,7 +12,7 @@ export function Main() {
 
   return (
     <main className="mx-auto h-dvh w-full max-w-7xl py-2 px-12 flex flex-col">
-      <Header />
+      <Header session={session} />
       <MainPanel className="flex-1 min-h-0 mb-3" items={session.items} onClear={session.clear} textSize={settings.textSize} />
       <ControlPanel session={session} settings={settings} />
     </main>

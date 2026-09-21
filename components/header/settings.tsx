@@ -2,13 +2,16 @@
 
 import { useState, type FormEvent } from "react";
 import { SettingsIcon } from "lucide-react";
-import { LANGS, TEXT_SIZES, type Lang, type TextSize, type Settings } from "@/lib/types";
+import type { Session } from "@/hooks/use-session";
+import { useSettings } from "@/hooks/use-settings";
+import { LANGS, TEXT_SIZES, type Lang, type TextSize } from "@/lib/types";
 import { Button } from "@/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
 import { Textarea } from "@/ui/textarea";
 
-export function SettingsDialog({ settings, onSave }: { settings: Settings; onSave: (settings: Settings) => void }) {
+export function SettingsDialog({ session }: { session: Pick<Session, "status" | "stop"> }) {
+  const { settings, saveSettings } = useSettings();
   const [open, setOpen] = useState(false);
   const [textSize, setTextSize] = useState(settings.textSize);
   const [langFrom, setLangFrom] = useState(settings.langFrom);
@@ -19,6 +22,10 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
 
   function changeOpen(nextOpen: boolean) {
     if (nextOpen) {
+      if (session.status === "listening") {
+        if (!window.confirm("Stop the current session and open settings?")) return;
+        session.stop();
+      }
       setTextSize(settings.textSize);
       setLangFrom(settings.langFrom);
       setLangTo(settings.langTo);
@@ -36,7 +43,7 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        onSave({ textSize, langFrom, langTo, prompt, keywords });
+        saveSettings({ textSize, langFrom, langTo, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -53,7 +60,7 @@ export function SettingsDialog({ settings, onSave }: { settings: Settings; onSav
         <form onSubmit={save} className="grid gap-5">
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>Saved in this browser. Language and transcription changes apply when you start a session.</DialogDescription>
+            <DialogDescription>Settings are saved in this browser. While listening, opening settings asks you to stop the session. Language, prompt, and keyword changes apply to the next session.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">

@@ -1,12 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SettingsDialog } from "@/components/header/settings";
-import { useSettings, settingsKey } from "@/hooks/use-settings";
+import { settingsKey } from "@/hooks/use-settings";
 import { defaultSettings } from "@/lib/settings";
 
 function Settings() {
-  const { settings, saveSettings } = useSettings();
-  return <SettingsDialog settings={settings} onSave={saveSettings} />;
+  return <SettingsDialog session={{ status: "idle", stop: () => undefined }} />;
 }
 
 function openSettings() {
