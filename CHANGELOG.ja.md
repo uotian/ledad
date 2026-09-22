@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.4.0
+
+### 文字起こし・翻訳
+
+- 低遅延な `gpt-live-transcribe` の flush 文字起こしと並行して、60秒ごとに `gpt-transcribe` の確定版を生成する機能を追加。
+- 最新の確定版の終了時刻以前に完了した flush item を置換し、入力中の flush item は表示し続けるよう改善。
+
 ## v0.3.1
 
 - `idle` 以外で Settings を開く際、停止確認を表示するように改善。

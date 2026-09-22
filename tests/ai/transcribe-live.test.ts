@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { exchangeSDP } from "@/ai/realtime/transcript";
+import { exchangeSDP } from "@/ai/transcribe-live";
 
 afterEach(() => {
   vi.unstubAllGlobals();
