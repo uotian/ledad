@@ -2,11 +2,11 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
-![ledad real-time transcription and translation demo](docs/assets/ledad-demo.gif)
+![ledad real-time transcription, translation, and AI Insights demo](docs/assets/ledad-demo.gif)
 
 UI demo with sample data.
 
-Browser-based web app for real-time speech transcription and translation using microphone input.
+Browser-based web app for real-time speech transcription, translation, and conversation summaries with AI Insights using microphone input.
 
 Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Responses APIs.
 
@@ -15,6 +15,7 @@ Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Respons
 - Browser microphone input
 - Low-latency preliminary and 60-second final transcriptions
 - Translation of preliminary and final transcripts
+- Topic summaries and the current topic in the source language
 - Source and target language switching
 - Start, stop, commit, and clear session controls
 
@@ -34,6 +35,10 @@ Press `Stop` to stop microphone input and the Realtime connection.
 Press `Commit` to commit the current audio buffer and finalize the current transcript for translation. During a session, the audio buffer is also committed automatically every 15 seconds.
 
 Press the eraser icon (`Clear`) at the bottom right of the main panel to clear the displayed history without stopping the session.
+
+The left-hand `AI Insights` panel shows `All Topics`, merging repeated discussions of the same topic, and a separate `Current Topic`. Click a title to expand its summary. On narrow screens, topics appear above the transcript.
+
+While listening, the app checks for changes every minute and summarizes the displayed transcript and translation with `gpt-5.6-luna`. Summaries appear in the translation language. The refresh button beside `AI Insights` regenerates the summary even when the content has not changed. The button is disabled during processing, and the last summary remains visible after stopping. Summaries are for reference.
 
 ## Requirements
 

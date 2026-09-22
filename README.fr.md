@@ -2,11 +2,11 @@
 
 [日本語](README.ja.md) | [English](README.md) | [Français](README.fr.md) | [中文](README.zh.md)
 
-![Démonstration de la transcription et de la traduction en temps réel de ledad](docs/assets/ledad-demo.gif)
+![Démonstration de la transcription, de la traduction et d’AI Insights dans ledad](docs/assets/ledad-demo.gif)
 
 Démonstration de l’interface avec des données d’exemple.
 
-Application web qui utilise le microphone du navigateur pour transcrire la parole en temps réel et la traduire dans une autre langue.
+Application web qui utilise le microphone du navigateur pour transcrire et traduire la parole en temps réel, et résumer les sujets de conversation avec AI Insights.
 
 Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Realtime et Responses.
 
@@ -15,6 +15,7 @@ Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Rea
 - Entrée audio depuis le microphone du navigateur
 - Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
 - Traduction des transcriptions préliminaires et finales
+- Résumés par sujet et sujet actuel dans la langue source
 - Changement de la langue source et de la langue cible
 - Commandes pour démarrer, arrêter, valider et effacer une session
 
@@ -34,6 +35,10 @@ Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 Appuyez sur `Commit` pour valider le tampon audio actuel et finaliser la transcription en cours pour la traduction. Pendant une session, le tampon audio est également validé automatiquement toutes les 15 secondes.
 
 Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
+
+Le panneau gauche `AI Insights` affiche `All Topics`, qui regroupe les discussions sur un même sujet, et un `Current Topic` distinct. Cliquez sur un titre pour développer son résumé. Sur les écrans étroits, les sujets apparaissent au-dessus de la transcription.
+
+Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-5.6-luna`. Les résumés sont affichés dans la langue de traduction. Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
 
 ## Prérequis
 

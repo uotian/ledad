@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.5.0
+
+- Added a left-hand AI Insights panel with collapsible All Topics and Current Topic summaries; repeated topics are merged.
+- Summarize selected transcripts and translations independently every minute with `gpt-5.6-luna`, in the translation language.
+- Added manual refresh to AI Insights with a spinning, disabled button during requests to prevent duplicate submissions.
+- Skip unchanged input and overlapping requests, retain successful summaries on failure, and cancel analysis on Stop, the 30-minute limit, or unmount. Transcript Clear does not reset or cancel Insights.
+
 ## v0.4.0
 
 ### Transcription and translation
