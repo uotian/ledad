@@ -1,5 +1,5 @@
 import { Outfit } from "next/font/google";
-import packageJson from "@/package.json";
+import packageJson from "../../../package.json";
 
 const logoFont = Outfit({
   subsets: ["latin"],

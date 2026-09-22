@@ -1,12 +1,12 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-const root = fileURLToPath(new URL(".", import.meta.url));
+const src = fileURLToPath(new URL("./src", import.meta.url));
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": root,
+      "@": src,
       "server-only": fileURLToPath(new URL("./tests/setup/server-only.ts", import.meta.url)),
     },
   },
@@ -21,11 +21,11 @@ export default defineConfig({
         "**/types.ts",
       ],
       include: [
-        "ai/**/*.ts",
-        "app/api/**/*.ts",
-        "components/**/*.tsx",
-        "hooks/**/*.ts",
-        "lib/**/*.ts",
+        "src/ai/**/*.ts",
+        "src/app/api/**/*.ts",
+        "src/components/**/*.tsx",
+        "src/hooks/**/*.ts",
+        "src/lib/**/*.ts",
       ],
       provider: "v8",
       reporter: ["text", "html"],
