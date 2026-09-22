@@ -2,6 +2,11 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.5.1
+
+- Upgraded preliminary/final translation and AI Insights from `gpt-5.6-luna` to `gpt-6-luna`.
+- Send AI Insights input as one user message per item, with explicit cache boundaries on the stable final-transcript prefix; keep preliminary transcripts uncached.
+
 ## v0.5.0
 
 - Added a left-hand AI Insights panel with collapsible All Topics and Current Topic summaries; repeated topics are merged.

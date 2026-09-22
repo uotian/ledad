@@ -14,10 +14,32 @@ describe("topic summaries", () => {
     const signal = new AbortController().signal;
     await expect(generateInsights("secret", input, signal)).resolves.toEqual(result);
     expect(mocks.create).toHaveBeenCalledWith(expect.objectContaining({
-      model: "gpt-5.6-luna", reasoning: { effort: "none" }, store: false,
-      input: JSON.stringify(input.items),
+      model: "gpt-6-luna", reasoning: { effort: "none" }, store: false,
+      input: [{ role: "user", content: [{ type: "input_text", text: JSON.stringify(input.items[0]) }] }],
+      prompt_cache_options: { mode: "explicit" },
       text: { format: expect.objectContaining({ type: "json_schema", strict: true }) },
     }), { signal });
+  });
+  it("preserves final message boundaries as the transcript grows and caches only the stable prefix", async () => {
+    mocks.create.mockResolvedValue({ status: "completed", output_text: '{"allTopics":[],"currentTopic":null}' });
+    const final = { ...input.items[0], id: "final", type: "final" as const, endedAt: "2026-09-22T00:01:00Z" };
+    await generateInsights("secret", { ...input, items: [final] });
+    const originalMessage = mocks.create.mock.calls[0][0].input[0];
+    expect(originalMessage).toEqual({ role: "user", content: [{ type: "input_text", text: JSON.stringify(final), prompt_cache_breakpoint: { mode: "explicit" } }] });
+
+    const draft = { ...input.items[0], transcripts: ["The next topic is the schedule."] };
+    const nextFinal = { ...final, id: "next-final" };
+    await generateInsights("secret", { ...input, items: [final, draft, nextFinal] });
+    const messages = mocks.create.mock.calls[1][0].input;
+    expect(messages).toHaveLength(3);
+    expect(messages[0]).toEqual(originalMessage);
+    expect(messages.map((message: { content: { text: string }[] }) => JSON.parse(message.content[0].text))).toEqual([final, draft, nextFinal]);
+    expect(messages[1].content[0].prompt_cache_breakpoint).toBeUndefined();
+    expect(messages[2].content[0].prompt_cache_breakpoint).toBeUndefined();
+
+    await generateInsights("secret", { ...input, items: [final, nextFinal] });
+    expect(mocks.create.mock.calls[2][0].input[0]).toEqual(originalMessage);
+    expect(mocks.create.mock.calls[2][0].input[1].content[0].prompt_cache_breakpoint).toEqual({ mode: "explicit" });
   });
   it.each(["", "not json", '{"allTopics":[],"currentTopic":{"title":"x"}}', '{"allTopics":[{"title":"","summary":"x"}],"currentTopic":null}'])("rejects unusable output: %s", async (output_text) => {
     mocks.create.mockResolvedValue({ output_text });

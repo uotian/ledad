@@ -2,6 +2,11 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.5.1
+
+- 速報・確定版の翻訳と AI Insights のモデルを `gpt-5.6-luna` から `gpt-6-luna` に更新。
+- AI Insights の入力をItem単位のuserメッセージに分割。先頭から連続する確定版にキャッシュ境界を指定し、速報以降はキャッシュ書き込み対象外に。
+
 ## v0.5.0
 
 - メインパネル左側に AI Insights を追加。同じ話題を統合した All Topics と、独立した Current Topic を表示し、タイトルを押すと概要を展開。

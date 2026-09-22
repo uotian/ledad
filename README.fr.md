@@ -38,7 +38,7 @@ Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal 
 
 Le panneau gauche `AI Insights` affiche `All Topics`, qui regroupe les discussions sur un même sujet, et un `Current Topic` distinct. Cliquez sur un titre pour développer son résumé. Sur les écrans étroits, les sujets apparaissent au-dessus de la transcription.
 
-Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-5.6-luna`. Les résumés sont affichés dans la langue de traduction. Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
+Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-6-luna`. Les résumés sont affichés dans la langue de traduction. Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
 
 ## Prérequis
 

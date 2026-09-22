@@ -38,7 +38,7 @@ Press the eraser icon (`Clear`) at the bottom right of the main panel to clear t
 
 The left-hand `AI Insights` panel shows `All Topics`, merging repeated discussions of the same topic, and a separate `Current Topic`. Click a title to expand its summary. On narrow screens, topics appear above the transcript.
 
-While listening, the app checks for changes every minute and summarizes the displayed transcript and translation with `gpt-5.6-luna`. Summaries appear in the translation language. The refresh button beside `AI Insights` regenerates the summary even when the content has not changed. The button is disabled during processing, and the last summary remains visible after stopping. Summaries are for reference.
+While listening, the app checks for changes every minute and summarizes the displayed transcript and translation with `gpt-6-luna`. Summaries appear in the translation language. The refresh button beside `AI Insights` regenerates the summary even when the content has not changed. The button is disabled during processing, and the last summary remains visible after stopping. Summaries are for reference.
 
 ## Requirements
 
