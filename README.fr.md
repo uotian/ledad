@@ -8,17 +8,13 @@ Démonstration de l’interface avec des données d’exemple.
 
 Application web qui utilise le microphone du navigateur pour transcrire la parole en temps réel et la traduire dans une autre langue.
 
-## Fonctionnement
-
-Le navigateur transmet le son du microphone à l’API OpenAI Realtime via WebRTC. La clé API OpenAI est gérée uniquement côté serveur. La transcription et la traduction se mettent à jour automatiquement pendant que vous continuez à parler.
-
 Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Realtime et Responses.
 
 ## Fonctionnalités principales
 
 - Entrée audio depuis le microphone du navigateur
-- Transcription vocale en temps réel
-- Traduction du texte transcrit
+- Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
+- Traduction des transcriptions préliminaires et finales
 - Changement de la langue source et de la langue cible
 - Commandes pour démarrer, arrêter, valider et effacer une session
 
@@ -43,6 +39,12 @@ Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal 
 
 - Node.js
 - Clé API OpenAI
+
+## Navigateurs pris en charge
+
+Utilisez la dernière version stable de Chrome, Edge, Firefox ou Safari (y compris Safari sur iOS). Internet Explorer et les navigateurs obsolètes ne sont pas pris en charge.
+
+L’accès au microphone exige également un contexte sécurisé (HTTPS ou `localhost`) et l’autorisation du navigateur.
 
 ## Installation
 
@@ -74,6 +76,7 @@ http://localhost:3000
 
 - Vous devez autoriser l'accès au microphone dans le navigateur.
 - Les sessions s’arrêtent automatiquement après 30 minutes. Appuyez à nouveau sur `Start` pour continuer.
+- La clé API OpenAI est utilisée uniquement côté serveur et n’est pas exposée au navigateur.
 - L'utilisation de l'API OpenAI peut entraîner des frais.
 
 [Historique des modifications](CHANGELOG.md)

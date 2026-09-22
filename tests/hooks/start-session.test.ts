@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Refs } from "@/hooks/use-session/types";
 
-const exchangeSDP = vi.hoisted(() => vi.fn());
+const requestSDP = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/transcript", () => ({ exchangeSDP }));
+vi.mock("@/lib/transcribe", () => ({ requestSDP }));
 
 import { start } from "@/hooks/use-session/actions/start";
 
@@ -36,6 +36,14 @@ function setupBrowserMedia(offer: RTCSessionDescriptionInit = { type: "offer", s
   vi.stubGlobal("RTCPeerConnection", function MockRTCPeerConnection() {
     return connection;
   });
+  vi.stubGlobal("MediaRecorder", class MockMediaRecorder {
+    static isTypeSupported() { return true; }
+    state: RecordingState = "inactive";
+    addEventListener() {}
+    start() { this.state = "recording"; }
+    requestData() {}
+    stop() { this.state = "inactive"; }
+  });
 
   return { channel, connection, getUserMedia, listeners, mic, micTrack, senderTrack };
 }
@@ -43,8 +51,8 @@ function setupBrowserMedia(offer: RTCSessionDescriptionInit = { type: "offer", s
 function createArgs() {
   const refs: Refs = {
     mic: { current: null },
-    connection: { current: null },
-    channel: { current: null },
+    flush: { current: null },
+    final: { current: null },
   };
   return {
     refs,
@@ -52,16 +60,19 @@ function createArgs() {
     setStatus: vi.fn(),
     setError: vi.fn(),
     setItems: vi.fn(),
-    itemLast: { current: { id: "old", transcript: "Old", translation: "" } },
+    itemFlushLast: { current: { id: "old", startedAt: "2026-01-01T00:00:00.000Z", transcripts: ["Old"], translations: [""], type: "flush" as const } },
   };
 }
 
 describe("session start", () => {
   beforeEach(() => {
-    exchangeSDP.mockResolvedValue("answer-sdp");
+    vi.useFakeTimers();
+    requestSDP.mockResolvedValue("answer-sdp");
   });
 
   afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
@@ -71,16 +82,17 @@ describe("session start", () => {
 
     await start(args);
 
-    expect(args.itemLast.current).toBeNull();
+    expect(args.itemFlushLast.current).toBeNull();
     expect(args.setStatus).toHaveBeenNthCalledWith(1, "requesting");
     expect(args.setStatus).toHaveBeenNthCalledWith(2, "connecting");
     expect(browser.getUserMedia).toHaveBeenCalledWith({ audio: true });
     expect(browser.connection.addTrack).toHaveBeenCalled();
-    expect(exchangeSDP).toHaveBeenCalledWith({ sdp: "offer-sdp", settings: args.settings });
+    expect(requestSDP).toHaveBeenCalledWith({ sdp: "offer-sdp", settings: args.settings });
     expect(browser.connection.setRemoteDescription).toHaveBeenCalledWith({ type: "answer", sdp: "answer-sdp" });
 
     browser.listeners.get("open")?.(new Event("open"));
     expect(args.setStatus).toHaveBeenLastCalledWith("listening");
+    args.refs.final.current?.stop();
   });
 
   it("forwards data-channel errors while the channel is current", async () => {
@@ -91,6 +103,7 @@ describe("session start", () => {
     browser.listeners.get("error")?.(new Event("error"));
 
     expect(args.setError).toHaveBeenLastCalledWith("Connection error. Please start again.");
+    args.refs.final.current?.stop();
   });
 
   it("returns to idle and cleans up when an offer has no SDP", async () => {
@@ -104,7 +117,7 @@ describe("session start", () => {
     expect(browser.channel.close).toHaveBeenCalledOnce();
     expect(browser.connection.close).toHaveBeenCalledOnce();
     expect(browser.micTrack.stop).toHaveBeenCalled();
-    expect(args.refs.channel.current).toBeNull();
+    expect(args.refs.flush.current).toBeNull();
   });
 
   it("reports microphone permission failures", async () => {
