@@ -89,4 +89,21 @@ describe("useSession", () => {
     expect(mocks.finalize).toHaveBeenLastCalledWith();
   });
 
+  it("accepts in-progress transcripts that finish after Clear", async () => {
+    vi.setSystemTime(new Date("2026-09-22T00:02:00.000Z"));
+    mocks.clear.mockImplementation((_error, setItems) => setItems([]));
+    const { result } = renderHook(() => useSession(settings));
+    await act(async () => result.current.start());
+    const { setItems } = mocks.start.mock.calls.at(-1)![0];
+    act(() => result.current.clear());
+    act(() => setItems((items: import("@/lib/types").Item[]) => [...items, {
+      id: "late", type: "final", startedAt: "2026-09-22T00:00:00.000Z", endedAt: "2026-09-22T00:01:00.000Z", transcripts: ["Old discussion"], translations: [""],
+    }]));
+    expect(result.current.items.map((item) => item.id)).toEqual(["late"]);
+    act(() => setItems((items: import("@/lib/types").Item[]) => [...items, {
+      id: "new", type: "flush", startedAt: "2026-09-22T00:02:01.000Z", transcripts: ["New discussion"], translations: [""],
+    }]));
+    expect(result.current.items.map((item) => item.id)).toEqual(["late", "new"]);
+  });
+
 });

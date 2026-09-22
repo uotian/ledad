@@ -36,7 +36,7 @@ describe("OpenAI multiple translation", () => {
       translations: ["こんにちは。", "お元気ですか？"],
     });
     expect(openAIMocks.create).toHaveBeenCalledWith(expect.objectContaining({
-      model: "gpt-5.6-luna",
+      model: "gpt-6-luna",
       input: "Hello. How are you?",
       text: { format: expect.objectContaining({ type: "json_schema", name: "translations", strict: true }) },
     }));
