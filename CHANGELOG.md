@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.4.0
+
+### Transcription and translation
+
+- Added 60-second `gpt-transcribe` final transcripts alongside low-latency `gpt-live-transcribe` flush transcripts.
+- Replaced completed flush items ending at or before the latest final transcript while keeping active flush items visible.
+
 ## v0.3.1
 
 - Ask to stop the session before opening Settings when it is not idle.

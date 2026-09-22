@@ -6,8 +6,8 @@ describe("timeline item factories", () => {
     expect(createItemFlush({ id: "flush-id", startedAt: "2026-09-22T00:00:00.000Z", transcript: "Hello" })).toEqual({
       id: "flush-id",
       startedAt: "2026-09-22T00:00:00.000Z",
-      transcript: "Hello",
-      translation: "",
+      transcripts: ["Hello"],
+      translations: [""],
       type: "flush",
     });
   });
@@ -17,13 +17,14 @@ describe("timeline item factories", () => {
       id: "final-id",
       startedAt: "2026-09-22T00:00:00.000Z",
       endedAt: "2026-09-22T00:01:00.000Z",
-      transcript: "Hello.",
+      transcripts: ["Hello."],
+      translations: ["こんにちは。"],
     })).toEqual({
       id: "final-id",
       startedAt: "2026-09-22T00:00:00.000Z",
       endedAt: "2026-09-22T00:01:00.000Z",
-      transcript: "Hello.",
-      translation: "",
+      transcripts: ["Hello."],
+      translations: ["こんにちは。"],
       type: "final",
     });
   });

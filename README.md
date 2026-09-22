@@ -10,15 +10,15 @@ Browser-based web app for real-time speech transcription and translation using m
 
 ## How it works
 
-The browser streams microphone audio to the OpenAI Realtime API over WebRTC. The OpenAI API key is handled only on the server. Transcription and translation update automatically as you continue speaking.
+The browser streams microphone audio to the OpenAI Realtime API over WebRTC for low-latency transcription. In parallel, it records the same audio in 60-second chunks and sends them to `gpt-transcribe` for more accurate final transcripts. Completed preliminary entries are replaced in the same timeline, while the latest unfinished portion remains visible as preliminary text. The OpenAI API key is handled only on the server.
 
 Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Responses APIs.
 
 ## Features
 
 - Browser microphone input
-- Real-time speech transcription
-- Translation of transcribed text
+- Low-latency preliminary and 60-second final transcriptions
+- Translation of preliminary and final transcripts
 - Source and target language switching
 - Start, stop, commit, and clear session controls
 
@@ -43,6 +43,12 @@ Press the eraser icon (`Clear`) at the bottom right of the main panel to clear t
 
 - Node.js
 - OpenAI API key
+
+## Supported browsers
+
+Use the latest stable version of Chrome, Edge, Firefox, or Safari (including iOS Safari). Internet Explorer and outdated browsers are not supported.
+
+Microphone access also requires a secure context (HTTPS or `localhost`) and browser permission.
 
 ## Setup
 

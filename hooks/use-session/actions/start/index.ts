@@ -1,8 +1,8 @@
-import { requestSDP } from "@/lib/transcribe/live";
 import type { Settings } from "@/lib/types";
 import type { ItemFlushLastRef, Refs, SetError, SetItems, SetStatus } from "../../types";
 import { cleanup } from "../../utils";
-import { onMessage } from "./on-message";
+import { Flush } from "./flush";
+import { Final } from "./final";
 
 export async function start({ refs, settings, setStatus, setError, setItems, itemFlushLast }: { refs: Refs; settings: Settings; setStatus: SetStatus; setError: SetError; setItems: SetItems; itemFlushLast: ItemFlushLastRef }) {
   const langs = { from: settings.langFrom, to: settings.langTo };
@@ -10,45 +10,25 @@ export async function start({ refs, settings, setStatus, setError, setItems, ite
   setStatus("requesting");
   setError(null);
   try {
-    const mic = await setupMic(refs.mic);
-    setStatus("connecting");
-    const connection = setupConnection(refs.connection, mic);
-    const channel = setupChannel(refs, connection);
-    channel.addEventListener("open", () => { if (refs.channel.current === channel) setStatus("listening"); });
-    channel.addEventListener("message", (message) => { if (refs.channel.current === channel) onMessage(message, langs, itemFlushLast, setError, setItems); });
-    channel.addEventListener("error", () => { if (refs.channel.current === channel) setError("Connection error. Please start again."); });
-    await connect(connection, settings);
+    refs.mic.current = await navigator.mediaDevices.getUserMedia({ audio: true });
+    startFinal();
+    await startFlush();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     cleanup(refs);
     setStatus("idle");
     setError(`Could not start: ${message}`);
   }
-}
 
-async function setupMic(micRef: Refs["mic"]) {
-  const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
-  micRef.current = mic;
-  return mic;
-}
+  function startFinal() {
+    const final = new Final(refs, settings, langs, setItems, setError);
+    refs.final.current = final;
+    final.start();
+  }
 
-function setupConnection(connectionRef: Refs["connection"], mic: MediaStream) {
-  const connection = new RTCPeerConnection();
-  mic.getAudioTracks().forEach((track) => connection.addTrack(track, mic));
-  connectionRef.current = connection;
-  return connection;
-}
-
-function setupChannel(refs: Refs, connection: RTCPeerConnection) {
-  const channel = connection.createDataChannel("oai-events");
-  refs.channel.current = channel;
-  return channel;
-}
-
-async function connect(connection: RTCPeerConnection, settings: Settings) {
-  const offer = await connection.createOffer();
-  if (!offer.sdp) throw new Error("Could not create SDP for Realtime connection.");
-  await connection.setLocalDescription(offer);
-  const sdp = await requestSDP({ sdp: offer.sdp, settings });
-  await connection.setRemoteDescription({ type: "answer", sdp });
+  async function startFlush() {
+    const flush = new Flush(refs, settings, langs, itemFlushLast, setStatus, setError, setItems);
+    refs.flush.current = flush;
+    await flush.start();
+  }
 }

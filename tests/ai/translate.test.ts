@@ -15,7 +15,7 @@ vi.mock("openai", () => ({
   },
 }));
 
-import { translate } from "@/ai/translate";
+import { translate, translateMany } from "@/ai/translate";
 
 describe("OpenAI translation", () => {
   beforeEach(() => {
@@ -42,5 +42,32 @@ describe("OpenAI translation", () => {
     openAIMocks.create.mockResolvedValue({ output_text: "   " });
 
     await expect(translate("secret", "en", "fr", "Hello")).rejects.toThrow("Could not read translation.");
+  });
+
+  it("returns aligned transcript and translation segments for a final item", async () => {
+    openAIMocks.create.mockResolvedValue({ output_text: JSON.stringify({
+      segments: [
+        { transcript: "Hello.", translation: "こんにちは。" },
+        { transcript: "How are you?", translation: "お元気ですか？" },
+      ],
+    }) });
+
+    await expect(translateMany("secret", "en", "ja", "Hello. How are you?")).resolves.toEqual({
+      transcripts: ["Hello.", "How are you?"],
+      translations: ["こんにちは。", "お元気ですか？"],
+    });
+    expect(openAIMocks.create).toHaveBeenCalledWith(expect.objectContaining({
+      model: "gpt-5.6-luna",
+      input: "Hello. How are you?",
+      text: { format: expect.objectContaining({ type: "json_schema", name: "translations", strict: true }) },
+    }));
+  });
+
+  it("rejects a final translation that rewrites the transcript", async () => {
+    openAIMocks.create.mockResolvedValue({ output_text: JSON.stringify({
+      segments: [{ transcript: "Hi.", translation: "こんにちは。" }],
+    }) });
+
+    await expect(translateMany("secret", "en", "ja", "Hello.")).rejects.toThrow("Could not preserve transcript.");
   });
 });

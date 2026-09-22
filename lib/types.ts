@@ -20,19 +20,19 @@ export type Settings = {
   keywords: string[];
 };
 
-type ItemBase = {
+type ItemBase<Texts extends string[]> = {
   id: string;
   startedAt: string;
-  endedAt?: string;
-  transcript: string;
-  translation: string;
+  transcripts: Texts;
+  translations: Texts;
 };
 
-export type ItemFlush = ItemBase & {
+export type ItemFlush = ItemBase<[string]> & {
   type: "flush";
+  endedAt?: string;
 };
 
-export type ItemFinal = ItemBase & {
+export type ItemFinal = ItemBase<string[]> & {
   type: "final";
   endedAt: string;
 };

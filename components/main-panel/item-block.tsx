@@ -16,11 +16,20 @@ export function ItemBlock({ item }: { item: Item }) {
 
   return (
     <article className="py-1 flex flex-col gap-0.5">
-      <time className="text-[0.85em] text-orange-900/75" dateTime={item.startedAt}>
-        {time}
-      </time>
-      <p className="text-blue-950/75">{item.transcript}</p>
-      <p className={cn("text-foreground/88", !item.translation && "animate-pulse")}>{item.translation || "..."}</p>
+      <div className="flex items-baseline gap-2">
+        <time className="text-[0.85em] text-orange-900/75" dateTime={item.startedAt}>
+          {time}
+        </time>
+        <span className={cn("text-[0.72em] font-medium", item.type === "final" ? "text-emerald-700" : "text-muted-foreground")}>
+          {item.type === "final" ? "確定版" : "速報"}
+        </span>
+      </div>
+      {item.transcripts.map((transcript, index) => (
+        <div className="flex flex-col gap-0.5" key={index}>
+          <p className="text-blue-950/75">{transcript}</p>
+          <p className={cn("text-foreground/88", !item.translations[index] && "animate-pulse")}>{item.translations[index] || "..."}</p>
+        </div>
+      ))}
     </article>
   );
 }

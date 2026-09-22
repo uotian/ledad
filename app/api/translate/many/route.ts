@@ -1,0 +1,19 @@
+import { NextResponse } from "next/server";
+import { translateMany } from "@/ai/translate";
+import { readLang } from "@/lib/request";
+
+export async function POST(request: Request) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY is not set. Add it to .env.local." }, { status: 500 });
+
+  const langFrom = readLang(request, "X-Lang-From", "en");
+  const langTo = readLang(request, "X-Lang-To", "ja");
+  const text = (await request.text()).trim();
+  if (!text) return NextResponse.json({ error: "No text to translate." }, { status: 400 });
+
+  try {
+    return NextResponse.json(await translateMany(apiKey, langFrom, langTo, text));
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 502 });
+  }
+}

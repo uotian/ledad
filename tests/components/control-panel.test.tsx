@@ -36,7 +36,7 @@ describe("ControlPanel", () => {
     const user = userEvent.setup();
     const session = createSession({
       status: "listening",
-      items: [{ id: "2026-01-01T00:00:00.000Z", startedAt: "2026-01-01T00:00:00.000Z", transcript: "Hello", translation: "こんにちは", type: "flush" }],
+      items: [{ id: "2026-01-01T00:00:00.000Z", startedAt: "2026-01-01T00:00:00.000Z", transcripts: ["Hello"], translations: ["こんにちは"], type: "flush" }],
     });
 
     render(<ControlPanel session={session} settings={defaultSettings} />);

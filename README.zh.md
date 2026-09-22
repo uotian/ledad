@@ -10,15 +10,15 @@
 
 ## 工作原理
 
-浏览器通过 WebRTC 将麦克风音频传输至 OpenAI Realtime API。OpenAI API 密钥仅在服务器端处理。即使持续说话，转写和翻译也会自动更新。
+浏览器通过 WebRTC 将麦克风音频传输至 OpenAI Realtime API，以生成低延迟的初步转写。同时，浏览器会将同一段音频按60秒录制，并发送至 `gpt-transcribe` 生成更准确的最终转写。已完成的初步内容会在同一时间线上替换为最终版本，最新的未完成部分则继续显示为初步内容。OpenAI API 密钥仅在服务器端处理。
 
 使用技术：Next.js 16、React 19、TypeScript，以及 OpenAI Realtime API 和 Responses API。
 
 ## 主要功能
 
 - 使用浏览器麦克风输入
-- 实时语音转写
-- 翻译转写文本
+- 低延迟初步转写和每60秒生成的最终转写
+- 翻译初步和最终转写文本
 - 切换源语言和目标语言
 - 开始、停止、提交和清空会话
 
@@ -43,6 +43,12 @@
 
 - Node.js
 - OpenAI API key
+
+## 支持的浏览器
+
+请使用最新版稳定版 Chrome、Edge、Firefox 或 Safari（包括 iOS Safari）。不支持 Internet Explorer 和过旧的浏览器。
+
+麦克风输入还需要安全上下文（HTTPS 或 `localhost`）以及浏览器的麦克风权限。
 
 ## 设置
 

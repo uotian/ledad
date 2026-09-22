@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { translate } from "@/lib/translate";
+import { translate, translateMany } from "@/lib/translate";
 
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
@@ -51,5 +51,28 @@ describe("browser translation client", () => {
 
     await expect(translate({ langFrom: "ja", langTo: "en", text: "テスト" })).resolves.toBeNull();
     expect(console.error).toHaveBeenCalled();
+  });
+
+  it("uses the multiple translation endpoint for aligned transcript and translation", async () => {
+    const result = { transcripts: ["Hello.", "How are you?"], translations: ["こんにちは。", "お元気ですか？"] };
+    const fetchMock = vi.fn().mockResolvedValue(Response.json(result));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(translateMany({ langFrom: "en", langTo: "ja", text: "Hello. How are you?" })).resolves.toEqual(result);
+    expect(fetchMock).toHaveBeenCalledWith("/api/translate/many", {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
+        "X-Lang-From": "en",
+        "X-Lang-To": "ja",
+      },
+      body: "Hello. How are you?",
+    });
+  });
+
+  it("throws a multiple translation API error", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ error: "unaligned" }, { status: 502 })));
+
+    await expect(translateMany({ langFrom: "en", langTo: "ja", text: "Hello." })).rejects.toThrow("unaligned");
   });
 });

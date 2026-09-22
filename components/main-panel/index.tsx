@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { EmptyEntry } from "@/components/main-panel/empty-entry";
 import { ItemBlock } from "@/components/main-panel/item-block";
 import type { Item, TextSize } from "@/lib/types";
+import { selectItems } from "@/lib/items";
 
 const textSizeClasses = { S: "text-xs", M: "text-sm", L: "text-lg" };
 
@@ -14,12 +15,13 @@ export function MainPanel({ className, items, onClear, textSize }: { className?:
   const bottomRef = useRef<HTMLDivElement>(null);
   const isAutoScrollPausedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const itemLast = items.at(-1);
+  const itemsSelected = selectItems(items);
+  const itemLast = itemsSelected.at(-1);
 
   useEffect(() => {
     if (isAutoScrollPausedRef.current) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [items.length, itemLast?.transcript, itemLast?.translation]);
+  }, [itemsSelected.length, itemLast?.transcripts, itemLast?.translations]);
 
   useEffect(() => {
     return () => {
@@ -43,10 +45,10 @@ export function MainPanel({ className, items, onClear, textSize }: { className?:
       onWheel={pauseAutoScroll}
     >
       <div aria-live="polite" className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4 pb-16">
-        {items.length === 0 ? (
+        {itemsSelected.length === 0 ? (
           <EmptyEntry />
         ) : (
-          items.map((item) => <ItemBlock item={item} key={item.id} />)
+          itemsSelected.map((item) => <ItemBlock item={item} key={item.id} />)
         )}
         <div ref={bottomRef} />
       </div>
