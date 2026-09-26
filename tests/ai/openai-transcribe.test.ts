@@ -32,6 +32,7 @@ describe("OpenAI transcription", () => {
       textSize: "M",
       langFrom: "en",
       langTo: "ja",
+      langInsight: "ja",
       prompt: "A meeting.",
       keywords: [],
     })).resolves.toBe("Final transcript.");

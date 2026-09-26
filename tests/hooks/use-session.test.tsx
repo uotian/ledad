@@ -17,7 +17,7 @@ vi.mock("@/hooks/use-session/utils", () => ({ cleanup: mocks.cleanup }));
 import { useSession } from "@/hooks/use-session";
 import type { Settings } from "@/lib/types";
 
-const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, prompt: "A meeting.", keywords: ["GSP"] };
+const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, langInsight: "ja" as const, prompt: "A meeting.", keywords: ["GSP"] };
 
 describe("useSession", () => {
   beforeEach(() => {

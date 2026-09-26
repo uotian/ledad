@@ -19,6 +19,7 @@ export type Settings = {
   textSize: TextSize;
   langFrom: Lang;
   langTo: Lang;
+  langInsight: Lang;
   prompt: string;
   keywords: string[];
 };

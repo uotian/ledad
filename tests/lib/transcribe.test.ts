@@ -11,7 +11,7 @@ describe("browser transcript client", () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json({ token: "ephemeral-token" }));
     vi.stubGlobal("fetch", fetchMock);
 
-    const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "fr" as const, langTo: "ja" as const, prompt: "A history lecture.", keywords: ["Egypt"] };
+    const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "fr" as const, langTo: "ja" as const, langInsight: "ja" as const, prompt: "A history lecture.", keywords: ["Egypt"] };
     await expect(requestLiveToken(settings)).resolves.toBe("ephemeral-token");
     expect(fetchMock).toHaveBeenCalledWith("/api/transcribe/openai/live", {
       method: "POST",
@@ -31,7 +31,7 @@ describe("browser transcript client", () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json({ transcript: "Final transcript." }));
     vi.stubGlobal("fetch", fetchMock);
     const audio = new Blob(["audio"], { type: "audio/webm" });
-    const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, prompt: "A meeting.", keywords: [] };
+    const settings = { provider: "openai" as const, textSize: "M" as const, langFrom: "en" as const, langTo: "ja" as const, langInsight: "ja" as const, prompt: "A meeting.", keywords: [] };
 
     await expect(transcribe({ audio, filename: "transcript.webm", settings })).resolves.toBe("Final transcript.");
 

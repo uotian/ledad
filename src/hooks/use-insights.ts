@@ -7,7 +7,7 @@ import { generateInsights, insightsSnapshot, type InsightsResult } from "@/lib/i
 export const INSIGHTS_INTERVAL_MS = 60_000;
 
 export function useInsights(items: Item[], enabled: boolean, settings: Settings) {
-  const { langTo: lang } = settings;
+  const { langInsight: lang } = settings;
   const [data, setData] = useState<InsightsResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);

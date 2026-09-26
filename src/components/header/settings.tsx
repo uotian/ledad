@@ -17,6 +17,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
   const [provider, setProvider] = useState(settings.provider);
   const [langFrom, setLangFrom] = useState(settings.langFrom);
   const [langTo, setLangTo] = useState(settings.langTo);
+  const [langInsight, setLangInsight] = useState(settings.langInsight);
   const [prompt, setPrompt] = useState(settings.prompt);
   const [keywordsText, setKeywordsText] = useState(settings.keywords.join("\n"));
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +32,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
       setProvider(settings.provider);
       setLangFrom(settings.langFrom);
       setLangTo(settings.langTo);
+      setLangInsight(settings.langInsight);
       setPrompt(settings.prompt);
       setKeywordsText(settings.keywords.join("\n"));
       setError(null);
@@ -42,12 +44,12 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
     event.preventDefault();
     const keywords = [...new Set(keywordsText.split(/\r?\n/).map((keyword) => keyword.trim()).filter(Boolean))];
     if (langFrom === langTo) {
-      setError("Source and translation languages must be different.");
+      setError("Speech and translation languages must be different.");
     } else if (keywords.some((keyword) => /[<>\r\n]/.test(keyword))) {
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        saveSettings({ provider, textSize, langFrom, langTo, prompt, keywords });
+        saveSettings({ provider, textSize, langFrom, langTo, langInsight, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -71,9 +73,9 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
               {TRANSCRIPTION_PROVIDERS.map((provider) => <option key={provider} value={provider}>{provider === "openai" ? "OpenAI" : "Gemini"}</option>)}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="lang-from">Source language</Label>
+              <Label htmlFor="lang-from">Speech language</Label>
               <select id="lang-from" value={langFrom} onChange={(event) => setLangFrom(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
                 {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
               </select>
@@ -81,6 +83,12 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
             <div className="grid gap-2">
               <Label htmlFor="lang-to">Translation language</Label>
               <select id="lang-to" value={langTo} onChange={(event) => setLangTo(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+                {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
+              </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lang-insight">Insights language</Label>
+              <select id="lang-insight" value={langInsight} onChange={(event) => setLangInsight(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
                 {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
               </select>
             </div>

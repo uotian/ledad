@@ -40,7 +40,7 @@ describe("Main", () => {
     vi.restoreAllMocks();
   });
 
-  it("runs Insights independently in LangTo and keeps them after transcript Clear", async () => {
+  it("runs Insights independently in langInsight and keeps them after transcript Clear", async () => {
     vi.useFakeTimers();
     state.session.status = "listening";
     const item = { id: "one", type: "flush" as const, startedAt: "2026-09-22T00:00:00.000Z", transcripts: ["The release is Friday."], translations: [""] };
@@ -49,7 +49,7 @@ describe("Main", () => {
     state.session.clear.mockImplementation(() => { state.session.items = []; });
     const { rerender } = render(<Main />);
     await act(async () => { await vi.advanceTimersByTimeAsync(60_000); });
-    expect(state.generateInsights).toHaveBeenCalledWith({ lang: defaultSettings.langTo, items: [item] }, expect.any(AbortSignal));
+    expect(state.generateInsights).toHaveBeenCalledWith({ lang: defaultSettings.langInsight, items: [item] }, expect.any(AbortSignal));
     expect(screen.getByText("Release schedule")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     rerender(<Main />);

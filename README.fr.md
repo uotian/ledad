@@ -15,7 +15,7 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 - Entrée audio depuis le microphone du navigateur
 - Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
 - Traduction des transcriptions préliminaires et finales
-- Résumés par sujet et sujet actuel dans la langue source
+- Résumés par sujet et sujet actuel dans une langue choisie séparément
 - Changement de la langue source et de la langue cible
 - Commandes pour démarrer, arrêter et effacer une session
 
@@ -23,7 +23,8 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 
 Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les paramètres suivants et appuyez sur `Save`. Les paramètres sont enregistrés dans ce navigateur.
 
-- `Source language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
+- `Speech language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
+- `Insights language` : anglais (`en`), japonais (`ja`, par défaut), chinois (`zh`) ou français (`fr`), indépendamment des langues source et cible.
 - `Transcription provider` : OpenAI (par défaut) ou Gemini pour la transcription.
 - `Text size` : S, M ou L (M par défaut).
 - `Prompt` : sujet ou contexte de l’enregistrement pour la transcription OpenAI.
@@ -39,7 +40,7 @@ Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal 
 
 Le panneau gauche `AI Insights` affiche `All Topics`, qui regroupe les discussions sur un même sujet, et un `Current Topic` distinct. Cliquez sur un titre pour développer son résumé. Sur les écrans étroits, les sujets apparaissent au-dessus de la transcription.
 
-Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-6-luna` (OpenAI) par défaut. Les résumés sont affichés dans la langue de traduction. Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
+Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-6-luna` (OpenAI) par défaut. Les résumés sont affichés dans la langue choisie pour Insights (japonais par défaut). Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
 
 ## Prérequis
 

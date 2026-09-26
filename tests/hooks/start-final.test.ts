@@ -83,7 +83,7 @@ describe("final transcription timeline", () => {
     const refs: { mic: { current: MediaStream | null }; final: { current: { stop: () => void } | null } } = { mic: { current: mic }, final: { current: null } };
     const final = new Final(
       refs,
-      { provider, textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
+      { provider, textSize: "M", langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "Meeting", keywords: [] },
       setItems as never,
       vi.fn() as never,
     );
@@ -142,7 +142,7 @@ describe("final transcription timeline", () => {
     const refs: { mic: { current: MediaStream | null }; final: { current: { stop: () => void } | null } } = { mic: { current: {} as MediaStream }, final: { current: null } };
     const final = new Final(
       refs,
-      { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
+      { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "Meeting", keywords: [] },
       ((next: Item[] | ((current: Item[]) => Item[])) => { items.splice(0, items.length, ...(typeof next === "function" ? next(items) : next)); }) as never,
       vi.fn() as never,
     );

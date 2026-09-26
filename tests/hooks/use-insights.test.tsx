@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useInsights, INSIGHTS_INTERVAL_MS } from "@/hooks/use-insights";
 import { defaultSettings } from "@/lib/settings";
-import type { Item } from "@/lib/types";
+import type { Item, Settings } from "@/lib/types";
 import type { InsightsResult } from "@/lib/insights";
 
 const generateInsights = vi.hoisted(() => vi.fn());
@@ -24,6 +24,26 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("topic updates", () => {
+  it("uses the Insights language independently and cancels stale requests when it changes", async () => {
+    const settings: Settings = { ...defaultSettings, langTo: "fr" };
+    const { result, rerender } = renderHook(({ settings }) => useInsights([item], true, settings), { initialProps: { settings } });
+    await advance();
+    expect(generateInsights).toHaveBeenLastCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
+
+    let resolve!: (value: InsightsResult) => void;
+    generateInsights.mockReturnValueOnce(new Promise<InsightsResult>((done) => { resolve = done; }));
+    act(() => result.current.refresh());
+    const signal = generateInsights.mock.calls[1][1] as AbortSignal;
+    rerender({ settings: { ...settings, langTo: "zh" } });
+    expect(signal.aborted).toBe(false);
+    rerender({ settings: { ...settings, langInsight: "fr" } });
+    expect(signal.aborted).toBe(true);
+    await act(async () => resolve({ allTopics: [], currentTopic: null }));
+    expect(result.current.data).toEqual(data);
+    await advance();
+    expect(generateInsights).toHaveBeenLastCalledWith({ lang: "fr", items: [item] }, expect.any(AbortSignal));
+  });
+
   it("waits one minute, uses untranslated text, and skips unchanged input", async () => {
     const { result, rerender } = setup();
     await advance(59_999);

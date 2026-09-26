@@ -29,7 +29,7 @@ async function setupFlush({ readyState = "open", send = vi.fn<(data: string) => 
   };
   const flush = createFlush(
     refs,
-    { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
+    { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "Meeting", keywords: [] },
     itemFlushLast,
     vi.fn(),
     setError,

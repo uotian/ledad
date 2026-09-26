@@ -10,7 +10,7 @@ describe("OpenAI live token", () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json({ value: "ephemeral-token" }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "zh", langTo: "ja", prompt: "中国史の解説です。", keywords: ["楊堅", "隋"] })).resolves.toBe("ephemeral-token");
+    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "zh", langTo: "ja", langInsight: "ja", prompt: "中国史の解説です。", keywords: ["楊堅", "隋"] })).resolves.toBe("ephemeral-token");
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const { session, expires_after } = JSON.parse(init.body as string);
@@ -39,12 +39,12 @@ describe("OpenAI live token", () => {
   it("reports upstream failures without exposing the response body", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("invalid offer", { status: 400 })));
 
-    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "en", langTo: "ja", prompt: "", keywords: [] })).rejects.toThrow("OpenAI token request failed (400).");
+    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "", keywords: [] })).rejects.toThrow("OpenAI token request failed (400).");
   });
 
   it("reports upstream failures when the body is empty", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("", { status: 500 })));
 
-    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "en", langTo: "ja", prompt: "", keywords: [] })).rejects.toThrow("OpenAI token request failed (500).");
+    await expect(createOpenAILiveToken("secret", { provider: "openai" as const, textSize: "M" as const, langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "", keywords: [] })).rejects.toThrow("OpenAI token request failed (500).");
   });
 });

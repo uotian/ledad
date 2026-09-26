@@ -10,6 +10,7 @@ export const defaultSettings: Settings = {
   textSize: "M",
   langFrom: "en",
   langTo: "ja",
+  langInsight: "ja",
   prompt: prompts.join("\n"),
   keywords: [],
 };
@@ -20,6 +21,7 @@ export function isSettings(value: unknown): value is Settings {
     && "textSize" in value && TEXT_SIZES.some((size) => size === value.textSize)
     && "langFrom" in value && LANGS.some((lang) => lang === value.langFrom)
     && "langTo" in value && LANGS.some((lang) => lang === value.langTo)
+    && "langInsight" in value && LANGS.some((lang) => lang === value.langInsight)
     && "prompt" in value && typeof value.prompt === "string"
     && "keywords" in value && Array.isArray(value.keywords)
     && value.keywords.every((keyword: unknown) => typeof keyword === "string" && !/[<>\r\n]/.test(keyword));

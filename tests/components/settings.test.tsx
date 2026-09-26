@@ -30,7 +30,7 @@ describe("settings", () => {
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "隋の楊堅について。" } });
     fireEvent.change(screen.getByLabelText("Keywords"), { target: { value: "楊堅\n 隋 \n楊堅\n" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
 
     first.unmount();
     render(<Settings />);
@@ -79,26 +79,41 @@ describe("settings", () => {
   it("keeps the dialog open when source and translation languages are the same", () => {
     render(<Settings />);
     openSettings();
-    fireEvent.change(screen.getByLabelText("Source language"), { target: { value: "ja" } });
+    fireEvent.change(screen.getByLabelText("Speech language"), { target: { value: "ja" } });
     expect(screen.getByLabelText("Translation language")).toHaveValue("ja");
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(screen.getByRole("alert")).toHaveTextContent("Source and translation languages must be different.");
+    expect(screen.getByRole("alert")).toHaveTextContent("Speech and translation languages must be different.");
     expect(localStorage.getItem(settingsKey)).toBeNull();
   });
 
-  it("selects languages independently and restores both after saving", () => {
+  it("selects transcription, translation, and Insights languages independently and restores them", () => {
     const first = render(<Settings />);
     openSettings();
-    fireEvent.change(screen.getByLabelText("Source language"), { target: { value: "ja" } });
+    fireEvent.change(screen.getByLabelText("Speech language"), { target: { value: "ja" } });
     expect(screen.getByLabelText("Translation language")).toHaveValue("ja");
     fireEvent.change(screen.getByLabelText("Translation language"), { target: { value: "fr" } });
+    expect(screen.getByLabelText("Insights language")).toHaveValue("ja");
+    fireEvent.change(screen.getByLabelText("Insights language"), { target: { value: "zh" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     first.unmount();
     render(<Settings />);
     openSettings();
-    expect(screen.getByLabelText("Source language")).toHaveValue("ja");
+    expect(screen.getByLabelText("Speech language")).toHaveValue("ja");
     expect(screen.getByLabelText("Translation language")).toHaveValue("fr");
+    expect(screen.getByLabelText("Insights language")).toHaveValue("zh");
+  });
+
+  it("defaults older saved settings to Japanese Insights without changing their other values", () => {
+    localStorage.setItem(settingsKey, JSON.stringify({ provider: "gemini", langFrom: "ja", langTo: "fr", prompt: "Saved prompt", keywords: ["Ledad"] }));
+    render(<Settings />);
+    openSettings();
+    expect(screen.getByLabelText("Transcription provider")).toHaveValue("gemini");
+    expect(screen.getByLabelText("Speech language")).toHaveValue("ja");
+    expect(screen.getByLabelText("Translation language")).toHaveValue("fr");
+    expect(screen.getByLabelText("Insights language")).toHaveValue("ja");
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ langInsight: "ja", langTo: "fr", prompt: "Saved prompt", keywords: ["Ledad"] });
   });
 
   it("saves the text size and restores it when reopened", () => {
