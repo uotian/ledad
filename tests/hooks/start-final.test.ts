@@ -46,7 +46,7 @@ describe("final transcription timeline", () => {
     expect(selectItems([itemFlush, itemFinal, itemFinalBefore])).toEqual([itemFinalBefore, itemFinal]);
   });
 
-  it.each(["openai"] as const)("records sixty-second chunks and submits them to %s", async (provider) => {
+  it.each(["openai", "gemini"] as const)("records sixty-second chunks and submits them to %s", async (provider) => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-22T00:00:00.000Z"));
     vi.spyOn(crypto, "randomUUID").mockReturnValue("final-id");

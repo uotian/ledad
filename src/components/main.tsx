@@ -10,7 +10,7 @@ import { useSettings } from "@/hooks/use-settings";
 export function Main() {
   const { settings } = useSettings();
   const session = useSession(settings);
-  const insights = useInsights(session.items, session.status === "listening", settings.langTo);
+  const insights = useInsights(session.items, session.status === "listening", settings);
 
   return (
     <main className="mx-auto h-dvh w-full max-w-7xl py-2 px-3 sm:px-6 lg:px-12 flex flex-col">

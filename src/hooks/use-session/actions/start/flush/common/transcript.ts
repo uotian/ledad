@@ -4,6 +4,9 @@ import type { ItemFlush, Settings } from "@/lib/types";
 import type { ItemFlushLastRef, SetItems } from "@/hooks/use-session/types";
 
 export class Transcript {
+  private requestId = 0;
+  private translations = new Map<string, { pending: number; applied: number }>();
+
   constructor(protected last: ItemFlushLastRef, private settings: Settings, private setItems: SetItems) {}
 
   replace(text: string) {
@@ -30,14 +33,25 @@ export class Transcript {
   async translate(item: ItemFlush | null = this.last.current) {
     if (item && item.transcripts[0].trim()) {
       const text = item.transcripts[0];
+      const requestId = ++this.requestId;
+      const state = this.translations.get(item.id) ?? { pending: 0, applied: 0 };
+      state.pending++;
+      this.translations.set(item.id, state);
       try {
         const translation = await translate({ text, settings: this.settings });
-        if (this.last.current?.id === item.id) {
-          this.last.current = { ...this.last.current, translations: [translation] };
+        // Show completed translations even while newer requests are still running.
+        if (requestId > state.applied) {
+          state.applied = requestId;
+          if (this.last.current?.id === item.id) {
+            this.last.current = { ...this.last.current, translations: [translation] };
+          }
+          this.setItems((items) => items.map((existing) => existing.id === item.id ? { ...existing, translations: [translation] } : existing));
         }
-        this.setItems((items) => items.map((existing) => existing.id === item.id ? { ...existing, translations: [translation] } : existing));
       } catch (error) {
         console.error("Could not translate flush item.", error);
+      } finally {
+        state.pending--;
+        if (!state.pending) this.translations.delete(item.id);
       }
     }
   }

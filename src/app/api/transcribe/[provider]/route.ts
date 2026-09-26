@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
-import { transcribe } from "@/ai/openai/transcribe";
+import { notFound } from "next/navigation";
+import { transcribe as openai } from "@/ai/openai/transcribe";
+import { transcribeGemini as gemini } from "@/ai/gemini/transcribe";
 import { isSettings } from "@/lib/settings";
 import type { Settings } from "@/lib/types";
 
 export async function POST(request: Request, { params }: { params: Promise<{ provider: string }> }) {
   const { provider } = await params;
-  if (provider !== "openai") return NextResponse.json({ error: "Unknown transcription provider." }, { status: 404 });
-  const apiKey = process.env.OPENAI_API_KEY;
+  const transcribe = new Map([["openai", openai], ["gemini", gemini]]).get(provider);
+  if (!transcribe) notFound();
+  const apiKey = process.env[`${provider.toUpperCase()}_API_KEY`];
   if (!apiKey) return NextResponse.json({ error: `${provider.toUpperCase()}_API_KEY is not set. Add it to .env.local.` }, { status: 500 });
 
   const formData = await request.formData().catch(() => null);

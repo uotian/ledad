@@ -9,7 +9,7 @@ export const LANGS = ["en", "ja", "zh", "fr"] as const;
 export type Lang = (typeof LANGS)[number];
 
 export const TEXT_SIZES = ["S", "M", "L"] as const;
-export const TRANSCRIPTION_PROVIDERS = ["openai"] as const;
+export const TRANSCRIPTION_PROVIDERS = ["openai", "gemini"] as const;
 export type TranscriptionProvider = (typeof TRANSCRIPTION_PROVIDERS)[number];
 
 export type TextSize = (typeof TEXT_SIZES)[number];

@@ -73,6 +73,7 @@ describe("useSession", () => {
 
   it.each([
     ["OpenAI", settings],
+    ["Gemini", { ...settings, provider: "gemini" as const }],
   ])("cancels the %s timer when a connection returns to idle", async (_provider, providerSettings) => {
     const { result } = renderHook(() => useSession(providerSettings));
     await act(async () => result.current.start());

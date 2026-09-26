@@ -19,7 +19,9 @@ export function setupLiveBrowser({ autoReady = true, audioReady = Promise.resolv
         if (autoReady && url.includes("openai.com")) this.emit({ type: "session.created" });
       });
     }
-    send = vi.fn<(data: string) => void>();
+    send = vi.fn((data: string) => {
+      if (autoReady && "setup" in JSON.parse(data)) queueMicrotask(() => this.emit({ setupComplete: {} }));
+    });
     close = vi.fn(() => {
       if (this.readyState === 3) return;
       this.readyState = 3;

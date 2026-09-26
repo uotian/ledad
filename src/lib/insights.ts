@@ -39,7 +39,7 @@ export function isInsightsRequest(value: unknown): value is InsightsRequest {
 }
 
 export async function generateInsights(input: InsightsRequest, signal: AbortSignal): Promise<InsightsResult> {
-  const response = await fetch("/api/insights", {
+  const response = await fetch("/api/insights/openai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),

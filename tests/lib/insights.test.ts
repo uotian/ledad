@@ -10,7 +10,7 @@ describe("topic API client", () => {
     vi.stubGlobal("fetch", fetchMock);
     const signal = new AbortController().signal;
     await expect(generateInsights(input, signal)).resolves.toEqual(data);
-    expect(fetchMock).toHaveBeenCalledWith("/api/insights", {
+    expect(fetchMock).toHaveBeenCalledWith("/api/insights/openai", {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input), signal,
     });
   });

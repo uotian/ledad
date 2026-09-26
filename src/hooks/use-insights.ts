@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
-import type { Item, Lang } from "@/lib/types";
+import type { Item, Settings } from "@/lib/types";
 import { generateInsights, insightsSnapshot, type InsightsResult } from "@/lib/insights";
 
 export const INSIGHTS_INTERVAL_MS = 60_000;
 
-export function useInsights(items: Item[], enabled: boolean, lang: Lang) {
+export function useInsights(items: Item[], enabled: boolean, settings: Settings) {
+  const { langTo: lang } = settings;
   const [data, setData] = useState<InsightsResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
@@ -49,8 +50,8 @@ export function useInsights(items: Item[], enabled: boolean, lang: Lang) {
         setData(result);
         setError(null);
       }
-    } catch {
-      if (request.current === controller) setError("Could not update insights. Retrying…");
+    } catch (error) {
+      if (request.current === controller) setError(error instanceof Error ? error.message : "Could not update insights. Retrying…");
     } finally {
       clearTimeout(deadline);
       if (timeout.current === deadline) timeout.current = null;

@@ -12,7 +12,7 @@ describe("browser translation client", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(translate({ settings: { ...defaultSettings, langFrom: "en", langTo: "ja" }, text: "Hello" })).resolves.toBe("こんにちは");
-    expect(fetchMock).toHaveBeenCalledWith("/api/translate", {
+    expect(fetchMock).toHaveBeenCalledWith("/api/translate/openai", {
       method: "POST",
       headers: {
         "Content-Type": "text/plain",
@@ -44,7 +44,7 @@ describe("browser translation client", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(translateMany({ settings: { ...defaultSettings, langFrom: "en", langTo: "ja" }, text: "Hello. How are you?" })).resolves.toEqual(result);
-    expect(fetchMock).toHaveBeenCalledWith("/api/translate/many", {
+    expect(fetchMock).toHaveBeenCalledWith("/api/translate/openai/many", {
       method: "POST",
       headers: {
         "Content-Type": "text/plain",
@@ -60,4 +60,11 @@ describe("browser translation client", () => {
 
     await expect(translateMany({ settings: { ...defaultSettings, langFrom: "en", langTo: "ja" }, text: "Hello." })).rejects.toThrow("unaligned");
   });
+});
+
+it.each([translate, translateMany])("uses OpenAI even when transcription uses Gemini", async (call) => {
+  const fetchMock = vi.fn().mockResolvedValue(Response.json({ translation: "訳", transcripts: ["text"], translations: ["訳"] }));
+  vi.stubGlobal("fetch", fetchMock);
+  await call({ text: "text", settings: { ...defaultSettings, provider: "gemini" } });
+  expect(fetchMock.mock.calls[0][0]).toBe(call === translate ? "/api/translate/openai" : "/api/translate/openai/many");
 });

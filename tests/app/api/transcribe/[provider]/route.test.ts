@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultSettings } from "@/lib/settings";
-import type { TranscriptionProvider } from "@/lib/types";
+import type { Settings, TranscriptionProvider } from "@/lib/types";
 
 const transcribe = vi.hoisted(() => vi.fn());
+const transcribeGemini = vi.hoisted(() => vi.fn());
 vi.mock("@/ai/openai/transcribe", () => ({ transcribe }));
+vi.mock("@/ai/gemini/transcribe", () => ({ transcribeGemini }));
 
 import { POST } from "@/app/api/transcribe/[provider]/route";
 
@@ -13,7 +15,7 @@ function context(provider: string) {
   return { params: Promise.resolve({ provider }) };
 }
 
-function request(provider: string, settings: unknown = defaultSettings) {
+function request(provider: string, settings: Settings = { ...defaultSettings, provider: provider === "gemini" ? "gemini" : "openai" }) {
   const formData = new FormData();
   formData.set("audio", new File(["audio"], "recording.webm", { type: "audio/webm" }));
   formData.set("settings", JSON.stringify(settings));
@@ -21,9 +23,9 @@ function request(provider: string, settings: unknown = defaultSettings) {
 }
 
 describe("POST /api/transcribe/[provider]", () => {
-  it.each(["openai"] as const)("uses the %s implementation", async (provider: TranscriptionProvider) => {
-    vi.stubEnv("OPENAI_API_KEY", "secret");
-    const selected = transcribe;
+  it.each(["openai", "gemini"] as const)("uses the %s implementation", async (provider: TranscriptionProvider) => {
+    vi.stubEnv(provider === "openai" ? "OPENAI_API_KEY" : "GEMINI_API_KEY", "secret");
+    const selected = provider === "openai" ? transcribe : transcribeGemini;
     selected.mockResolvedValue("Final transcript.");
 
     const response = await POST(request(provider), context(provider));
@@ -31,18 +33,21 @@ describe("POST /api/transcribe/[provider]", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ transcript: "Final transcript." });
     expect(selected).toHaveBeenCalledWith("secret", expect.anything(), { ...defaultSettings, provider });
+    expect(provider === "openai" ? transcribeGemini : transcribe).not.toHaveBeenCalled();
   });
 
   it("rejects unknown providers", async () => {
-    const response = await POST(request("other"), context("other"));
-    expect(response.status).toBe(404);
+    await expect(POST(request("other"), context("other"))).rejects.toMatchObject({ digest: "NEXT_HTTP_ERROR_FALLBACK;404" });
+
     expect(transcribe).not.toHaveBeenCalled();
+    expect(transcribeGemini).not.toHaveBeenCalled();
   });
 
   it("rejects a mismatch between the URL and settings", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "secret");
-    const response = await POST(request("openai", { ...defaultSettings, provider: "other" }), context("openai"));
+    vi.stubEnv("GEMINI_API_KEY", "secret");
+    const response = await POST(request("gemini", defaultSettings), context("gemini"));
     expect(response.status).toBe(400);
+    expect(transcribeGemini).not.toHaveBeenCalled();
   });
 
   it("rejects missing audio and invalid settings", async () => {

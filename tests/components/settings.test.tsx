@@ -13,13 +13,13 @@ function openSettings() {
 }
 
 describe("settings", () => {
-  it("offers OpenAI as the only transcription provider", () => {
+  it("saves Gemini as the transcription provider and hides the OpenAI prompt", () => {
     render(<Settings />);
     openSettings();
-    const provider = screen.getByLabelText("Transcription");
-    expect(provider).toHaveValue("openai");
-    expect(provider.querySelectorAll("option")).toHaveLength(1);
-    expect(provider).toHaveTextContent("OpenAI");
+    fireEvent.change(screen.getByLabelText("Transcription provider"), { target: { value: "gemini" } });
+    expect(screen.queryByLabelText("Prompt")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ provider: "gemini" });
   });
 
   it("uses the current prompts as defaults and restores saved settings after remounting", () => {

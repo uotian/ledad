@@ -46,7 +46,7 @@ describe("session start", () => {
     expect(getUserMedia).not.toHaveBeenCalled();
   });
 
-  it.each(["openai"] as const)("starts %s live and final transcription from one microphone", async (provider) => {
+  it.each(["openai", "gemini"] as const)("starts %s live and final transcription from one microphone", async (provider) => {
     const { browser, args, getUserMedia, trackStop, recorderStop } = setup(provider);
     await start(args);
 
@@ -65,7 +65,7 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it.each(["openai"] as const)("cleans up %s after a token request fails", async (provider) => {
+  it.each(["openai", "gemini"] as const)("cleans up %s after a token request fails", async (provider) => {
     const { browser, args, trackStop, recorderStop } = setup(provider);
     browser.fetch.mockResolvedValueOnce(Response.json({ error: "Token failed" }, { status: 502 }));
     await start(args);
@@ -77,7 +77,7 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it.each(["openai"] as const)("stops all %s resources after an unexpected disconnection", async (provider) => {
+  it.each(["openai", "gemini"] as const)("stops all %s resources after an unexpected disconnection", async (provider) => {
     const { browser, args, recorderStop, trackStop } = setup(provider);
     await start(args);
     browser.sockets[0].close();
@@ -97,14 +97,14 @@ describe("session start", () => {
     expect(args.setError).toHaveBeenLastCalledWith("Could not start: Permission denied");
   });
 
-  it.each(["openai"] as const)("sends %s audio immediately and stops if the upload stalls", async (provider) => {
+  it.each(["openai", "gemini"] as const)("sends %s audio immediately and stops if the upload stalls", async (provider) => {
     const { args, browser, trackStop } = setup(provider);
     await start(args);
     const socket = browser.sockets[0];
     socket.send.mockClear();
     browser.emitAudio();
     const message = JSON.parse(socket.send.mock.calls[0][0]);
-    const audio = message.audio;
+    const audio = provider === "openai" ? message.audio : message.realtimeInput.audio.data;
     expect(atob(audio)).toHaveLength(4800); // 100 ms of 24 kHz, 16-bit mono PCM.
     socket.bufferedAmount = 256 * 1024 + 1;
     browser.emitAudio();
@@ -114,6 +114,18 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it("keeps Gemini recording when rotating its connection", async () => {
+    const { args, browser } = setup("gemini");
+    await start(args);
+    await vi.advanceTimersByTimeAsync(9 * 60 * 1000);
+    expect(browser.sockets).toHaveLength(2);
+    expect(browser.sockets[0].readyState).toBe(3);
+    browser.emitAudio();
+    expect(JSON.parse(browser.sockets[1].send.mock.calls.at(-1)![0])).toHaveProperty("realtimeInput.audio");
+    expect(args.setError).toHaveBeenCalledExactlyOnceWith(null);
+    expect(args.setStatus).toHaveBeenLastCalledWith("listening");
+    stop(args.refs, args.setStatus);
+  });
 
   it("cleans up a connection that never becomes ready", async () => {
     const { args, browser, trackStop } = setup("openai", false);
@@ -126,7 +138,7 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it.each(["openai"] as const)("does not restart %s after stopping during audio setup", async (provider) => {
+  it.each(["openai", "gemini"] as const)("does not restart %s after stopping during audio setup", async (provider) => {
     let finishLoading!: () => void;
     const audioReady = new Promise<void>((resolve) => { finishLoading = resolve; });
     const { args, browser, trackStop } = setup(provider, true, audioReady);
@@ -147,6 +159,22 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it("does not reconnect Gemini if its new token arrives after stop", async () => {
+    const { args, browser } = setup("gemini");
+    await start(args);
+    let returnToken!: (response: Response) => void;
+    browser.fetch.mockReturnValueOnce(new Promise((resolve) => { returnToken = resolve; }));
+    await vi.advanceTimersByTimeAsync(9 * 60 * 1000);
+    stop(args.refs, args.setStatus);
+    returnToken(Response.json({ token: "late-token" }));
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(browser.sockets).toHaveLength(1);
+    expect(browser.sockets[0].readyState).toBe(3);
+    expect(args.setError).toHaveBeenCalledExactlyOnceWith(null);
+    expect(args.setStatus).toHaveBeenLastCalledWith("idle");
+    expect(vi.getTimerCount()).toBe(0);
+  });
 
   it("releases a microphone granted after the user stops", async () => {
     const { args, stream, getUserMedia, trackStop, browser } = setup();
@@ -162,7 +190,7 @@ describe("session start", () => {
     expect(args.refs.mic.current).toBeNull();
   });
 
-  it.each(["openai"] as const)("cancels %s while waiting for setup", async (provider) => {
+  it.each(["openai", "gemini"] as const)("cancels %s while waiting for setup", async (provider) => {
     const { args, browser } = setup(provider, false);
     const starting = start(args);
     await vi.advanceTimersByTimeAsync(0);
@@ -176,7 +204,7 @@ describe("session start", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it.each(["openai"] as const)("cleans up when %s rejects connection setup", async (provider) => {
+  it.each(["openai", "gemini"] as const)("cleans up when %s rejects connection setup", async (provider) => {
     const { args, browser, trackStop, recorderStop } = setup(provider, false);
     const starting = start(args);
     await vi.advanceTimersByTimeAsync(0);

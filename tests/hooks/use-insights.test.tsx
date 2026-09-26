@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useInsights, INSIGHTS_INTERVAL_MS } from "@/hooks/use-insights";
+import { defaultSettings } from "@/lib/settings";
 import type { Item } from "@/lib/types";
 import type { InsightsResult } from "@/lib/insights";
 
@@ -13,7 +14,7 @@ const initial = { items: [item] as Item[], enabled: true };
 const advance = (ms = INSIGHTS_INTERVAL_MS) => act(async () => { await vi.advanceTimersByTimeAsync(ms); });
 
 function setup(props = initial) {
-  return renderHook(({ items, enabled }) => useInsights(items, enabled, "ja"), { initialProps: props });
+  return renderHook(({ items, enabled }) => useInsights(items, enabled, defaultSettings), { initialProps: props });
 }
 
 beforeEach(() => {
@@ -215,4 +216,20 @@ describe("topic updates", () => {
     expect(result.current.updating).toBe(false);
     expect(result.current.canRefresh).toBe(false);
   });
+});
+
+it("keeps Insights independent of the transcription provider", async () => {
+  const { result, rerender } = renderHook(({ provider }) => useInsights([item], true, { ...defaultSettings, provider }), { initialProps: { provider: "openai" as "openai" | "gemini" } });
+  await advance();
+  let resolve!: (value: InsightsResult) => void;
+  generateInsights.mockReturnValueOnce(new Promise<InsightsResult>((done) => { resolve = done; }));
+  act(() => result.current.refresh());
+  const signal = generateInsights.mock.calls[1][1] as AbortSignal;
+  rerender({ provider: "gemini" });
+  expect(signal.aborted).toBe(false);
+  await act(async () => resolve(data));
+  expect(result.current.data).toEqual(data);
+  await advance();
+  expect(generateInsights).toHaveBeenCalledTimes(2);
+  expect(generateInsights).toHaveBeenLastCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
 });
