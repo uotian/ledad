@@ -1,7 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useInsights, INSIGHTS_INTERVAL_MS } from "@/hooks/use-insights";
-import type { Item } from "@/lib/types";
+import { defaultSettings } from "@/lib/settings";
+import type { Item, Settings } from "@/lib/types";
 import type { InsightsResult } from "@/lib/insights";
 
 const generateInsights = vi.hoisted(() => vi.fn());
@@ -13,7 +14,7 @@ const initial = { items: [item] as Item[], enabled: true };
 const advance = (ms = INSIGHTS_INTERVAL_MS) => act(async () => { await vi.advanceTimersByTimeAsync(ms); });
 
 function setup(props = initial) {
-  return renderHook(({ items, enabled }) => useInsights(items, enabled, "ja"), { initialProps: props });
+  return renderHook(({ items, enabled }) => useInsights(items, enabled, defaultSettings), { initialProps: props });
 }
 
 beforeEach(() => {
@@ -23,9 +24,29 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("topic updates", () => {
-  it("waits one minute, uses untranslated text, and skips unchanged input", async () => {
+  it("uses the Insights language independently and cancels stale requests when it changes", async () => {
+    const settings: Settings = { ...defaultSettings, langTo: "fr" };
+    const { result, rerender } = renderHook(({ settings }) => useInsights([item], true, settings), { initialProps: { settings } });
+    await advance();
+    expect(generateInsights).toHaveBeenLastCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
+
+    let resolve!: (value: InsightsResult) => void;
+    generateInsights.mockReturnValueOnce(new Promise<InsightsResult>((done) => { resolve = done; }));
+    act(() => result.current.refresh());
+    const signal = generateInsights.mock.calls[1][1] as AbortSignal;
+    rerender({ settings: { ...settings, langTo: "zh" } });
+    expect(signal.aborted).toBe(false);
+    rerender({ settings: { ...settings, langInsight: "fr" } });
+    expect(signal.aborted).toBe(true);
+    await act(async () => resolve({ allTopics: [], currentTopic: null }));
+    expect(result.current.data).toEqual(data);
+    await advance();
+    expect(generateInsights).toHaveBeenLastCalledWith({ lang: "fr", items: [item] }, expect.any(AbortSignal));
+  });
+
+  it("waits 30 seconds, uses untranslated text, and skips unchanged input", async () => {
     const { result, rerender } = setup();
-    await advance(59_999);
+    await advance(29_999);
     expect(generateInsights).not.toHaveBeenCalled();
     await advance(1);
     expect(generateInsights).toHaveBeenCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
@@ -130,12 +151,12 @@ describe("topic updates", () => {
   it("retains successful insights when items are cleared without resetting the timer", async () => {
     const { result, rerender } = setup();
     await advance();
-    await advance(10_000);
+    await advance(5_000);
     rerender({ ...initial, items: [] });
     expect(result.current.data).toEqual(data);
-    await advance(20_000);
+    await advance(10_000);
     rerender({ ...initial, items: [{ ...item, id: "new" }] });
-    await advance(29_999);
+    await advance(14_999);
     expect(generateInsights).toHaveBeenCalledTimes(1);
     await advance(1);
     expect(generateInsights).toHaveBeenCalledTimes(2);
@@ -215,4 +236,20 @@ describe("topic updates", () => {
     expect(result.current.updating).toBe(false);
     expect(result.current.canRefresh).toBe(false);
   });
+});
+
+it("keeps Insights independent of the transcription provider", async () => {
+  const { result, rerender } = renderHook(({ provider }) => useInsights([item], true, { ...defaultSettings, provider }), { initialProps: { provider: "openai" as "openai" | "gemini" } });
+  await advance();
+  let resolve!: (value: InsightsResult) => void;
+  generateInsights.mockReturnValueOnce(new Promise<InsightsResult>((done) => { resolve = done; }));
+  act(() => result.current.refresh());
+  const signal = generateInsights.mock.calls[1][1] as AbortSignal;
+  rerender({ provider: "gemini" });
+  expect(signal.aborted).toBe(false);
+  await act(async () => resolve(data));
+  expect(result.current.data).toEqual(data);
+  await advance();
+  expect(generateInsights).toHaveBeenCalledTimes(2);
+  expect(generateInsights).toHaveBeenLastCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
 });

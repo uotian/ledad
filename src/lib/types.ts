@@ -9,13 +9,17 @@ export const LANGS = ["en", "ja", "zh", "fr"] as const;
 export type Lang = (typeof LANGS)[number];
 
 export const TEXT_SIZES = ["S", "M", "L"] as const;
+export const TRANSCRIPTION_PROVIDERS = ["openai", "gemini"] as const;
+export type TranscriptionProvider = (typeof TRANSCRIPTION_PROVIDERS)[number];
 
 export type TextSize = (typeof TEXT_SIZES)[number];
 
 export type Settings = {
+  provider: TranscriptionProvider;
   textSize: TextSize;
   langFrom: Lang;
   langTo: Lang;
+  langInsight: Lang;
   prompt: string;
   keywords: string[];
 };

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ create: vi.fn() }));
 vi.mock("openai", () => ({ default: class { responses = { create: mocks.create }; } }));
-import { generateInsights } from "@/ai/insights";
+import { generateInsights } from "@/ai/openai/insights";
 import type { InsightsRequest } from "@/lib/insights";
 
 const input: InsightsRequest = { lang: "ja", items: [{ id: "1", type: "flush", startedAt: "2026-09-22T00:00:00Z", transcripts: ["Let's return to the budget."], translations: [""] }] };

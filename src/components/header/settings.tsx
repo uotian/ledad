@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { SettingsIcon } from "lucide-react";
 import type { Session } from "@/hooks/use-session";
 import { useSettings } from "@/hooks/use-settings";
-import { LANGS, TEXT_SIZES, type Lang, type TextSize } from "@/lib/types";
+import { LANGS, TEXT_SIZES, TRANSCRIPTION_PROVIDERS, type Lang, type TextSize, type TranscriptionProvider } from "@/lib/types";
 import { Button } from "@/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
@@ -14,8 +14,10 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
   const { settings, saveSettings } = useSettings();
   const [open, setOpen] = useState(false);
   const [textSize, setTextSize] = useState(settings.textSize);
+  const [provider, setProvider] = useState(settings.provider);
   const [langFrom, setLangFrom] = useState(settings.langFrom);
   const [langTo, setLangTo] = useState(settings.langTo);
+  const [langInsight, setLangInsight] = useState(settings.langInsight);
   const [prompt, setPrompt] = useState(settings.prompt);
   const [keywordsText, setKeywordsText] = useState(settings.keywords.join("\n"));
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +29,10 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
         session.stop();
       }
       setTextSize(settings.textSize);
+      setProvider(settings.provider);
       setLangFrom(settings.langFrom);
       setLangTo(settings.langTo);
+      setLangInsight(settings.langInsight);
       setPrompt(settings.prompt);
       setKeywordsText(settings.keywords.join("\n"));
       setError(null);
@@ -40,12 +44,12 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
     event.preventDefault();
     const keywords = [...new Set(keywordsText.split(/\r?\n/).map((keyword) => keyword.trim()).filter(Boolean))];
     if (langFrom === langTo) {
-      setError("Source and translation languages must be different.");
+      setError("Speech and translation languages must be different.");
     } else if (keywords.some((keyword) => /[<>\r\n]/.test(keyword))) {
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        saveSettings({ textSize, langFrom, langTo, prompt, keywords });
+        saveSettings({ provider, textSize, langFrom, langTo, langInsight, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -63,9 +67,15 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="transcription-provider">STT Provider</Label>
+            <select id="transcription-provider" value={provider} onChange={(event) => setProvider(event.target.value as TranscriptionProvider)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+              {TRANSCRIPTION_PROVIDERS.map((provider) => <option key={provider} value={provider}>{provider === "openai" ? "OpenAI" : "Gemini"}</option>)}
+            </select>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="lang-from">Source language</Label>
+              <Label htmlFor="lang-from">Speech language</Label>
               <select id="lang-from" value={langFrom} onChange={(event) => setLangFrom(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
                 {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
               </select>
@@ -76,6 +86,12 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
                 {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
               </select>
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lang-insight">Insights language</Label>
+              <select id="lang-insight" value={langInsight} onChange={(event) => setLangInsight(event.target.value as Lang)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+                {LANGS.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
+              </select>
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="main-panel-text-size">Text size</Label>
@@ -83,10 +99,10 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
               {TEXT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
           </div>
-          <div className="grid gap-2">
+          {provider === "openai" && <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>
             <Textarea id="transcription-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} className="min-h-36" placeholder="Describe the topic or recording context." />
-          </div>
+          </div>}
           <div className="grid gap-2">
             <Label htmlFor="transcription-keywords">Keywords</Label>
             <Textarea id="transcription-keywords" value={keywordsText} onChange={(event) => setKeywordsText(event.target.value)} className="min-h-28" placeholder={"OpenAI\nUnited Nations"} />

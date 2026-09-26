@@ -7,7 +7,6 @@ const state = vi.hoisted(() => ({
     error: null,
     status: "idle" as import("@/lib/types").Status,
     clear: vi.fn(),
-    commit: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
   },
@@ -41,7 +40,7 @@ describe("Main", () => {
     vi.restoreAllMocks();
   });
 
-  it("runs Insights independently in LangTo and keeps them after transcript Clear", async () => {
+  it("runs Insights independently in langInsight and keeps them after transcript Clear", async () => {
     vi.useFakeTimers();
     state.session.status = "listening";
     const item = { id: "one", type: "flush" as const, startedAt: "2026-09-22T00:00:00.000Z", transcripts: ["The release is Friday."], translations: [""] };
@@ -50,7 +49,7 @@ describe("Main", () => {
     state.session.clear.mockImplementation(() => { state.session.items = []; });
     const { rerender } = render(<Main />);
     await act(async () => { await vi.advanceTimersByTimeAsync(60_000); });
-    expect(state.generateInsights).toHaveBeenCalledWith({ lang: defaultSettings.langTo, items: [item] }, expect.any(AbortSignal));
+    expect(state.generateInsights).toHaveBeenCalledWith({ lang: defaultSettings.langInsight, items: [item] }, expect.any(AbortSignal));
     expect(screen.getByText("Release schedule")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     rerender(<Main />);
@@ -113,7 +112,7 @@ describe("Main", () => {
     expect(state.useSession).toHaveBeenCalledWith(defaultSettings);
     expect(screen.getByRole("button", { name: "Settings" })).toBeEnabled();
     expect(screen.getByRole("heading", { name: "ledad" })).toBeInTheDocument();
-    expect(screen.getByText("v0.5.1")).toBeInTheDocument();
+    expect(screen.getByText("v0.6.0")).toBeInTheDocument();
     expect(screen.getByText("Press ▶ to begin.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start" })).toBeEnabled();
   });

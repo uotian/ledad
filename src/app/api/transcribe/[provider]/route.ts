@@ -1,17 +1,22 @@
 import { NextResponse } from "next/server";
-import { transcribe } from "@/ai/transcribe";
+import { notFound } from "next/navigation";
+import { transcribe as openai } from "@/ai/openai/transcribe";
+import { transcribeGemini as gemini } from "@/ai/gemini/transcribe";
 import { isSettings } from "@/lib/settings";
 import type { Settings } from "@/lib/types";
 
-export async function POST(request: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY is not set. Add it to .env.local." }, { status: 500 });
+export async function POST(request: Request, { params }: { params: Promise<{ provider: string }> }) {
+  const { provider } = await params;
+  const transcribe = new Map([["openai", openai], ["gemini", gemini]]).get(provider);
+  if (!transcribe) notFound();
+  const apiKey = process.env[`${provider.toUpperCase()}_API_KEY`];
+  if (!apiKey) return NextResponse.json({ error: `${provider.toUpperCase()}_API_KEY is not set. Add it to .env.local.` }, { status: 500 });
 
   const formData = await request.formData().catch(() => null);
   const audio = formData?.get("audio");
   const settings = readSettings(formData?.get("settings"));
   if (!isAudioFile(audio)) return NextResponse.json({ error: "No audio to transcribe." }, { status: 400 });
-  if (!settings) return NextResponse.json({ error: "Invalid transcription settings." }, { status: 400 });
+  if (!settings || settings.provider !== provider) return NextResponse.json({ error: "Invalid transcription settings." }, { status: 400 });
 
   try {
     const transcript = await transcribe(apiKey, audio, settings);

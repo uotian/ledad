@@ -15,7 +15,7 @@ vi.mock("openai", () => ({
   },
 }));
 
-import { translateMany } from "@/ai/translate-many";
+import { translateMany } from "@/ai/openai/translate-many";
 
 describe("OpenAI multiple translation", () => {
   beforeEach(() => {
@@ -36,7 +36,8 @@ describe("OpenAI multiple translation", () => {
       translations: ["こんにちは。", "お元気ですか？"],
     });
     expect(openAIMocks.create).toHaveBeenCalledWith(expect.objectContaining({
-      model: "gpt-6-luna",
+      model: "gpt-5-nano",
+      reasoning: { effort: "minimal" },
       input: "Hello. How are you?",
       text: { format: expect.objectContaining({ type: "json_schema", name: "translations", strict: true }) },
     }));

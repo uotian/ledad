@@ -9,7 +9,7 @@ const onClear = vi.fn();
 const insights: Insights = { data: null, error: null, updating: false, canRefresh: false, refresh: vi.fn() };
 
 function createSession(items: Session["items"]): Session {
-  return { items, error: null, status: "idle", clear: onClear, commit: vi.fn(), start: vi.fn(), stop: vi.fn() };
+  return { items, error: null, status: "idle", clear: onClear, start: vi.fn(), stop: vi.fn() };
 }
 
 describe("MainPanel", () => {

@@ -1,36 +1,21 @@
+import { setupLiveBrowser } from "../setup/live-audio";
 import { waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Flush } from "@/hooks/use-session/actions/start/flush";
+import { createFlush, type Flush } from "@/hooks/use-session/actions/start/flush";
 import type { ItemFlushLastRef, Refs, SetItems } from "@/hooks/use-session/types";
 import type { Item } from "@/lib/types";
 
-const requestSDP = vi.hoisted(() => vi.fn());
+const requestLiveToken = vi.hoisted(() => vi.fn());
 const translate = vi.hoisted(() => vi.fn());
-vi.mock("@/lib/transcribe", () => ({ requestSDP }));
+vi.mock("@/lib/transcribe", () => ({ requestLiveToken }));
 vi.mock("@/lib/translate", () => ({ translate }));
 
 type Listener = (event: Event) => void;
 const flushes: Flush[] = [];
 
-async function setupFlush({ readyState = "open", send = vi.fn(), initialItems = [] }: { readyState?: RTCDataChannelState; send?: ReturnType<typeof vi.fn>; initialItems?: Item[] } = {}) {
+async function setupFlush({ readyState = "open", send = vi.fn<(data: string) => void>(), initialItems = [] }: { readyState?: "open" | "closed"; send?: ReturnType<typeof vi.fn<(data: string) => void>>; initialItems?: Item[] } = {}) {
+  const browser = setupLiveBrowser();
   const listeners = new Map<string, Listener>();
-  const channel = {
-    readyState,
-    send,
-    close: vi.fn(),
-    addEventListener: vi.fn((type: string, listener: Listener) => listeners.set(type, listener)),
-  } as unknown as RTCDataChannel;
-  const connection = {
-    addTrack: vi.fn(),
-    createDataChannel: vi.fn(() => channel),
-    createOffer: vi.fn().mockResolvedValue({ type: "offer", sdp: "offer-sdp" }),
-    setLocalDescription: vi.fn(),
-    setRemoteDescription: vi.fn(),
-    getSenders: vi.fn(() => []),
-    close: vi.fn(),
-  } as unknown as RTCPeerConnection;
-  vi.stubGlobal("RTCPeerConnection", function MockRTCPeerConnection() { return connection; });
-
   let items = initialItems;
   const itemFlushLast: ItemFlushLastRef = { current: null };
   const setError = vi.fn();
@@ -42,11 +27,9 @@ async function setupFlush({ readyState = "open", send = vi.fn(), initialItems = 
     flush: { current: null },
     final: { current: null },
   };
-  const langs = { from: "en" as const, to: "ja" as const };
-  const flush = new Flush(
+  const flush = createFlush(
     refs,
-    { textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
-    langs,
+    { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", langInsight: "ja", prompt: "Meeting", keywords: [] },
     itemFlushLast,
     vi.fn(),
     setError,
@@ -55,8 +38,16 @@ async function setupFlush({ readyState = "open", send = vi.fn(), initialItems = 
   refs.flush.current = flush;
   flushes.push(flush);
   await flush.start();
+  const socket = browser.sockets.at(-1)!;
+  socket.send = send;
+  browser.emitAudio();
+  send.mockClear();
+  socket.readyState = readyState === "open" ? 1 : 3;
+  listeners.set("message", (event) => socket.dispatchEvent(event));
 
   return {
+    browser,
+    socket,
     get items() { return items; },
     refs,
     listeners,
@@ -73,7 +64,7 @@ function message(data: unknown) {
 
 describe("Flush", () => {
   beforeEach(() => {
-    requestSDP.mockResolvedValue("answer-sdp");
+    requestLiveToken.mockResolvedValue("ephemeral-token");
     translate.mockImplementation(async ({ text }: { text: string }) => `translated:${text}`);
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
@@ -97,17 +88,19 @@ describe("Flush", () => {
     expect(state.items[0].translations).toEqual(["translated:Hello"]);
     expect(state.itemFlushLast.current?.endedAt).toBeUndefined();
 
+    state.browser.emitAudio();
+    state.send.mockClear();
     await vi.advanceTimersByTimeAsync(15_000);
-    expect(state.send).toHaveBeenCalledTimes(2);
+    expect(state.send).toHaveBeenCalledOnce();
     state.refs.flush.current?.stop();
     await vi.advanceTimersByTimeAsync(30_000);
-    expect(state.send).toHaveBeenCalledTimes(2);
+    expect(state.send).toHaveBeenCalledOnce();
     expect(vi.getTimerCount()).toBe(0);
   });
 
   it("does not schedule commits when connection setup fails", async () => {
     vi.useFakeTimers();
-    requestSDP.mockRejectedValueOnce(new Error("Connection failed"));
+    requestLiveToken.mockRejectedValueOnce(new Error("Connection failed"));
     const send = vi.fn();
 
     await expect(setupFlush({ send })).rejects.toThrow("Connection failed");
@@ -160,8 +153,8 @@ describe("Flush", () => {
     expect(state.items[0].startedAt).toEqual(expect.any(String));
     expect(state.items[0].endedAt).toEqual(expect.any(String));
     expect(state.itemFlushLast.current).toBeNull();
-    expect(translate).toHaveBeenNthCalledWith(1, { langFrom: "en", langTo: "ja", text: "Hello," });
-    expect(translate).toHaveBeenNthCalledWith(2, { langFrom: "en", langTo: "ja", text: "Hello, world." });
+    expect(translate).toHaveBeenNthCalledWith(1, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello," });
+    expect(translate).toHaveBeenNthCalledWith(2, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello, world." });
     await waitFor(() => expect(state.items[0].translations).toEqual(["translated:Hello, world."]));
   });
 
@@ -173,60 +166,75 @@ describe("Flush", () => {
     translate.mockReturnValueOnce(new Promise((resolve) => { resolveTranslation = resolve; }));
     state.itemFlushLast.current = oldItem;
 
-    state.refs.flush.current?.commit();
+    state.socket.emit({ type: "conversation.item.input_audio_transcription.delta", delta: "." });
+    expect(state.itemFlushLast.current).toBeNull();
     state.itemFlushLast.current = activeItem;
-    resolveTranslation("translated:Hello");
+    resolveTranslation("translated:Hello.");
 
-    await waitFor(() => expect(state.items[0].translations).toEqual(["translated:Hello"]));
+    await waitFor(() => expect(state.items[0].translations).toEqual(["translated:Hello."]));
 
     expect(state.itemFlushLast.current).toEqual(activeItem);
-    expect(state.items).toEqual([{ ...oldItem, translations: ["translated:Hello"] }, activeItem]);
+    expect(state.items).toEqual([{ ...oldItem, transcripts: ["Hello."], endedAt: expect.any(String), translations: ["translated:Hello."] }, activeItem]);
   });
 
-  it("does nothing when there is no transcript to finalize", async () => {
+  it("handles several sentences and a partial sentence in one delta", async () => {
     const state = await setupFlush();
-    state.refs.flush.current?.finalize();
+    state.socket.emit({ type: "conversation.item.input_audio_transcription.delta", delta: "One.Two, three!Tail" });
+    expect(state.items.map((item) => item.transcripts[0])).toEqual(["One.", "Two, three!", "Tail"]);
+    expect(state.items.slice(0, 2).every((item) => item.endedAt)).toBe(true);
+    expect(state.itemFlushLast.current?.transcripts).toEqual(["Tail"]);
+    expect(translate.mock.calls.map(([args]) => args.text)).toEqual(["One.", "Two,", "Two, three!"]);
+  });
+
+  it("does not translate when a periodic commit has no transcript", async () => {
+    vi.useFakeTimers();
+    const state = await setupFlush();
+    await vi.advanceTimersByTimeAsync(15_000);
 
     expect(translate).not.toHaveBeenCalled();
     expect(state.items).toEqual([]);
   });
 
   it("preserves the previous translation when a later request fails", async () => {
+    vi.useFakeTimers();
     const item = { id: "active", startedAt: "2026-01-01T00:00:00.000Z", transcripts: ["Hello world"], translations: ["こんにちは"], type: "flush" as const };
     const state = await setupFlush({ initialItems: [item] });
     state.itemFlushLast.current = item;
     translate.mockRejectedValueOnce(new Error("offline"));
 
-    state.refs.flush.current?.commit();
-    await waitFor(() => expect(console.error).toHaveBeenCalled());
+    await vi.advanceTimersByTimeAsync(15_000);
+    expect(console.error).toHaveBeenCalled();
 
     expect(state.items).toEqual([item]);
     expect(state.itemFlushLast.current).toEqual(item);
   });
 
   it("sends a commit event through an open channel", async () => {
+    vi.useFakeTimers();
     const state = await setupFlush();
     vi.spyOn(crypto, "randomUUID").mockReturnValue("event-id");
 
-    state.refs.flush.current?.commit();
+    await vi.advanceTimersByTimeAsync(15_000);
 
-    expect(state.setError).toHaveBeenCalledWith(null);
     expect(state.send).toHaveBeenCalledWith(JSON.stringify({ event_id: "commit_event-id", type: "input_audio_buffer.commit" }));
   });
 
   it("rejects a commit when the channel is not open", async () => {
+    vi.useFakeTimers();
     const state = await setupFlush({ readyState: "closed" });
 
-    state.refs.flush.current?.commit();
+    await vi.advanceTimersByTimeAsync(15_000);
 
     expect(state.send).not.toHaveBeenCalled();
-    expect(state.setError).toHaveBeenCalledWith("Could not commit: the session is not listening.");
+    expect(state.setError).not.toHaveBeenCalled();
   });
 
   it("reports channel send failures", async () => {
-    const state = await setupFlush({ send: vi.fn(() => { throw new Error("channel closed"); }) });
+    vi.useFakeTimers();
+    const state = await setupFlush();
+    state.send.mockImplementationOnce(() => { throw new Error("channel closed"); });
 
-    state.refs.flush.current?.commit();
+    await vi.advanceTimersByTimeAsync(15_000);
 
     expect(state.setError).toHaveBeenLastCalledWith("Could not commit: channel closed");
   });
