@@ -54,7 +54,7 @@ describe("POST /api/transcribe/[provider]/live", () => {
   it("rejects missing and mismatched settings", async () => {
     vi.stubEnv("GEMINI_API_KEY", "secret");
     const missing = await POST(new Request("https://example.test/api/transcribe/gemini/live", { method: "POST", body: "{}" }), context("gemini"));
-    const mismatch = await POST(request("gemini", defaultSettings), context("gemini"));
+    const mismatch = await POST(request("gemini", { ...defaultSettings, provider: "openai" }), context("gemini"));
     expect(missing.status).toBe(400);
     expect(mismatch.status).toBe(400);
     expect(createGeminiLiveToken).not.toHaveBeenCalled();

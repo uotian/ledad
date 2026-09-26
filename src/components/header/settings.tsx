@@ -68,7 +68,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
           <div className="grid gap-2">
-            <Label htmlFor="transcription-provider">Transcription provider</Label>
+            <Label htmlFor="transcription-provider">STT Provider</Label>
             <select id="transcription-provider" value={provider} onChange={(event) => setProvider(event.target.value as TranscriptionProvider)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
               {TRANSCRIPTION_PROVIDERS.map((provider) => <option key={provider} value={provider}>{provider === "openai" ? "OpenAI" : "Gemini"}</option>)}
             </select>

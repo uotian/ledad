@@ -4,8 +4,6 @@
 
 ![ledadのリアルタイム文字起こし・翻訳・AI Insightsデモ](docs/assets/ledad-demo.gif)
 
-サンプルデータによる操作デモ
-
 ブラウザのマイク入力を使って、音声をリアルタイムに文字起こし・翻訳し、AI Insightsで会話の話題を要約するWebアプリです。
 
 使用技術：Next.js 16、React 19、TypeScript、OpenAI API、Gemini API
@@ -13,6 +11,7 @@
 ## 主な機能
 
 - ブラウザでのマイク入力
+- Gemini（初期値）・OpenAI の文字起こし切り替え
 - 低遅延な速報版と60秒ごとの確定版文字起こし
 - 速報版・確定版の翻訳
 - 話題ごとの概要と現在の話題を、個別に選んだ言語で表示
@@ -25,7 +24,7 @@
 
 - `Speech language`／`Translation language`：英語（`en`）・日本語（`ja`）・中国語（`zh`）・フランス語（`fr`）から選びます。初期値は英語→日本語です。画面下部のコントロールパネルには、選択した翻訳方向が表示されます。
 - `Insights language`：概要の言語を英語（`en`）・日本語（`ja`、初期値）・中国語（`zh`）・フランス語（`fr`）から個別に選びます。
-- `Transcription provider`：文字起こしに使う OpenAI（初期値）または Gemini を選びます。
+- `STT Provider`：文字起こしに使う Gemini（初期値）または OpenAI を選びます。
 - `Text size`：S／M／Lから選びます（初期値：M）。
 - `Prompt`：OpenAI の文字起こしに使う話題や録音の背景を入力します。
 - `Keywords`：固有名詞・専門用語・略語など、表記のヒントを1行に1つ入力します。
@@ -34,19 +33,21 @@
 
 `Stop` を押すと、マイク入力とRealtime接続を停止します。
 
-OpenAI は15秒ごとに音声バッファを確定し、翻訳を自動更新します。Gemini は発話を自動で確定します。
+発話中から速報の文字起こしと翻訳を更新します。
 
 メインパネル右下の消しゴムアイコン（`Clear`）を押すと、表示中の履歴を消去します。セッションは停止しません。
 
 メインパネル左側の `AI Insights` にある `All Topics` は同じ話題をまとめた一覧、`Current Topic` は現在の話題です。タイトルを押すと概要を展開します。狭い画面では書き起こしの上に表示します。
 
-会話中は1分ごとに変更を確認し、表示中の書き起こし・翻訳を、初期設定では `gpt-6-luna`（OpenAI）で要約します。概要は Insights 用の言語で表示されます（初期値：日本語）。横の更新ボタンからは、内容が同じでも再生成できます。処理中はボタンが無効になり、停止後も最後の概要を表示します。概要は参考情報です。
+会話中は30秒ごとに変更を確認し、表示中の書き起こし・翻訳を、`gpt-6-luna`（OpenAI）で要約します。概要は Insights 用の言語で表示されます（初期値：日本語）。横の更新ボタンからは、内容が同じでも再生成できます。処理中はボタンが無効になり、停止後も最後の概要を表示します。概要は参考情報です。
 
 ## 必要なもの
 
 - Node.js
-- 翻訳・AI Insights 用の OpenAI API key
-- Gemini で文字起こしする場合は Gemini API key も必要
+- OpenAI API key
+- Gemini API key
+
+STT には OpenAI または Gemini、翻訳と AI Insights には OpenAI の API を使います。
 
 ## 対応ブラウザ
 
@@ -56,14 +57,12 @@ Chrome、Edge、Firefox、Safari（iOS Safari を含む）の最新版を利用�
 
 ## セットアップ
 
-`.env.local` を作成し、OpenAI API key を設定します。Gemini で文字起こしする場合は Gemini API key も追加します。
+`.env.local` を作成し、初期設定では両方の API key を設定します。
 
 ```bash
 OPENAI_API_KEY=your_api_key
 GEMINI_API_KEY=your_gemini_api_key
 ```
-
-翻訳・AI Insights は文字起こしの設定とは独立して、OpenAI を使います。Gemini の実装も残しています。
 
 依存関係をインストールします。
 

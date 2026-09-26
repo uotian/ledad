@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.0
+
+- Gemini の文字起こしに対応し、デフォルトに変更。
+- 翻訳モデルを `gpt-5-nano` に変更し、速報翻訳の待ち時間を短縮。
+- AI Insights の言語設定を追加し、更新間隔を30秒に変更。
+- 手動 Commit を廃止し、設定画面を整理。
+
 ## v0.5.1
 
 - 速報・確定版の翻訳と AI Insights のモデルを `gpt-5.6-luna` から `gpt-6-luna` に更新。

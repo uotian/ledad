@@ -29,12 +29,11 @@ describe("OpenAI translation", () => {
     await expect(translate("secret", "en", "ja", "Hello")).resolves.toBe("こんにちは");
     expect(openAIMocks.constructor).toHaveBeenCalledWith({ apiKey: "secret" });
     expect(openAIMocks.create).toHaveBeenCalledWith({
-      model: "gpt-6-luna",
+      model: "gpt-5-nano",
       instructions: "Translate en speech transcripts into natural ja. Return only the ja translation, with no notes or quotation marks.",
       input: "Hello",
-      reasoning: { effort: "none" },
+      reasoning: { effort: "minimal" },
       store: false,
-      temperature: 0,
     });
   });
 

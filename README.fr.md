@@ -4,8 +4,6 @@
 
 ![Démonstration de la transcription, de la traduction et d’AI Insights dans ledad](docs/assets/ledad-demo.gif)
 
-Démonstration de l’interface avec des données d’exemple.
-
 Application web qui utilise le microphone du navigateur pour transcrire et traduire la parole en temps réel, et résumer les sujets de conversation avec AI Insights.
 
 Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et les API Gemini.
@@ -13,6 +11,7 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 ## Fonctionnalités principales
 
 - Entrée audio depuis le microphone du navigateur
+- Transcription avec Gemini (par défaut) ou OpenAI
 - Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
 - Traduction des transcriptions préliminaires et finales
 - Résumés par sujet et sujet actuel dans une langue choisie séparément
@@ -25,7 +24,7 @@ Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les
 
 - `Speech language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
 - `Insights language` : anglais (`en`), japonais (`ja`, par défaut), chinois (`zh`) ou français (`fr`), indépendamment des langues source et cible.
-- `Transcription provider` : OpenAI (par défaut) ou Gemini pour la transcription.
+- `STT Provider` : Gemini (par défaut) ou OpenAI pour la transcription.
 - `Text size` : S, M ou L (M par défaut).
 - `Prompt` : sujet ou contexte de l’enregistrement pour la transcription OpenAI.
 - `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne.
@@ -34,19 +33,21 @@ Ouvrir les paramètres lorsque la session n’est pas inactive demande de confir
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 
-OpenAI valide le tampon audio et met à jour les traductions automatiquement toutes les 15 secondes. Gemini finalise automatiquement les segments de parole.
+Les transcriptions préliminaires et leurs traductions sont mises à jour pendant la parole.
 
 Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
 
 Le panneau gauche `AI Insights` affiche `All Topics`, qui regroupe les discussions sur un même sujet, et un `Current Topic` distinct. Cliquez sur un titre pour développer son résumé. Sur les écrans étroits, les sujets apparaissent au-dessus de la transcription.
 
-Pendant l’écoute, l’application vérifie les changements chaque minute et résume les transcriptions et traductions affichées avec `gpt-6-luna` (OpenAI) par défaut. Les résumés sont affichés dans la langue choisie pour Insights (japonais par défaut). Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
+Pendant l’écoute, l’application vérifie les changements toutes les 30 secondes et résume les transcriptions et traductions affichées avec `gpt-6-luna` (OpenAI). Les résumés sont affichés dans la langue choisie pour Insights (japonais par défaut). Le bouton d’actualisation à côté de `AI Insights` permet de régénérer le résumé même si le contenu n’a pas changé. Il est désactivé pendant le traitement, et le dernier résumé reste visible après l’arrêt. Les résumés sont fournis à titre indicatif.
 
 ## Prérequis
 
 - Node.js
-- Clé API OpenAI pour la traduction et AI Insights
-- Clé API Gemini si vous utilisez la transcription Gemini
+- Clé API OpenAI
+- Clé API Gemini
+
+La transcription (STT) utilise les API OpenAI ou Gemini ; la traduction et AI Insights utilisent les API OpenAI.
 
 ## Navigateurs pris en charge
 
@@ -56,14 +57,12 @@ L’accès au microphone exige également un contexte sécurisé (HTTPS ou `loca
 
 ## Installation
 
-Créez `.env.local` et ajoutez votre clé API OpenAI. Ajoutez une clé API Gemini si vous utilisez la transcription Gemini.
+Créez `.env.local` et ajoutez les deux clés API pour la configuration par défaut.
 
 ```bash
 OPENAI_API_KEY=your_api_key
 GEMINI_API_KEY=your_gemini_api_key
 ```
-
-La traduction et AI Insights utilisent OpenAI, indépendamment du choix de transcription. Les implémentations Gemini restent disponibles.
 
 Installez les dépendances.
 

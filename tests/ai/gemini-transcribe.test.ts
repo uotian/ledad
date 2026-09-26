@@ -20,7 +20,13 @@ describe("Gemini transcription", () => {
     expect(body.bidiGenerateContentSetup).toEqual({
       model: "models/gemini-3.5-transcribe-live",
       generationConfig: { responseModalities: ["TEXT"] },
-      inputAudioTranscription: { languageCodes: ["en-US"], customVocabulary: ["Kubernetes"] },
+      inputAudioTranscription: { languageCodes: ["en-US"], customVocabulary: ["Kubernetes"], mode: "VERBATIM" },
+      realtimeInputConfig: { automaticActivityDetection: {
+        disabled: false,
+        startOfSpeechSensitivity: "START_SENSITIVITY_HIGH",
+        endOfSpeechSensitivity: "END_SENSITIVITY_HIGH",
+        silenceDurationMs: 500,
+      } },
     });
   });
 
@@ -33,10 +39,13 @@ describe("Gemini transcription", () => {
     vi.stubGlobal("fetch", fetchMock);
     const audio = new File(["audio"], "transcript.webm", { type: "audio/webm" });
 
-    await expect(transcribeGemini("secret", audio, { ...defaultSettings, provider: "gemini" })).resolves.toBe("A final transcript.");
+    await expect(transcribeGemini("secret", audio, { ...defaultSettings, provider: "gemini", keywords: ["Kubernetes"] })).resolves.toBe("A final transcript.");
     expect(fetchMock).toHaveBeenCalledTimes(4);
     expect((fetchMock.mock.calls[2][0] as string)).toBe("https://generativelanguage.googleapis.com/v1beta/interactions");
-    expect(JSON.parse((fetchMock.mock.calls[2][1] as RequestInit).body as string).generation_config.transcription_config.language_codes).toEqual(["en-US"]);
+    const config = JSON.parse((fetchMock.mock.calls[2][1] as RequestInit).body as string).generation_config.transcription_config;
+    expect(config.language_codes).toEqual(["en-US"]);
+    expect(config.mode).toEqual({ type: "verbatim" });
+    expect(config.custom_vocabulary).toEqual(["Kubernetes"]);
     expect(fetchMock.mock.calls[3][0]).toBe("https://generativelanguage.googleapis.com/v1beta/files/example");
   });
 });

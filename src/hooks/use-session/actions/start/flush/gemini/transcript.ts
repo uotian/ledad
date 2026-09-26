@@ -1,6 +1,6 @@
 import { Transcript as CommonTranscript } from "../common/transcript";
 
-const TRANSLATION_INTERVAL_MS = 1000;
+const TRANSLATION_INTERVAL_MS = 0;
 
 export class Transcript extends CommonTranscript {
   private timer: ReturnType<typeof setTimeout> | null = null;

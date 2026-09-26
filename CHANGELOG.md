@@ -2,6 +2,13 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.0
+
+- Added Gemini transcription and made it the default.
+- Switched translation to `gpt-5-nano` and reduced the wait for preliminary translations.
+- Added an AI Insights language setting and changed the update interval to 30 seconds.
+- Removed manual Commit and simplified Settings.
+
 ## v0.5.1
 
 - Upgraded preliminary/final translation and AI Insights from `gpt-5.6-luna` to `gpt-6-luna`.

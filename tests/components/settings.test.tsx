@@ -13,10 +13,10 @@ function openSettings() {
 }
 
 describe("settings", () => {
-  it("saves Gemini as the transcription provider and hides the OpenAI prompt", () => {
+  it("defaults to Gemini and hides the OpenAI prompt", () => {
     render(<Settings />);
     openSettings();
-    fireEvent.change(screen.getByLabelText("Transcription provider"), { target: { value: "gemini" } });
+    expect(screen.getByLabelText("STT Provider")).toHaveValue("gemini");
     expect(screen.queryByLabelText("Prompt")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ provider: "gemini" });
@@ -25,6 +25,7 @@ describe("settings", () => {
   it("uses the current prompts as defaults and restores saved settings after remounting", () => {
     const first = render(<Settings />);
     openSettings();
+    fireEvent.change(screen.getByLabelText("STT Provider"), { target: { value: "openai" } });
     expect(screen.getByLabelText("Prompt")).toHaveValue(defaultSettings.prompt);
 
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "隋の楊堅について。" } });
@@ -42,16 +43,18 @@ describe("settings", () => {
   it("discards unsaved edits when cancelled", () => {
     render(<Settings />);
     openSettings();
+    fireEvent.change(screen.getByLabelText("STT Provider"), { target: { value: "openai" } });
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "Unsaved" } });
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     openSettings();
 
+    fireEvent.change(screen.getByLabelText("STT Provider"), { target: { value: "openai" } });
     expect(screen.getByLabelText("Prompt")).toHaveValue(defaultSettings.prompt);
     expect(localStorage.getItem(settingsKey)).toBeNull();
   });
 
   it("preserves an intentionally empty prompt instead of restoring defaults", () => {
-    localStorage.setItem(settingsKey, JSON.stringify({ prompt: "", keywords: [] }));
+    localStorage.setItem(settingsKey, JSON.stringify({ provider: "openai", prompt: "", keywords: [] }));
     render(<Settings />);
     openSettings();
 
@@ -63,6 +66,7 @@ describe("settings", () => {
     render(<Settings />);
     openSettings();
 
+    fireEvent.change(screen.getByLabelText("STT Provider"), { target: { value: "openai" } });
     expect(screen.getByLabelText("Prompt")).toHaveValue(defaultSettings.prompt);
   });
 
@@ -108,7 +112,7 @@ describe("settings", () => {
     localStorage.setItem(settingsKey, JSON.stringify({ provider: "gemini", langFrom: "ja", langTo: "fr", prompt: "Saved prompt", keywords: ["Ledad"] }));
     render(<Settings />);
     openSettings();
-    expect(screen.getByLabelText("Transcription provider")).toHaveValue("gemini");
+    expect(screen.getByLabelText("STT Provider")).toHaveValue("gemini");
     expect(screen.getByLabelText("Speech language")).toHaveValue("ja");
     expect(screen.getByLabelText("Translation language")).toHaveValue("fr");
     expect(screen.getByLabelText("Insights language")).toHaveValue("ja");
@@ -122,7 +126,7 @@ describe("settings", () => {
     expect(screen.getByLabelText("Text size")).toHaveValue("M");
     fireEvent.change(screen.getByLabelText("Text size"), { target: { value: "L" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ provider: "openai" as const, textSize: "L" });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ provider: "gemini" as const, textSize: "L" });
     first.unmount();
     render(<Settings />);
     openSettings();

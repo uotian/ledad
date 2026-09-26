@@ -4,7 +4,7 @@ import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react"
 import type { Item, Settings } from "@/lib/types";
 import { generateInsights, insightsSnapshot, type InsightsResult } from "@/lib/insights";
 
-export const INSIGHTS_INTERVAL_MS = 60_000;
+export const INSIGHTS_INTERVAL_MS = 30_000;
 
 export function useInsights(items: Item[], enabled: boolean, settings: Settings) {
   const { langInsight: lang } = settings;

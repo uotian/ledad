@@ -45,7 +45,7 @@ describe("POST /api/transcribe/[provider]", () => {
 
   it("rejects a mismatch between the URL and settings", async () => {
     vi.stubEnv("GEMINI_API_KEY", "secret");
-    const response = await POST(request("gemini", defaultSettings), context("gemini"));
+    const response = await POST(request("gemini", { ...defaultSettings, provider: "openai" }), context("gemini"));
     expect(response.status).toBe(400);
     expect(transcribeGemini).not.toHaveBeenCalled();
   });

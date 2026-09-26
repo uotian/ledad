@@ -6,7 +6,7 @@ const prompts = [
 ];
 
 export const defaultSettings: Settings = {
-  provider: "openai",
+  provider: "gemini",
   textSize: "M",
   langFrom: "en",
   langTo: "ja",

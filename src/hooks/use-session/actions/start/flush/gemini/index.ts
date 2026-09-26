@@ -72,12 +72,20 @@ export class Flush {
         inputAudioTranscription: {
           languageCodes: [{ en: "en-US", ja: "ja-JP", zh: "cmn-Hans-CN", fr: "fr-FR" }[this.settings.langFrom]],
           customVocabulary: this.settings.keywords.slice(0, 1000),
+          mode: "VERBATIM",
         },
+        realtimeInputConfig: { automaticActivityDetection: {
+          disabled: false,
+          startOfSpeechSensitivity: "START_SENSITIVITY_HIGH",
+          endOfSpeechSensitivity: "END_SENSITIVITY_HIGH",
+          silenceDurationMs: 500,
+        } },
       } },
       isReady: (message) => Boolean(message.setupComplete),
       getSocket: () => this.socket,
       onMessage: (message) => {
         const content = message.serverContent;
+        console.log(content)
         if (content?.interimInputTranscription?.text) this.transcript.replace(content.interimInputTranscription.text);
         if (content?.inputTranscription?.text) {
           this.transcript.replace(content.inputTranscription.text);

@@ -44,9 +44,9 @@ describe("topic updates", () => {
     expect(generateInsights).toHaveBeenLastCalledWith({ lang: "fr", items: [item] }, expect.any(AbortSignal));
   });
 
-  it("waits one minute, uses untranslated text, and skips unchanged input", async () => {
+  it("waits 30 seconds, uses untranslated text, and skips unchanged input", async () => {
     const { result, rerender } = setup();
-    await advance(59_999);
+    await advance(29_999);
     expect(generateInsights).not.toHaveBeenCalled();
     await advance(1);
     expect(generateInsights).toHaveBeenCalledWith({ lang: "ja", items: [item] }, expect.any(AbortSignal));
@@ -151,12 +151,12 @@ describe("topic updates", () => {
   it("retains successful insights when items are cleared without resetting the timer", async () => {
     const { result, rerender } = setup();
     await advance();
-    await advance(10_000);
+    await advance(5_000);
     rerender({ ...initial, items: [] });
     expect(result.current.data).toEqual(data);
-    await advance(20_000);
+    await advance(10_000);
     rerender({ ...initial, items: [{ ...item, id: "new" }] });
-    await advance(29_999);
+    await advance(14_999);
     expect(generateInsights).toHaveBeenCalledTimes(1);
     await advance(1);
     expect(generateInsights).toHaveBeenCalledTimes(2);
