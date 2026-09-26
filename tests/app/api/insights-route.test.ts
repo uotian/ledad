@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 const generateInsights = vi.hoisted(() => vi.fn());
-vi.mock("@/ai/insights", () => ({ generateInsights }));
+vi.mock("@/ai/openai/insights", () => ({ generateInsights }));
 import { POST } from "@/app/api/insights/route";
 
 const input = { lang: "ja", items: [{ id: "one", type: "flush", startedAt: "2026-09-22T00:00:00Z", transcripts: ["Hello"], translations: [""] }] };

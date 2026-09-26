@@ -17,9 +17,9 @@ export function useSession(settings: Settings) {
   const itemFlushLast: ItemFlushLastRef = useRef(null);
   const sessionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mic: Refs["mic"] = useRef(null);
-  const flush: Refs["flush"] = useRef(null);
   const final: Refs["final"] = useRef(null);
-  const refs: Refs = useMemo(() => ({ mic, flush, final }), [mic, flush, final]);
+  const flush: Refs["flush"] = useRef(null);
+  const refs: Refs = useMemo(() => ({ mic, final, flush }), [mic, final, flush]);
 
   useEffect(() => {
     return () => {
@@ -27,6 +27,10 @@ export function useSession(settings: Settings) {
       cleanup(refs);
     };
   }, [refs]);
+
+  useEffect(() => {
+    if (status === "idle") clearSessionTimer();
+  }, [status]);
 
   async function start() {
     clearSessionTimer();
@@ -48,11 +52,7 @@ export function useSession(settings: Settings) {
     clearAction(setError, setItems, itemFlushLast);
   }
 
-  function commit() {
-    refs.flush.current?.finalize();
-  }
-
-  return { items, error, status, clear, commit, start, stop };
+  return { items, error, status, clear, start, stop };
 
   function clearSessionTimer() {
     if (sessionTimer.current) {

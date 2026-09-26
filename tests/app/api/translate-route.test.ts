@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const translate = vi.hoisted(() => vi.fn());
 
-vi.mock("@/ai/translate", () => ({ translate }));
+vi.mock("@/ai/openai/translate", () => ({ translate }));
 
 import { POST } from "@/app/api/translate/route";
 

@@ -13,6 +13,15 @@ function openSettings() {
 }
 
 describe("settings", () => {
+  it("offers OpenAI as the only transcription provider", () => {
+    render(<Settings />);
+    openSettings();
+    const provider = screen.getByLabelText("Transcription");
+    expect(provider).toHaveValue("openai");
+    expect(provider.querySelectorAll("option")).toHaveLength(1);
+    expect(provider).toHaveTextContent("OpenAI");
+  });
+
   it("uses the current prompts as defaults and restores saved settings after remounting", () => {
     const first = render(<Settings />);
     openSettings();
@@ -21,7 +30,7 @@ describe("settings", () => {
     fireEvent.change(screen.getByLabelText("Prompt"), { target: { value: "隋の楊堅について。" } });
     fireEvent.change(screen.getByLabelText("Keywords"), { target: { value: "楊堅\n 隋 \n楊堅\n" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ textSize: "M", langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toEqual({ provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", prompt: "隋の楊堅について。", keywords: ["楊堅", "隋"] });
 
     first.unmount();
     render(<Settings />);
@@ -98,7 +107,7 @@ describe("settings", () => {
     expect(screen.getByLabelText("Text size")).toHaveValue("M");
     fireEvent.change(screen.getByLabelText("Text size"), { target: { value: "L" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ textSize: "L" });
+    expect(JSON.parse(localStorage.getItem(settingsKey)!)).toMatchObject({ provider: "openai" as const, textSize: "L" });
     first.unmount();
     render(<Settings />);
     openSettings();

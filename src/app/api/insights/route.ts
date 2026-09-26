@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateInsights } from "@/ai/insights";
+import { generateInsights } from "@/ai/openai/insights";
 import { isInsightsRequest } from "@/lib/insights";
 
 export async function POST(request: Request) {

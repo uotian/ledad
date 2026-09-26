@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { SettingsIcon } from "lucide-react";
 import type { Session } from "@/hooks/use-session";
 import { useSettings } from "@/hooks/use-settings";
-import { LANGS, TEXT_SIZES, type Lang, type TextSize } from "@/lib/types";
+import { LANGS, TEXT_SIZES, TRANSCRIPTION_PROVIDERS, type Lang, type TextSize, type TranscriptionProvider } from "@/lib/types";
 import { Button } from "@/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Label } from "@/ui/label";
@@ -14,6 +14,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
   const { settings, saveSettings } = useSettings();
   const [open, setOpen] = useState(false);
   const [textSize, setTextSize] = useState(settings.textSize);
+  const [provider, setProvider] = useState(settings.provider);
   const [langFrom, setLangFrom] = useState(settings.langFrom);
   const [langTo, setLangTo] = useState(settings.langTo);
   const [prompt, setPrompt] = useState(settings.prompt);
@@ -27,6 +28,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
         session.stop();
       }
       setTextSize(settings.textSize);
+      setProvider(settings.provider);
       setLangFrom(settings.langFrom);
       setLangTo(settings.langTo);
       setPrompt(settings.prompt);
@@ -45,7 +47,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
       setError("Keywords cannot contain < or >.");
     } else {
       try {
-        saveSettings({ textSize, langFrom, langTo, prompt, keywords });
+        saveSettings({ provider, textSize, langFrom, langTo, prompt, keywords });
         setOpen(false);
       } catch {
         setError("Could not save settings in this browser.");
@@ -63,6 +65,12 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
+          <div className="grid gap-2">
+            <Label htmlFor="transcription-provider">Transcription</Label>
+            <select id="transcription-provider" value={provider} onChange={(event) => setProvider(event.target.value as TranscriptionProvider)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
+              {TRANSCRIPTION_PROVIDERS.map((provider) => <option key={provider} value={provider}>OpenAI</option>)}
+            </select>
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="lang-from">Source language</Label>
@@ -83,10 +91,10 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
               {TEXT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
           </div>
-          <div className="grid gap-2">
+          {provider === "openai" && <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>
             <Textarea id="transcription-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} className="min-h-36" placeholder="Describe the topic or recording context." />
-          </div>
+          </div>}
           <div className="grid gap-2">
             <Label htmlFor="transcription-keywords">Keywords</Label>
             <Textarea id="transcription-keywords" value={keywordsText} onChange={(event) => setKeywordsText(event.target.value)} className="min-h-28" placeholder={"OpenAI\nUnited Nations"} />

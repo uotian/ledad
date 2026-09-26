@@ -1,4 +1,4 @@
-import { CornerDownLeft, Play, Square } from "lucide-react";
+import { Play, Square } from "lucide-react";
 import type { Session } from "@/hooks/use-session";
 import { Button } from "@/components/control-panel/session-actions/button";
 import { cn } from "@/lib/utils";
@@ -28,14 +28,6 @@ export function SessionActions({ session, className }: { session: Session; class
           onClick={session.start}
         />
       )}
-      <Button
-        className="bg-blue-400/30 text-white/75 hover:bg-blue-400/60"
-        disabled={session.status !== "listening"}
-        icon={CornerDownLeft}
-        label="Commit"
-        onClick={session.commit}
-        variant="secondary"
-      />
     </div>
   );
 }

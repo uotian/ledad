@@ -9,7 +9,7 @@ function createRefs() {
   const finalStop = vi.fn();
   const micTrackStop = vi.fn();
   const refs = {
-    flush: { current: { commit: vi.fn(), finalize: vi.fn(), stop: flushStop } },
+    flush: { current: { stop: flushStop } },
     mic: { current: { getTracks: () => [{ stop: micTrackStop }] } as unknown as MediaStream },
     final: { current: { stop: finalStop } },
   } satisfies Refs;

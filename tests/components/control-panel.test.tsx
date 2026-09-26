@@ -11,7 +11,6 @@ function createSession(overrides: Partial<Session> = {}): Session {
     error: null,
     status: "idle",
     clear: vi.fn(),
-    commit: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
     ...overrides,
@@ -25,14 +24,14 @@ describe("ControlPanel", () => {
 
     render(<ControlPanel session={session} settings={defaultSettings} />);
 
-    expect(screen.getByRole("button", { name: "Commit" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Commit" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Clear" })).not.toBeInTheDocument();
     expect(screen.getByText("en → ja")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Start" }));
     expect(session.start).toHaveBeenCalledOnce();
   });
 
-  it("stops or commits a listening session ", async () => {
+  it("stops a listening session", async () => {
     const user = userEvent.setup();
     const session = createSession({
       status: "listening",
@@ -41,9 +40,7 @@ describe("ControlPanel", () => {
 
     render(<ControlPanel session={session} settings={defaultSettings} />);
 
-    await user.click(screen.getByRole("button", { name: "Commit" }));
     await user.click(screen.getByRole("button", { name: "Stop" }));
-    expect(session.commit).toHaveBeenCalledOnce();
     expect(session.stop).toHaveBeenCalledOnce();
   });
 

@@ -46,7 +46,7 @@ describe("final transcription timeline", () => {
     expect(selectItems([itemFlush, itemFinal, itemFinalBefore])).toEqual([itemFinalBefore, itemFinal]);
   });
 
-  it("records the microphone separately and submits each sixty-second chunk", async () => {
+  it.each(["openai"] as const)("records sixty-second chunks and submits them to %s", async (provider) => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-22T00:00:00.000Z"));
     vi.spyOn(crypto, "randomUUID").mockReturnValue("final-id");
@@ -83,8 +83,7 @@ describe("final transcription timeline", () => {
     const refs: { mic: { current: MediaStream | null }; final: { current: { stop: () => void } | null } } = { mic: { current: mic }, final: { current: null } };
     const final = new Final(
       refs,
-      { textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
-      { from: "en", to: "ja" },
+      { provider, textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
       setItems as never,
       vi.fn() as never,
     );
@@ -95,8 +94,8 @@ describe("final transcription timeline", () => {
     expect(lifecycle).toEqual(["start:0", "start:1", "stop:0"]);
     expect(transcribe).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(500);
-    expect(transcribe).toHaveBeenCalledWith(expect.objectContaining({ audio: expect.any(Blob), filename: "transcript.mp4" }));
-    expect(translateMany).toHaveBeenCalledWith({ langFrom: "en", langTo: "ja", text: "Final transcript." });
+    expect(transcribe).toHaveBeenCalledWith(expect.objectContaining({ audio: expect.any(Blob), filename: "transcript.mp4", settings: expect.objectContaining({ provider }) }));
+    expect(translateMany).toHaveBeenCalledWith({ settings: expect.objectContaining({ provider, langFrom: "en", langTo: "ja" }), text: "Final transcript." });
     expect(items).toEqual([expect.objectContaining({ id: "flush" })]);
 
     resolveTranslation({ transcripts: ["Final transcript."], translations: ["確定した翻訳。"] });
@@ -143,8 +142,7 @@ describe("final transcription timeline", () => {
     const refs: { mic: { current: MediaStream | null }; final: { current: { stop: () => void } | null } } = { mic: { current: {} as MediaStream }, final: { current: null } };
     const final = new Final(
       refs,
-      { textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
-      { from: "en", to: "ja" },
+      { provider: "openai" as const, textSize: "M", langFrom: "en", langTo: "ja", prompt: "Meeting", keywords: [] },
       ((next: Item[] | ((current: Item[]) => Item[])) => { items.splice(0, items.length, ...(typeof next === "function" ? next(items) : next)); }) as never,
       vi.fn() as never,
     );

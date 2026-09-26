@@ -15,7 +15,7 @@ vi.mock("openai", () => ({
   },
 }));
 
-import { translateMany } from "@/ai/translate-many";
+import { translateMany } from "@/ai/openai/translate-many";
 
 describe("OpenAI multiple translation", () => {
   beforeEach(() => {

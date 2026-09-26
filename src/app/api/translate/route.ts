@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { translate } from "@/ai/translate";
+import { translate } from "@/ai/openai/translate";
 import { readLang } from "@/lib/request";
 
 export async function POST(request: Request) {

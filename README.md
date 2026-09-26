@@ -8,7 +8,7 @@ UI demo with sample data.
 
 Browser-based web app for real-time speech transcription, translation, and conversation summaries with AI Insights using microphone input.
 
-Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Responses APIs.
+Built with Next.js 16, React 19, TypeScript, OpenAI APIs.
 
 ## Features
 
@@ -17,22 +17,23 @@ Built with Next.js 16, React 19, TypeScript, and the OpenAI Realtime and Respons
 - Translation of preliminary and final transcripts
 - Topic summaries and the current topic in the source language
 - Source and target language switching
-- Start, stop, commit, and clear session controls
+- Start, stop, and clear session controls
 
 ## Usage
 
 Click the gear icon (`Settings`) at the top right, adjust the following settings, and press `Save`. Settings are saved in this browser.
 
 - `Source language` / `Translation language`: English (`en`), Japanese (`ja`), Chinese (`zh`), or French (`fr`). The default is English → Japanese. The bottom control panel displays the selected language direction.
+- `Transcription`: OpenAI.
 - `Text size`: S, M, or L (default: M).
-- `Prompt`: topic or recording context for transcription.
+- `Prompt`: topic or recording context for OpenAI transcription.
 - `Keywords`: names, technical terms, or acronyms as spelling hints, one per line.
 
 Opening settings while the session is not idle asks you to confirm stopping it. Text size takes effect immediately after saving; all other settings apply when the next session starts.
 
 Press `Stop` to stop microphone input and the Realtime connection.
 
-Press `Commit` to commit the current audio buffer and finalize the current transcript for translation. During a session, the audio buffer is also committed automatically every 15 seconds.
+OpenAI commits the audio buffer and updates translations automatically every 15 seconds.
 
 Press the eraser icon (`Clear`) at the bottom right of the main panel to clear the displayed history without stopping the session.
 

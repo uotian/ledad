@@ -7,7 +7,6 @@ const state = vi.hoisted(() => ({
     error: null,
     status: "idle" as import("@/lib/types").Status,
     clear: vi.fn(),
-    commit: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
   },

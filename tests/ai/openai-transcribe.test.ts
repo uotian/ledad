@@ -15,7 +15,7 @@ vi.mock("openai", () => ({
   },
 }));
 
-import { transcribe } from "@/ai/transcribe";
+import { transcribe } from "@/ai/openai/transcribe";
 
 describe("OpenAI transcription", () => {
   beforeEach(() => {
@@ -28,6 +28,7 @@ describe("OpenAI transcription", () => {
     const audio = new File(["audio"], "transcript.webm", { type: "audio/webm" });
 
     await expect(transcribe("secret", audio, {
+      provider: "openai",
       textSize: "M",
       langFrom: "en",
       langTo: "ja",

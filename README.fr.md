@@ -8,7 +8,7 @@ Démonstration de l’interface avec des données d’exemple.
 
 Application web qui utilise le microphone du navigateur pour transcrire et traduire la parole en temps réel, et résumer les sujets de conversation avec AI Insights.
 
-Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Realtime et Responses.
+Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI.
 
 ## Fonctionnalités principales
 
@@ -17,22 +17,23 @@ Technologies utilisées : Next.js 16, React 19, TypeScript et les API OpenAI Rea
 - Traduction des transcriptions préliminaires et finales
 - Résumés par sujet et sujet actuel dans la langue source
 - Changement de la langue source et de la langue cible
-- Commandes pour démarrer, arrêter, valider et effacer une session
+- Commandes pour démarrer, arrêter et effacer une session
 
 ## Utilisation
 
 Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les paramètres suivants et appuyez sur `Save`. Les paramètres sont enregistrés dans ce navigateur.
 
 - `Source language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
+- `Transcription` : OpenAI.
 - `Text size` : S, M ou L (M par défaut).
-- `Prompt` : sujet ou contexte de l’enregistrement pour la transcription.
+- `Prompt` : sujet ou contexte de l’enregistrement pour la transcription OpenAI.
 - `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne.
 
 Ouvrir les paramètres lorsque la session n’est pas inactive demande de confirmer son arrêt. La taille du texte s’applique immédiatement après l’enregistrement ; les autres paramètres prennent effet au démarrage de la prochaine session.
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 
-Appuyez sur `Commit` pour valider le tampon audio actuel et finaliser la transcription en cours pour la traduction. Pendant une session, le tampon audio est également validé automatiquement toutes les 15 secondes.
+OpenAI valide le tampon audio et met à jour les traductions automatiquement toutes les 15 secondes.
 
 Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
 

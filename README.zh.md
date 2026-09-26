@@ -8,7 +8,7 @@
 
 这是一个使用浏览器麦克风输入，实时转写和翻译语音，并通过 AI Insights 总结会话话题的 Web 应用。
 
-使用技术：Next.js 16、React 19、TypeScript，以及 OpenAI Realtime API 和 Responses API。
+使用技术：Next.js 16、React 19、TypeScript、OpenAI API。
 
 ## 主要功能
 
@@ -17,22 +17,23 @@
 - 翻译初步和最终转写文本
 - 使用源语言显示话题摘要和当前话题
 - 切换源语言和目标语言
-- 开始、停止、提交和清空会话
+- 开始、停止和清空会话
 
 ## 使用方法
 
 点击屏幕右上角的齿轮图标（`Settings`），调整以下设置后点击 `Save`。设置保存在当前浏览器中。
 
 - `Source language`／`Translation language`：可选择英语（`en`）、日语（`ja`）、中文（`zh`）或法语（`fr`）。默认为英语→日语。底部控制面板会显示所选的翻译方向。
+- `Transcription`：使用 OpenAI。
 - `Text size`：S／M／L（默认为 M）。
-- `Prompt`：输入话题或录音背景，为转写提供上下文。
+- `Prompt`：输入话题或录音背景，为 OpenAI 转写提供上下文。
 - `Keywords`：输入专有名词、专业术语或缩写，每行一个，作为拼写提示。
 
 会话不是 idle 状态时打开设置，会先确认是否停止会话。保存后，文字大小立即生效；其他设置在下次会话开始时生效。
 
 点击 `Stop` 停止麦克风输入和 Realtime 连接。
 
-点击 `Commit` 提交当前音频缓冲区，并完成当前转写内容以进行翻译。会话期间，音频缓冲区也会每15秒自动提交一次。
+OpenAI 每15秒自动提交音频缓冲区并更新翻译。
 
 点击主面板右下角的橡皮擦图标（`Clear`）清空显示的历史记录。此操作不会停止会话。
 
@@ -53,7 +54,7 @@
 
 ## 设置
 
-创建 `.env.local`，并设置 OpenAI API key。
+创建 `.env.local` 并设置 OpenAI API key。
 
 ```bash
 OPENAI_API_KEY=your_api_key

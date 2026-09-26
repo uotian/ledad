@@ -8,7 +8,7 @@
 
 ブラウザのマイク入力を使って、音声をリアルタイムに文字起こし・翻訳し、AI Insightsで会話の話題を要約するWebアプリです。
 
-使用技術：Next.js 16、React 19、TypeScript、OpenAI Realtime API／Responses API
+使用技術：Next.js 16、React 19、TypeScript、OpenAI API
 
 ## 主な機能
 
@@ -17,22 +17,23 @@
 - 速報版・確定版の翻訳
 - 話題ごとの概要と現在の話題を、入力言語で表示
 - 入力言語・翻訳先言語の切り替え
-- セッションの開始・停止・Commit・クリア
+- セッションの開始・停止・クリア
 
 ## 使い方
 
 画面右上の歯車アイコン（`Settings`）を押し、以下を設定して `Save` を押します。設定は利用中のブラウザに保存されます。
 
 - `Source language`／`Translation language`：英語（`en`）・日本語（`ja`）・中国語（`zh`）・フランス語（`fr`）から選びます。初期値は英語→日本語です。画面下部のコントロールパネルには、選択した翻訳方向が表示されます。
+- `Transcription`：OpenAI を使います。
 - `Text size`：S／M／Lから選びます（初期値：M）。
-- `Prompt`：話題や録音の背景など、文字起こしのための文脈を入力します。
+- `Prompt`：OpenAI の文字起こしに使う話題や録音の背景を入力します。
 - `Keywords`：固有名詞・専門用語・略語など、表記のヒントを1行に1つ入力します。
 
 `idle` 以外で設定を開くと、セッションを停止するか確認します。`Text size` は保存後すぐに反映され、それ以外の設定は次のセッション開始時に有効になります。
 
 `Stop` を押すと、マイク入力とRealtime接続を停止します。
 
-`Commit` を押すと、現在の音声バッファを確定し、表示中の文字起こしを翻訳します。セッション中は、音声バッファも15秒ごとに自動で確定されます。
+OpenAI は15秒ごとに音声バッファを確定し、翻訳を自動更新します。
 
 メインパネル右下の消しゴムアイコン（`Clear`）を押すと、表示中の履歴を消去します。セッションは停止しません。
 
@@ -53,7 +54,7 @@ Chrome、Edge、Firefox、Safari（iOS Safari を含む）の最新版を利用�
 
 ## セットアップ
 
-`.env.local` を作成し、OpenAI API keyを設定します。
+`.env.local` を作成し、OpenAI API key を設定します。
 
 ```bash
 OPENAI_API_KEY=your_api_key
