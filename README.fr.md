@@ -11,7 +11,7 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 ## Fonctionnalités principales
 
 - Entrée audio depuis le microphone du navigateur
-- Transcription avec Gemini (par défaut) ou OpenAI
+- Transcription en direct avec Gemini (par défaut) ou OpenAI ; version finale avec OpenAI
 - Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
 - Traduction des transcriptions préliminaires et finales
 - Résumés par sujet et sujet actuel dans une langue choisie séparément
@@ -24,7 +24,7 @@ Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les
 
 - `Speech language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
 - `Insights language` : anglais (`en`), japonais (`ja`, par défaut), chinois (`zh`) ou français (`fr`), indépendamment des langues source et cible.
-- `STT Provider` : Gemini (par défaut) ou OpenAI pour la transcription.
+- `Live STT Provider` : Gemini (par défaut) ou OpenAI pour la transcription en direct. La version finale utilise toujours OpenAI.
 - `Text size` : S, M ou L (M par défaut).
 - `Prompt` : sujet ou contexte de l’enregistrement pour la transcription OpenAI.
 - `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne.
@@ -45,9 +45,9 @@ Pendant l’écoute, l’application vérifie les changements toutes les 30 seco
 
 - Node.js
 - Clé API OpenAI
-- Clé API Gemini
+- Clé API Gemini (si Gemini est choisi pour la transcription en direct)
 
-La transcription (STT) utilise les API OpenAI ou Gemini ; la traduction et AI Insights utilisent les API OpenAI.
+La transcription en direct utilise les API OpenAI ou Gemini ; la transcription finale, la traduction et AI Insights utilisent les API OpenAI.
 
 ## Navigateurs pris en charge
 

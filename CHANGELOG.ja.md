@@ -2,6 +2,11 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.1
+
+- 確定版の文字起こしを OpenAI に統一。速報は引き続き Gemini・OpenAI から選択できます。
+- 設定したキーワードを OpenAI の速報・確定版の文字起こしに反映。
+
 ## v0.6.0
 
 - Gemini の文字起こしに対応し、デフォルトに変更。

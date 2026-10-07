@@ -11,7 +11,7 @@ Built with Next.js 16, React 19, TypeScript, OpenAI APIs, and Gemini APIs.
 ## Features
 
 - Browser microphone input
-- Gemini (default) or OpenAI speech-to-text
+- Gemini (default) or OpenAI live speech-to-text; OpenAI final transcription
 - Low-latency preliminary and 60-second final transcriptions
 - Translation of preliminary and final transcripts
 - Topic summaries and the current topic in a separately selected language
@@ -24,7 +24,7 @@ Click the gear icon (`Settings`) at the top right, adjust the following settings
 
 - `Speech language` / `Translation language`: English (`en`), Japanese (`ja`), Chinese (`zh`), or French (`fr`). The default is English → Japanese. The bottom control panel displays the selected language direction.
 - `Insights language`: English (`en`), Japanese (`ja`, default), Chinese (`zh`), or French (`fr`), independently of the source and translation languages.
-- `STT Provider`: Gemini (default) or OpenAI for speech-to-text.
+- `Live STT Provider`: Gemini (default) or OpenAI for live speech-to-text. Final transcription always uses OpenAI.
 - `Text size`: S, M, or L (default: M).
 - `Prompt`: topic or recording context for OpenAI transcription.
 - `Keywords`: names, technical terms, or acronyms as spelling hints, one per line.
@@ -45,9 +45,9 @@ While listening, the app checks for changes every 30 seconds and summarizes the 
 
 - Node.js
 - OpenAI API key
-- Gemini API key
+- Gemini API key (when Gemini is selected for live STT)
 
-STT uses OpenAI or Gemini APIs; translation and AI Insights use OpenAI APIs.
+Live STT uses OpenAI or Gemini APIs; final STT, translation, and AI Insights use OpenAI APIs.
 
 ## Supported browsers
 

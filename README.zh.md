@@ -11,7 +11,7 @@
 ## 主要功能
 
 - 使用浏览器麦克风输入
-- 支持 Gemini（默认）和 OpenAI 转写
+- 实时转写可选择 Gemini（默认）或 OpenAI，最终转写固定使用 OpenAI
 - 低延迟初步转写和每60秒生成的最终转写
 - 翻译初步和最终转写文本
 - 使用单独选择的语言显示话题摘要和当前话题
@@ -24,7 +24,7 @@
 
 - `Speech language`／`Translation language`：可选择英语（`en`）、日语（`ja`）、中文（`zh`）或法语（`fr`）。默认为英语→日语。底部控制面板会显示所选的翻译方向。
 - `Insights language`：单独选择摘要语言：英语（`en`）、日语（`ja`，默认）、中文（`zh`）或法语（`fr`）。
-- `STT Provider`：选择用于转写的 Gemini（默认）或 OpenAI。
+- `Live STT Provider`：选择用于实时转写的 Gemini（默认）或 OpenAI。最终转写始终使用 OpenAI。
 - `Text size`：S／M／L（默认为 M）。
 - `Prompt`：输入话题或录音背景，为 OpenAI 转写提供上下文。
 - `Keywords`：输入专有名词、专业术语或缩写，每行一个，作为拼写提示。
@@ -45,9 +45,9 @@
 
 - Node.js
 - OpenAI API key
-- Gemini API key
+- Gemini API key（实时转写选择 Gemini 时需要）
 
-STT 使用 OpenAI 或 Gemini 的 API，翻译和 AI Insights 使用 OpenAI 的 API。
+实时 STT 使用 OpenAI 或 Gemini 的 API，最终 STT、翻译和 AI Insights 使用 OpenAI 的 API。
 
 ## 支持的浏览器
 

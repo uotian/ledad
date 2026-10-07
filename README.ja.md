@@ -11,7 +11,7 @@
 ## 主な機能
 
 - ブラウザでのマイク入力
-- Gemini（初期値）・OpenAI の文字起こし切り替え
+- 速報の文字起こしは Gemini（初期値）・OpenAI から選択、確定版は OpenAI
 - 低遅延な速報版と60秒ごとの確定版文字起こし
 - 速報版・確定版の翻訳
 - 話題ごとの概要と現在の話題を、個別に選んだ言語で表示
@@ -24,7 +24,7 @@
 
 - `Speech language`／`Translation language`：英語（`en`）・日本語（`ja`）・中国語（`zh`）・フランス語（`fr`）から選びます。初期値は英語→日本語です。画面下部のコントロールパネルには、選択した翻訳方向が表示されます。
 - `Insights language`：概要の言語を英語（`en`）・日本語（`ja`、初期値）・中国語（`zh`）・フランス語（`fr`）から個別に選びます。
-- `STT Provider`：文字起こしに使う Gemini（初期値）または OpenAI を選びます。
+- `Live STT Provider`：速報の文字起こしに使う Gemini（初期値）または OpenAI を選びます。確定版は常に OpenAI を使います。
 - `Text size`：S／M／Lから選びます（初期値：M）。
 - `Prompt`：OpenAI の文字起こしに使う話題や録音の背景を入力します。
 - `Keywords`：固有名詞・専門用語・略語など、表記のヒントを1行に1つ入力します。
@@ -45,9 +45,9 @@
 
 - Node.js
 - OpenAI API key
-- Gemini API key
+- Gemini API key（速報の STT で Gemini を選ぶ場合）
 
-STT には OpenAI または Gemini、翻訳と AI Insights には OpenAI の API を使います。
+速報の STT には OpenAI または Gemini、確定版の STT・翻訳・AI Insights には OpenAI の API を使います。
 
 ## 対応ブラウザ
 

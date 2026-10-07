@@ -13,8 +13,7 @@ export async function createOpenAILiveToken(apiKey: string, settings: Settings) 
           languages: [settings.langFrom], // Expected language hints, e.g. ["ja", "en"]. Do not also send language.
           delay: "xhigh",  // Options: "minimal" | "low" | "medium" | "high" | "xhigh".
           prompt: settings.prompt, // Optional background context; supported.
-          keywords: ["ドパがき", "笑笑"],
-          // keywords: settings.keywords, // Optional spelling hints, not required output; no <, >, CR, or LF.
+          keywords: settings.keywords, // Optional spelling hints, not required output; no <, >, CR, or LF.
         },
         turn_detection: null, // gpt-live-transcribe uses manual commits; server VAD is not supported.
       },

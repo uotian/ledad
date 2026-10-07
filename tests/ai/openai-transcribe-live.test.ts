@@ -28,7 +28,7 @@ describe("OpenAI live token", () => {
             languages: ["zh"],
             delay: "xhigh",
             prompt: "中国史の解説です。",
-            keywords: ["ドパがき", "笑笑"],
+            keywords: ["楊堅", "隋"],
           },
           turn_detection: null,
         },

@@ -15,7 +15,7 @@ export type TranscriptionProvider = (typeof TRANSCRIPTION_PROVIDERS)[number];
 export type TextSize = (typeof TEXT_SIZES)[number];
 
 export type Settings = {
-  provider: TranscriptionProvider;
+  provider: TranscriptionProvider; // Live STT only. Final STT always uses OpenAI.
   textSize: TextSize;
   langFrom: Lang;
   langTo: Lang;

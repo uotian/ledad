@@ -2,6 +2,11 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.1
+
+- Use OpenAI for final transcription while keeping Gemini or OpenAI selectable for live transcription.
+- Apply configured keywords to OpenAI live and final transcription.
+
 ## v0.6.0
 
 - Added Gemini transcription and made it the default.

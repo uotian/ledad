@@ -68,7 +68,7 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
           <div className="grid gap-2">
-            <Label htmlFor="transcription-provider">STT Provider</Label>
+            <Label htmlFor="transcription-provider">Live STT Provider</Label>
             <select id="transcription-provider" value={provider} onChange={(event) => setProvider(event.target.value as TranscriptionProvider)} className="h-9 w-full cursor-pointer rounded-md border border-input bg-background px-3 text-sm">
               {TRANSCRIPTION_PROVIDERS.map((provider) => <option key={provider} value={provider}>{provider === "openai" ? "OpenAI" : "Gemini"}</option>)}
             </select>
@@ -99,10 +99,10 @@ export function SettingsDialog({ session }: { session: Pick<Session, "status" | 
               {TEXT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
           </div>
-          {provider === "openai" && <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label htmlFor="transcription-prompt">Prompt</Label>
             <Textarea id="transcription-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} className="min-h-36" placeholder="Describe the topic or recording context." />
-          </div>}
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="transcription-keywords">Keywords</Label>
             <Textarea id="transcription-keywords" value={keywordsText} onChange={(event) => setKeywordsText(event.target.value)} className="min-h-28" placeholder={"OpenAI\nUnited Nations"} />
