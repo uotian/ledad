@@ -4,8 +4,7 @@ import type { ItemFlush, Settings } from "@/lib/types";
 import type { ItemFlushLastRef, SetItems } from "@/hooks/use-session/types";
 
 export class Transcript {
-  private requestId = 0;
-  private translations = new Map<string, { pending: number; applied: number }>();
+  private translations = new Map<string, { item: ItemFlush }>();
 
   constructor(protected last: ItemFlushLastRef, private settings: Settings, private setItems: SetItems) {}
 
@@ -30,29 +29,36 @@ export class Transcript {
     }
   }
 
+  stop() {
+    this.translations.clear();
+  }
+
   async translate(item: ItemFlush | null = this.last.current) {
-    if (item && item.transcripts[0].trim()) {
-      const text = item.transcripts[0];
-      const requestId = ++this.requestId;
-      const state = this.translations.get(item.id) ?? { pending: 0, applied: 0 };
-      state.pending++;
-      this.translations.set(item.id, state);
+    if (!item?.transcripts[0].trim()) return;
+    const running = this.translations.get(item.id);
+    if (running) {
+      running.item = item;
+      return;
+    }
+    const state = { item };
+    this.translations.set(item.id, state);
+    while (this.translations.get(item.id) === state) {
+      const current = state.item;
       try {
-        const translation = await translate({ text, settings: this.settings });
-        // Show completed translations even while newer requests are still running.
-        if (requestId > state.applied) {
-          state.applied = requestId;
-          if (this.last.current?.id === item.id) {
-            this.last.current = { ...this.last.current, translations: [translation] };
-          }
-          this.setItems((items) => items.map((existing) => existing.id === item.id ? { ...existing, translations: [translation] } : existing));
+        const translation = await translate({ text: current.transcripts[0], settings: this.settings, previous: current.translations[0] });
+        if (this.translations.get(item.id) !== state) return;
+        if (this.last.current?.id === item.id) {
+          this.last.current = { ...this.last.current, translations: [translation] };
         }
+        this.setItems((items) => items.map((existing) => existing.id === item.id ? { ...existing, translations: [translation] } : existing));
+        // The next request uses the translation just displayed, with the latest source.
+        if (state.item !== current) state.item = { ...state.item, translations: [translation] };
       } catch (error) {
         console.error("Could not translate flush item.", error);
-      } finally {
-        state.pending--;
-        if (!state.pending) this.translations.delete(item.id);
       }
+      if (state.item.transcripts[0] === current.transcripts[0]
+        || (!state.item.endedAt && this.last.current?.id !== item.id)) break;
     }
+    if (this.translations.get(item.id) === state) this.translations.delete(item.id);
   }
 }

@@ -39,7 +39,7 @@ export function ResultsPanel({ session }: { session: Session }) {
     <div
       role="region"
       aria-label="Transcript and translation"
-      className="relative flex min-h-0 min-w-0 basis-2/3 flex-col"
+      className="relative flex min-h-0 min-w-0 basis-3/4 flex-col"
       onPointerDown={pauseAutoScroll}
       onTouchStart={pauseAutoScroll}
       onWheel={pauseAutoScroll}

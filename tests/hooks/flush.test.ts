@@ -153,9 +153,9 @@ describe("Flush", () => {
     expect(state.items[0].startedAt).toEqual(expect.any(String));
     expect(state.items[0].endedAt).toEqual(expect.any(String));
     expect(state.itemFlushLast.current).toBeNull();
-    expect(translate).toHaveBeenNthCalledWith(1, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello," });
-    expect(translate).toHaveBeenNthCalledWith(2, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello, world." });
+    expect(translate).toHaveBeenNthCalledWith(1, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello,", previous: "" });
     await waitFor(() => expect(state.items[0].translations).toEqual(["translated:Hello, world."]));
+    expect(translate).toHaveBeenNthCalledWith(2, { settings: expect.objectContaining({ langFrom: "en", langTo: "ja" }), text: "Hello, world.", previous: "translated:Hello," });
   });
 
   it("updates a completed item without overwriting a newer active item", async () => {
@@ -183,7 +183,7 @@ describe("Flush", () => {
     expect(state.items.map((item) => item.transcripts[0])).toEqual(["One.", "Two, three!", "Tail"]);
     expect(state.items.slice(0, 2).every((item) => item.endedAt)).toBe(true);
     expect(state.itemFlushLast.current?.transcripts).toEqual(["Tail"]);
-    expect(translate.mock.calls.map(([args]) => args.text)).toEqual(["One.", "Two,", "Two, three!"]);
+    await waitFor(() => expect(translate.mock.calls.map(([args]) => args.text)).toEqual(["One.", "Two,", "Two, three!"]));
   });
 
   it("does not translate when a periodic commit has no transcript", async () => {

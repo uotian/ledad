@@ -4,6 +4,8 @@
 
 ![Démonstration de la transcription, de la traduction et d’AI Insights dans ledad](docs/assets/ledad-demo.gif)
 
+Démonstration avec des données de conversation fictives.
+
 Application web qui utilise le microphone du navigateur pour transcrire et traduire la parole en temps réel, et résumer les sujets de conversation avec AI Insights.
 
 Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et les API Gemini.
@@ -33,7 +35,7 @@ Ouvrir les paramètres lorsque la session n’est pas inactive demande de confir
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 
-Les transcriptions préliminaires et leurs traductions sont mises à jour pendant la parole.
+Les transcriptions préliminaires et leurs traductions sont mises à jour pendant la parole et affichées côte à côte, avec des sauts de ligne entre les phrases. Pour chaque énoncé, la traduction précédente sert de référence afin de conserver les formulations correctes à mesure que la parole continue.
 
 Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
 

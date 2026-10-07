@@ -2,6 +2,12 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.2
+
+- Display transcripts and translations side by side, with sentence breaks and more room for reading.
+- Reuse the previous translation within each utterance and combine rapid updates for steadier preliminary translations.
+- Switch translation to `gpt-6-luna` and use structured output for preliminary translations as well.
+
 ## v0.6.1
 
 - Use OpenAI for final transcription while keeping Gemini or OpenAI selectable for live transcription.

@@ -1,4 +1,5 @@
 import type { Item } from "@/lib/types";
+import { formatSentences } from "@/lib/utils/sentences";
 import { cn } from "@/lib/utils";
 
 const timeFormatter = new Intl.DateTimeFormat("sv-SE", {
@@ -25,9 +26,9 @@ export function ItemBlock({ item }: { item: Item }) {
         </span>
       </div>
       {item.transcripts.map((transcript, index) => (
-        <div className="flex flex-col gap-0.5" key={index}>
-          <p className="text-blue-950/75">{transcript}</p>
-          <p className={cn("text-foreground/88", !item.translations[index] && "animate-pulse")}>{item.translations[index] || "..."}</p>
+        <div className="grid grid-cols-2 gap-x-4" key={index}>
+          <p className="min-w-0 whitespace-pre-line wrap-anywhere text-blue-950/75">{formatSentences(transcript)}</p>
+          <p className={cn("min-w-0 whitespace-pre-line wrap-anywhere border-l border-border pl-4 text-foreground/88", !item.translations[index] && "animate-pulse")}>{item.translations[index] ? formatSentences(item.translations[index]) : "..."}</p>
         </div>
       ))}
     </article>

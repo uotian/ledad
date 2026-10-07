@@ -69,6 +69,7 @@ export class Flush {
 
   stop(message?: string) {
     if (!this.controller.signal.aborted) {
+      this.transcript.stop();
       if (this.timer) clearInterval(this.timer);
       this.timer = null;
       this.audio.stop();

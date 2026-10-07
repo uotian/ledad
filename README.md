@@ -4,6 +4,8 @@
 
 ![ledad real-time transcription, translation, and AI Insights demo](docs/assets/ledad-demo.gif)
 
+Demo with sample conversation data.
+
 Browser-based web app for real-time speech transcription, translation, and conversation summaries with AI Insights using microphone input.
 
 Built with Next.js 16, React 19, TypeScript, OpenAI APIs, and Gemini APIs.
@@ -33,7 +35,7 @@ Opening settings while the session is not idle asks you to confirm stopping it. 
 
 Press `Stop` to stop microphone input and the Realtime connection.
 
-Preliminary transcripts and translations update while you speak.
+Preliminary transcripts and translations update while you speak, displayed side by side with sentence breaks. Within each utterance, the previous translation is used as a reference to keep accurate wording stable as speech continues.
 
 Press the eraser icon (`Clear`) at the bottom right of the main panel to clear the displayed history without stopping the session.
 

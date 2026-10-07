@@ -19,11 +19,13 @@ export class Transcript extends CommonTranscript {
   }
 
   endSentence() {
-    this.stop();
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = null;
     super.endSentence();
   }
 
   stop() {
+    super.stop();
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
   }
