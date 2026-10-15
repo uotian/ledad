@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { notFound } from "next/navigation";
+import { APIError } from "openai";
 import { GeminiRateLimitError } from "@/ai/gemini/generate";
 import { translate as openai } from "@/ai/openai/translate";
 import { translate as gemini } from "@/ai/gemini/translate";
@@ -14,17 +15,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
 
   const langFrom = readLang(request, "X-Lang-From", "en");
   const langTo = readLang(request, "X-Lang-To", "ja");
-  const text = (await request.text()).trim();
-  if (!text) return NextResponse.json({ error: "No text to translate." }, { status: 400 });
+  const { text, previous = "" }: { text?: unknown; previous?: unknown } = await request.json().catch(() => null) ?? {};
+  if (typeof text !== "string" || !text.trim() || typeof previous !== "string") {
+    return NextResponse.json({ error: "Invalid translation input." }, { status: 400 });
+  }
 
   try {
-    const translation = await translate(apiKey, langFrom, langTo, text);
-    return NextResponse.json({ translation });
+    return NextResponse.json({ translation: await translate(apiKey, langFrom, langTo, text.trim(), previous) });
   } catch (error) {
     if (error instanceof GeminiRateLimitError) {
       const headers = error.retryAfter === undefined ? undefined : { "Retry-After": String(error.retryAfter) };
       return NextResponse.json({ error: error.message }, { status: 429, headers });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 502 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: error instanceof APIError ? error.status ?? 502 : 502 });
   }
 }

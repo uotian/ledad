@@ -4,6 +4,8 @@
 
 ![Démonstration de la transcription, de la traduction et d’AI Insights dans ledad](docs/assets/ledad-demo.gif)
 
+Démonstration avec des données de conversation fictives.
+
 Application web qui utilise le microphone du navigateur pour transcrire et traduire la parole en temps réel, et résumer les sujets de conversation avec AI Insights.
 
 Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et les API Gemini.
@@ -11,8 +13,8 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 ## Fonctionnalités principales
 
 - Entrée audio depuis le microphone du navigateur
-- Transcription avec Gemini (par défaut) ou OpenAI
-- Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
+- Transcription en direct avec Gemini (par défaut) ou OpenAI ; version finale avec OpenAI
+- Transcriptions préliminaires à faible latence et versions finales générées à la prochaine finalisation préliminaire après 30 secondes
 - Traduction des transcriptions préliminaires et finales
 - Résumés par sujet et sujet actuel dans une langue choisie séparément
 - Changement de la langue source et de la langue cible
@@ -24,7 +26,7 @@ Cliquez sur l’icône d’engrenage (`Settings`) en haut à droite, réglez les
 
 - `Speech language` / `Translation language` : anglais (`en`), japonais (`ja`), chinois (`zh`) ou français (`fr`). Par défaut : anglais → japonais. Le panneau de contrôle en bas affiche le sens de traduction sélectionné.
 - `Insights language` : anglais (`en`), japonais (`ja`, par défaut), chinois (`zh`) ou français (`fr`), indépendamment des langues source et cible.
-- `STT Provider` : Gemini (par défaut) ou OpenAI pour la transcription.
+- `Live STT Provider` : Gemini (par défaut) ou OpenAI pour la transcription en direct. La version finale utilise toujours OpenAI.
 - `Text size` : S, M ou L (M par défaut).
 - `Prompt` : sujet ou contexte de l’enregistrement pour la transcription OpenAI.
 - `Keywords` : noms propres, termes techniques ou sigles pour guider l’orthographe, un par ligne.
@@ -33,7 +35,7 @@ Ouvrir les paramètres lorsque la session n’est pas inactive demande de confir
 
 Appuyez sur `Stop` pour arrêter l'entrée microphone et la connexion Realtime.
 
-Les transcriptions préliminaires et leurs traductions sont mises à jour pendant la parole.
+Les transcriptions préliminaires et leurs traductions sont mises à jour pendant la parole et affichées côte à côte, avec des sauts de ligne entre les phrases. Pour chaque énoncé, la traduction précédente sert de référence afin de conserver les formulations correctes à mesure que la parole continue.
 
 Appuyez sur l’icône de gomme (`Clear`) en bas à droite du panneau principal pour effacer l’historique affiché sans arrêter la session.
 
@@ -45,9 +47,9 @@ Pendant l’écoute, l’application vérifie les changements toutes les 30 seco
 
 - Node.js
 - Clé API OpenAI
-- Clé API Gemini
+- Clé API Gemini (si Gemini est choisi pour la transcription en direct)
 
-La transcription (STT) utilise les API OpenAI ou Gemini ; la traduction et AI Insights utilisent les API OpenAI.
+La transcription en direct utilise les API OpenAI ou Gemini ; la transcription finale, la traduction et AI Insights utilisent les API OpenAI.
 
 ## Navigateurs pris en charge
 

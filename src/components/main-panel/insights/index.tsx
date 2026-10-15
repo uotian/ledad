@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export function InsightsPanel({ data, error, updating = false, canRefresh = false, onRefresh }: { data: InsightsResult | null; error: string | null; updating?: boolean; canRefresh?: boolean; onRefresh?: () => void }) {
   return (
-    <aside aria-labelledby="insights-title" className="min-h-0 min-w-0 basis-1/3 overflow-y-auto border-b border-border/60 p-4 md:border-r md:border-b-0">
+    <aside aria-labelledby="insights-title" className="min-h-0 min-w-0 basis-1/4 overflow-y-auto border-b border-border/60 p-4 md:border-r md:border-b-0">
       <div className="mb-4 flex items-center justify-between gap-2">
         <h2 id="insights-title" className="text-[1.1em] font-semibold">AI Insights</h2>
         <Button variant="ghost" size="icon-sm" className="cursor-pointer rounded-full" aria-label={updating ? "Updating insights" : "Refresh insights"} title={updating ? "Updating insights" : "Refresh insights"} disabled={updating || !canRefresh} onClick={onRefresh}>

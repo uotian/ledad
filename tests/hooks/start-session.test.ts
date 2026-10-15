@@ -32,6 +32,30 @@ beforeEach(() => vi.useFakeTimers());
 afterEach(() => { vi.clearAllTimers(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe("session start", () => {
+  it.each(["gemini", "openai"] as const)("waits for a %s live boundary after thirty seconds before rotating the recording", async (provider) => {
+    const { args, browser, recorderStop } = setup(provider);
+    await start(args);
+    const socket = browser.sockets[0];
+    const completed = () => socket.emit(provider === "gemini"
+      ? { serverContent: { inputTranscription: { text: "A complete utterance" } } }
+      : { type: "conversation.item.input_audio_transcription.completed", transcript: "A complete utterance" });
+    await vi.advanceTimersByTimeAsync(25000);
+    completed();
+    expect(recorderStop).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(10000);
+    expect(recorderStop).not.toHaveBeenCalled();
+    completed();
+    expect(recorderStop).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(25000);
+    completed();
+    expect(recorderStop).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(10000);
+    completed();
+    expect(recorderStop).toHaveBeenCalledTimes(2);
+    stop(args.refs, args.setStatus);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("reports initialization failures before requesting the microphone", async () => {
     const { args, getUserMedia } = setup();
     vi.stubGlobal("AbortController", class {
@@ -72,7 +96,7 @@ describe("session start", () => {
     expect(args.setStatus).toHaveBeenLastCalledWith("idle");
     expect(args.setError).toHaveBeenLastCalledWith("Could not start: Token failed");
     expect(trackStop).toHaveBeenCalledOnce();
-    expect(recorderStop).toHaveBeenCalledOnce();
+    expect(recorderStop).not.toHaveBeenCalled();
     expect(args.refs).toEqual({ mic: { current: null }, flush: { current: null }, final: { current: null } });
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -216,7 +240,7 @@ describe("session start", () => {
     expect(browser.sockets[0].readyState).toBe(3);
     expect(browser.contexts).toHaveLength(0);
     expect(trackStop).toHaveBeenCalledOnce();
-    expect(recorderStop).toHaveBeenCalledOnce();
+    expect(recorderStop).not.toHaveBeenCalled();
     expect(vi.getTimerCount()).toBe(0);
   });
 });

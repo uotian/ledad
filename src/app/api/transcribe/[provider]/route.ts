@@ -16,7 +16,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const audio = formData?.get("audio");
   const settings = readSettings(formData?.get("settings"));
   if (!isAudioFile(audio)) return NextResponse.json({ error: "No audio to transcribe." }, { status: 400 });
-  if (!settings || settings.provider !== provider) return NextResponse.json({ error: "Invalid transcription settings." }, { status: 400 });
+  if (!settings) return NextResponse.json({ error: "Invalid transcription settings." }, { status: 400 });
 
   try {
     const transcript = await transcribe(apiKey, audio, settings);

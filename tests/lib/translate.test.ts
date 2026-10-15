@@ -7,19 +7,20 @@ afterEach(() => {
 });
 
 describe("browser translation client", () => {
-  it("posts text with both languages and returns the translation", async () => {
+  it("posts text and its previous translation with both languages", async () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json({ translation: "こんにちは" }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await expect(translate({ settings: { ...defaultSettings, langFrom: "en", langTo: "ja" }, text: "Hello" })).resolves.toBe("こんにちは");
+    const previous = "やあ";
+    await expect(translate({ settings: { ...defaultSettings, langFrom: "en", langTo: "ja" }, text: "Hello", previous })).resolves.toBe("こんにちは");
     expect(fetchMock).toHaveBeenCalledWith("/api/translate/openai", {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": "application/json",
         "X-Lang-From": "en",
         "X-Lang-To": "ja",
       },
-      body: "Hello",
+      body: JSON.stringify({ text: "Hello", previous }),
     });
   });
 

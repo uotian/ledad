@@ -29,7 +29,7 @@ export async function createGeminiLiveToken(apiKey: string, settings: Settings) 
             startOfSpeechSensitivity: "START_SENSITIVITY_HIGH", // "START_SENSITIVITY_HIGH" (default) | "START_SENSITIVITY_LOW".
             // prefixPaddingMs: 20, // Example; default is undocumented.
             endOfSpeechSensitivity: "END_SENSITIVITY_HIGH", // "END_SENSITIVITY_HIGH" (default) | "END_SENSITIVITY_LOW".
-            silenceDurationMs: 500, // End speech after 500 ms of silence (default: about 800 ms).
+            silenceDurationMs: 100, // End speech after 100 ms of detected non-speech.
           },
         },
       },

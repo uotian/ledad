@@ -42,13 +42,15 @@ describe("browser transcript client", () => {
     expect((init.body as FormData).get("audio")).toEqual(expect.objectContaining({ name: "transcript.webm", type: "audio/webm" }));
   });
 
-  it("routes Gemini final transcription to its own endpoint", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ transcript: "Gemini transcript." }));
+  it("uses OpenAI for final transcription even when live STT uses Gemini", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ transcript: "Final transcript." }));
     vi.stubGlobal("fetch", fetchMock);
     const audio = new Blob(["audio"], { type: "audio/webm" });
 
-    await expect(transcribe({ audio, filename: "transcript.webm", settings: { ...defaultSettings, provider: "gemini" } })).resolves.toBe("Gemini transcript.");
-    expect(fetchMock.mock.calls[0][0]).toBe("/api/transcribe/gemini");
+    const settings = { ...defaultSettings, provider: "gemini" as const, langFrom: "ja" as const };
+    await expect(transcribe({ audio, filename: "transcript.webm", settings })).resolves.toBe("Final transcript.");
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/transcribe/openai");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body.get("settings"))).toEqual(settings);
   });
 
 });

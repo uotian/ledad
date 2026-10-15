@@ -16,7 +16,9 @@ export async function transcribe({ audio, filename, settings }: { audio: Blob; f
   const formData = new FormData();
   formData.set("audio", audio, filename);
   formData.set("settings", JSON.stringify(settings));
-  const response = await fetch(`/api/transcribe/${settings.provider}`, { method: "POST", body: formData });
+  // Provider selection applies to live STT; recorded final STT always uses OpenAI.
+  // const response = await fetch(`/api/transcribe/${settings.provider}`, { method: "POST", body: formData });
+  const response = await fetch("/api/transcribe/openai", { method: "POST", body: formData });
   if (response.ok) return (await response.json() as { transcript: string }).transcript;
   throw new Error((await response.json() as { error?: string }).error ?? "Could not transcribe audio.");
 }

@@ -5,7 +5,7 @@ import { Flush as GeminiFlush } from "./gemini";
 
 export type Flush = OpenAIFlush | GeminiFlush;
 
-export function createFlush(refs: Pick<Refs, "mic" | "flush">, settings: Settings, itemFlushLast: ItemFlushLastRef, setStatus: SetStatus, onError: (message: string) => void, setItems: SetItems): Flush {
+export function createFlush(refs: Pick<Refs, "mic" | "flush">, settings: Settings, itemFlushLast: ItemFlushLastRef, setStatus: SetStatus, onError: (message: string) => void, setItems: SetItems, onBoundary: (endedAt: string) => void = () => {}): Flush {
   const Flush = settings.provider === "openai" ? OpenAIFlush : GeminiFlush;
-  return new Flush(refs, settings, itemFlushLast, setStatus, onError, setItems);
+  return new Flush(refs, settings, itemFlushLast, setStatus, onError, setItems, onBoundary);
 }

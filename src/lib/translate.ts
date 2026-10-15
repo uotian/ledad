@@ -1,8 +1,8 @@
 import type { Settings } from "@/lib/types";
 
-export async function translate({ text, settings }: { text: string; settings: Settings }) {
-  const headers = {"Content-Type": "text/plain", "X-Lang-From": settings.langFrom, "X-Lang-To": settings.langTo};
-  const response = await fetch("/api/translate/openai", {method: "POST", headers, body: text});
+export async function translate({ text, settings, previous }: { text: string; settings: Settings; previous?: string }) {
+  const headers = {"Content-Type": "application/json", "X-Lang-From": settings.langFrom, "X-Lang-To": settings.langTo};
+  const response = await fetch("/api/translate/openai", {method: "POST", headers, body: JSON.stringify({ text, previous })});
   const payload = await response.json();
   if (response.ok && payload.translation) {
     return payload.translation as string;

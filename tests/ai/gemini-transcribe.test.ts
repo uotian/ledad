@@ -25,7 +25,7 @@ describe("Gemini transcription", () => {
         disabled: false,
         startOfSpeechSensitivity: "START_SENSITIVITY_HIGH",
         endOfSpeechSensitivity: "END_SENSITIVITY_HIGH",
-        silenceDurationMs: 500,
+        silenceDurationMs: 100,
       } },
     });
   });

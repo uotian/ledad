@@ -4,6 +4,8 @@
 
 ![ledad real-time transcription, translation, and AI Insights demo](docs/assets/ledad-demo.gif)
 
+Demo with sample conversation data.
+
 Browser-based web app for real-time speech transcription, translation, and conversation summaries with AI Insights using microphone input.
 
 Built with Next.js 16, React 19, TypeScript, OpenAI APIs, and Gemini APIs.
@@ -11,8 +13,8 @@ Built with Next.js 16, React 19, TypeScript, OpenAI APIs, and Gemini APIs.
 ## Features
 
 - Browser microphone input
-- Gemini (default) or OpenAI speech-to-text
-- Low-latency preliminary and 60-second final transcriptions
+- Gemini (default) or OpenAI live speech-to-text; OpenAI final transcription
+- Low-latency preliminary transcriptions, with final transcriptions generated at the next preliminary completion after 30 seconds
 - Translation of preliminary and final transcripts
 - Topic summaries and the current topic in a separately selected language
 - Source and target language switching
@@ -24,7 +26,7 @@ Click the gear icon (`Settings`) at the top right, adjust the following settings
 
 - `Speech language` / `Translation language`: English (`en`), Japanese (`ja`), Chinese (`zh`), or French (`fr`). The default is English → Japanese. The bottom control panel displays the selected language direction.
 - `Insights language`: English (`en`), Japanese (`ja`, default), Chinese (`zh`), or French (`fr`), independently of the source and translation languages.
-- `STT Provider`: Gemini (default) or OpenAI for speech-to-text.
+- `Live STT Provider`: Gemini (default) or OpenAI for live speech-to-text. Final transcription always uses OpenAI.
 - `Text size`: S, M, or L (default: M).
 - `Prompt`: topic or recording context for OpenAI transcription.
 - `Keywords`: names, technical terms, or acronyms as spelling hints, one per line.
@@ -33,7 +35,7 @@ Opening settings while the session is not idle asks you to confirm stopping it. 
 
 Press `Stop` to stop microphone input and the Realtime connection.
 
-Preliminary transcripts and translations update while you speak.
+Preliminary transcripts and translations update while you speak, displayed side by side with sentence breaks. Within each utterance, the previous translation is used as a reference to keep accurate wording stable as speech continues.
 
 Press the eraser icon (`Clear`) at the bottom right of the main panel to clear the displayed history without stopping the session.
 
@@ -45,9 +47,9 @@ While listening, the app checks for changes every 30 seconds and summarizes the 
 
 - Node.js
 - OpenAI API key
-- Gemini API key
+- Gemini API key (when Gemini is selected for live STT)
 
-STT uses OpenAI or Gemini APIs; translation and AI Insights use OpenAI APIs.
+Live STT uses OpenAI or Gemini APIs; final STT, translation, and AI Insights use OpenAI APIs.
 
 ## Supported browsers
 

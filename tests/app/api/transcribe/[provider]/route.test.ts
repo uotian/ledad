@@ -43,10 +43,13 @@ describe("POST /api/transcribe/[provider]", () => {
     expect(transcribeGemini).not.toHaveBeenCalled();
   });
 
-  it("rejects a mismatch between the URL and settings", async () => {
-    vi.stubEnv("GEMINI_API_KEY", "secret");
-    const response = await POST(request("gemini", { ...defaultSettings, provider: "openai" }), context("gemini"));
-    expect(response.status).toBe(400);
+  it("uses OpenAI for final STT with Gemini selected for live STT", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "secret");
+    transcribe.mockResolvedValue("Final transcript.");
+    const settings = { ...defaultSettings, provider: "gemini" as const };
+    const response = await POST(request("openai", settings), context("openai"));
+    expect(response.status).toBe(200);
+    expect(transcribe).toHaveBeenCalledWith("secret", expect.anything(), settings);
     expect(transcribeGemini).not.toHaveBeenCalled();
   });
 

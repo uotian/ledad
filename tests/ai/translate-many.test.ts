@@ -24,7 +24,7 @@ describe("OpenAI multiple translation", () => {
   });
 
   it("returns aligned transcript and translation segments for a final item", async () => {
-    openAIMocks.create.mockResolvedValue({ output_text: JSON.stringify({
+    openAIMocks.create.mockResolvedValue({ status: "completed", output_text: JSON.stringify({
       segments: [
         { transcript: "Hello.", translation: "こんにちは。" },
         { transcript: "How are you?", translation: "お元気ですか？" },
@@ -36,15 +36,15 @@ describe("OpenAI multiple translation", () => {
       translations: ["こんにちは。", "お元気ですか？"],
     });
     expect(openAIMocks.create).toHaveBeenCalledWith(expect.objectContaining({
-      model: "gpt-5-nano",
-      reasoning: { effort: "minimal" },
+      model: "gpt-6-luna",
+      reasoning: { effort: "none" },
       input: "Hello. How are you?",
       text: { format: expect.objectContaining({ type: "json_schema", name: "translations", strict: true }) },
     }));
   });
 
   it("accepts an obvious transcription correction", async () => {
-    openAIMocks.create.mockResolvedValue({ output_text: JSON.stringify({
+    openAIMocks.create.mockResolvedValue({ status: "completed", output_text: JSON.stringify({
       segments: [{ transcript: "The weather is nice.", translation: "天気がいいですね。" }],
     }) });
 
@@ -52,5 +52,12 @@ describe("OpenAI multiple translation", () => {
       transcripts: ["The weather is nice."],
       translations: ["天気がいいですね。"],
     });
+  });
+
+  it("rejects an incomplete response even if the segments can be parsed", async () => {
+    openAIMocks.create.mockResolvedValue({ status: "incomplete", output_text: JSON.stringify({
+      segments: [{ transcript: "Hello.", translation: "こんにちは。" }],
+    }) });
+    await expect(translateMany("secret", "en", "ja", "Hello.")).rejects.toThrow("Could not read translations.");
   });
 });

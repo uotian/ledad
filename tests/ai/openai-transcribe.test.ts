@@ -34,14 +34,15 @@ describe("OpenAI transcription", () => {
       langTo: "ja",
       langInsight: "ja",
       prompt: "A meeting.",
-      keywords: [],
+      keywords: ["Ledad"],
     })).resolves.toBe("Final transcript.");
 
     expect(openAIMocks.constructor).toHaveBeenCalledWith({ apiKey: "secret" });
     expect(openAIMocks.create).toHaveBeenCalledWith({
       file: audio,
       model: "gpt-transcribe",
-      language: "en",
+      languages: ["en"],
+      keywords: ["Ledad"],
       prompt: "A meeting.",
     });
   });

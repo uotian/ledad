@@ -4,6 +4,8 @@
 
 ![ledadのリアルタイム文字起こし・翻訳・AI Insightsデモ](docs/assets/ledad-demo.gif)
 
+サンプル会話データを使った画面デモです。
+
 ブラウザのマイク入力を使って、音声をリアルタイムに文字起こし・翻訳し、AI Insightsで会話の話題を要約するWebアプリです。
 
 使用技術：Next.js 16、React 19、TypeScript、OpenAI API、Gemini API
@@ -11,8 +13,8 @@
 ## 主な機能
 
 - ブラウザでのマイク入力
-- Gemini（初期値）・OpenAI の文字起こし切り替え
-- 低遅延な速報版と60秒ごとの確定版文字起こし
+- 速報の文字起こしは Gemini（初期値）・OpenAI から選択、確定版は OpenAI
+- 低遅延な速報版と、30秒経過後の次の速報確定時に生成する確定版文字起こし
 - 速報版・確定版の翻訳
 - 話題ごとの概要と現在の話題を、個別に選んだ言語で表示
 - 入力言語・翻訳先言語の切り替え
@@ -24,7 +26,7 @@
 
 - `Speech language`／`Translation language`：英語（`en`）・日本語（`ja`）・中国語（`zh`）・フランス語（`fr`）から選びます。初期値は英語→日本語です。画面下部のコントロールパネルには、選択した翻訳方向が表示されます。
 - `Insights language`：概要の言語を英語（`en`）・日本語（`ja`、初期値）・中国語（`zh`）・フランス語（`fr`）から個別に選びます。
-- `STT Provider`：文字起こしに使う Gemini（初期値）または OpenAI を選びます。
+- `Live STT Provider`：速報の文字起こしに使う Gemini（初期値）または OpenAI を選びます。確定版は常に OpenAI を使います。
 - `Text size`：S／M／Lから選びます（初期値：M）。
 - `Prompt`：OpenAI の文字起こしに使う話題や録音の背景を入力します。
 - `Keywords`：固有名詞・専門用語・略語など、表記のヒントを1行に1つ入力します。
@@ -33,7 +35,7 @@
 
 `Stop` を押すと、マイク入力とRealtime接続を停止します。
 
-発話中から速報の文字起こしと翻訳を更新します。
+発話中から速報の文字起こしと翻訳を更新し、原文と訳文を文ごとに改行して横並びに表示します。同じ発話の直前の訳文を参照し、続きが追加されても正しい表現はなるべく保ちます。
 
 メインパネル右下の消しゴムアイコン（`Clear`）を押すと、表示中の履歴を消去します。セッションは停止しません。
 
@@ -43,11 +45,10 @@
 
 ## 必要なもの
 
-- Node.js
 - OpenAI API key
-- Gemini API key
+- Gemini API key（速報の STT で Gemini を選ぶ場合）
 
-STT には OpenAI または Gemini、翻訳と AI Insights には OpenAI の API を使います。
+速報の STT には OpenAI または Gemini、確定版の STT・翻訳・AI Insights には OpenAI の API を使います。
 
 ## 対応ブラウザ
 
@@ -56,6 +57,8 @@ Chrome、Edge、Firefox、Safari（iOS Safari を含む）の最新版を利用�
 マイク入力には、セキュアコンテキスト（HTTPS または `localhost`）とブラウザでのマイク権限も必要です。
 
 ## セットアップ
+
+ローカルで起動する場合は、Node.js をインストールしてください。
 
 `.env.local` を作成し、初期設定では両方の API key を設定します。
 

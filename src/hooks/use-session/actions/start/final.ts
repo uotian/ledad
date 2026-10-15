@@ -4,11 +4,10 @@ import { translateMany } from "@/lib/translate";
 import type { Settings } from "@/lib/types";
 import type { Refs, SetError, SetItems } from "../../types";
 
-export const FINAL_INTERVAL_MS = 60 * 1000;
+export const FINAL_INTERVAL_MS = 30 * 1000;
 
 export class Final {
-  private recorder: MediaRecorder | null = null;
-  private timer: ReturnType<typeof setTimeout> | null = null;
+  private segment: { recorder: MediaRecorder; startedAt: string; endedAt?: string } | null = null;
   private stopped = false;
 
   constructor(
@@ -23,8 +22,9 @@ export class Final {
     const options = MediaRecorder.isTypeSupported(format) ? { mimeType: format } : undefined;
     const recorder = new MediaRecorder(this.refs.mic.current!, options);
     const filename = recorder.mimeType.startsWith("audio/mp4") ? "transcript.mp4" : "transcript.webm";
-    let endedAt: string | undefined;
+    const segment = { recorder, startedAt, endedAt: undefined as string | undefined };
     recorder.addEventListener("dataavailable", async ({ data: audio }) => {
+      const { endedAt } = segment;
       try {
         if (!this.stopped && endedAt && audio.size > 0) {
           const transcript = await transcribe({ audio, filename, settings: this.settings });
@@ -43,21 +43,21 @@ export class Final {
       }
     });
     recorder.start();
-    this.recorder = recorder;
-    this.timer = setTimeout(() => {
-      if (recorder.state === "recording") {
-        endedAt = new Date().toISOString();
-        this.start(endedAt);
-        recorder.stop();
-      }
-    }, FINAL_INTERVAL_MS);
+    this.segment = segment;
+  }
+
+  boundary(endedAt: string) {
+    const segment = this.segment;
+    if (this.stopped || !segment || segment.recorder.state !== "recording"
+      || Date.parse(endedAt) - Date.parse(segment.startedAt) < FINAL_INTERVAL_MS) return;
+    segment.endedAt = endedAt;
+    this.start(endedAt);
+    segment.recorder.stop();
   }
 
   stop() {
     this.stopped = true;
-    if (this.timer) clearTimeout(this.timer);
-    this.timer = null;
-    if (this.recorder?.state === "recording") this.recorder.stop();
-    this.recorder = null;
+    if (this.segment?.recorder.state === "recording") this.segment.recorder.stop();
+    this.segment = null;
   }
 }

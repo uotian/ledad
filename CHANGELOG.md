@@ -2,6 +2,23 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.3
+
+- Reduce Gemini silence detection to 100 ms and request finalization after 15 seconds of continuous speech.
+- Rotate final-transcription recordings at the next live transcription completion after 30 seconds.
+- Start final recording after the live connection is ready and ignore stale OpenAI completion events for older utterances.
+
+## v0.6.2
+
+- Display transcripts and translations side by side, with sentence breaks and more room for reading.
+- Reuse the previous translation within each utterance and combine rapid updates for steadier preliminary translations.
+- Switch translation to `gpt-6-luna` and use structured output for preliminary translations as well.
+
+## v0.6.1
+
+- Use OpenAI for final transcription while keeping Gemini or OpenAI selectable for live transcription.
+- Apply configured keywords to OpenAI live and final transcription.
+
 ## v0.6.0
 
 - Added Gemini transcription and made it the default.
