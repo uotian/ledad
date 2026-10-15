@@ -23,14 +23,14 @@ export async function start({ refs, settings, setStatus, setError, setItems, ite
   try {
     final = new Final(refs, settings, setItems, setError);
     refs.final.current = final;
-    flush = createFlush(refs, settings, itemFlushLast, setStatus, fail, setItems);
+    flush = createFlush(refs, settings, itemFlushLast, setStatus, fail, setItems, (endedAt) => final?.boundary(endedAt));
     refs.flush.current = flush;
 
     const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
     if (refs.flush.current === flush) {
       refs.mic.current = mic;
-      final.start();
       await flush.start();
+      if (refs.flush.current === flush) final.start();
     } else {
       mic.getTracks().forEach((track) => track.stop());
     }

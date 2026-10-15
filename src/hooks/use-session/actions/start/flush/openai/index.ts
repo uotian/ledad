@@ -13,9 +13,10 @@ export class Flush {
   private audio: AudioInput;
   private transcript: Transcript;
   private pendingAudio = false;
+  private itemId?: string;
   private timer: ReturnType<typeof setInterval> | null = null;
 
-  constructor(private refs: Pick<Refs, "mic" | "flush">, private settings: Settings, itemFlushLast: ItemFlushLastRef, private setStatus: SetStatus, private onError: (message: string) => void, setItems: SetItems) {
+  constructor(private refs: Pick<Refs, "mic" | "flush">, private settings: Settings, itemFlushLast: ItemFlushLastRef, private setStatus: SetStatus, private onError: (message: string) => void, setItems: SetItems, private onBoundary: (endedAt: string) => void = () => {}) {
     this.audio = new AudioInput((audio) => {
       if (this.socket?.readyState === WebSocket.OPEN) {
         try {
@@ -43,7 +44,14 @@ export class Flush {
       getSocket: () => this.socket,
       onMessage: (message) => {
         if (message.type === "conversation.item.input_audio_transcription.delta" && message.delta) {
+          this.itemId = message.item_id;
           this.transcript.append(message.delta);
+        }
+        if (message.type === "conversation.item.input_audio_transcription.completed") {
+          if (message.item_id && this.itemId && message.item_id !== this.itemId) return;
+          const endedAt = new Date().toISOString();
+          this.transcript.endSentence(endedAt);
+          this.onBoundary(endedAt);
         }
       },
       onError: (message) => this.stop(message),

@@ -46,7 +46,7 @@ describe("final transcription timeline", () => {
     expect(selectItems([itemFlush, itemFinal, itemFinalBefore])).toEqual([itemFinalBefore, itemFinal]);
   });
 
-  it.each(["openai", "gemini"] as const)("records sixty-second chunks with %s selected for live STT", async (provider) => {
+  it.each(["openai", "gemini"] as const)("waits beyond thirty seconds for a live boundary with %s selected", async (provider) => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-22T00:00:00.000Z"));
     vi.spyOn(crypto, "randomUUID").mockReturnValue("final-id");
@@ -89,7 +89,13 @@ describe("final transcription timeline", () => {
     );
     refs.final.current = final;
     final.start();
-    await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS);
+    await vi.advanceTimersByTimeAsync(15000);
+    final.boundary(new Date().toISOString());
+    expect(lifecycle).toEqual(["start:0"]);
+    await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS - 15000);
+    expect(lifecycle).toEqual(["start:0"]);
+    await vi.advanceTimersByTimeAsync(5000);
+    final.boundary(new Date().toISOString());
 
     expect(lifecycle).toEqual(["start:0", "start:1", "stop:0"]);
     expect(transcribe).not.toHaveBeenCalled();
@@ -102,15 +108,18 @@ describe("final transcription timeline", () => {
     await vi.runAllTicks();
 
     expect(items).toHaveLength(2);
-    expect(items[1]).toMatchObject({ startedAt: "2026-09-22T00:00:00.000Z", endedAt: "2026-09-22T00:01:00.000Z" });
+    expect(items[1]).toMatchObject({ startedAt: "2026-09-22T00:00:00.000Z", endedAt: "2026-09-22T00:00:35.000Z" });
     expect(selectItems(items)).toEqual([expect.objectContaining({ id: "final-id", type: "final", transcripts: ["Final transcript."], translations: ["確定した翻訳。"] })]);
 
-    await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS);
+    await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS - 500);
+    final.boundary(new Date().toISOString());
+    await vi.advanceTimersByTimeAsync(500);
     expect(lifecycle).toEqual(["start:0", "start:1", "stop:0", "start:2", "stop:1"]);
     expect(items).toHaveLength(3);
-    expect(items[2]).toMatchObject({ startedAt: "2026-09-22T00:01:00.000Z", endedAt: "2026-09-22T00:02:00.000Z" });
+    expect(items[2]).toMatchObject({ startedAt: "2026-09-22T00:00:35.000Z", endedAt: "2026-09-22T00:01:05.000Z" });
 
     refs.final.current?.stop();
+    final.boundary(new Date(Date.now() + FINAL_INTERVAL_MS).toISOString());
     await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS);
     expect(lifecycle).toEqual(["start:0", "start:1", "stop:0", "start:2", "stop:1", "stop:2"]);
     expect(transcribe).toHaveBeenCalledTimes(2);
@@ -149,6 +158,7 @@ describe("final transcription timeline", () => {
     refs.final.current = final;
     final.start();
     await vi.advanceTimersByTimeAsync(FINAL_INTERVAL_MS);
+    final.boundary(new Date().toISOString());
     refs.final.current?.stop();
     resolveTranscription("Final transcript.");
     await vi.runAllTicks();

@@ -2,6 +2,12 @@
 
 [日本語](CHANGELOG.ja.md) | [English](CHANGELOG.md)
 
+## v0.6.3
+
+- Reduce Gemini silence detection to 100 ms and request finalization after 15 seconds of continuous speech.
+- Rotate final-transcription recordings at the next live transcription completion after 30 seconds.
+- Start final recording after the live connection is ready and ignore stale OpenAI completion events for older utterances.
+
 ## v0.6.2
 
 - Display transcripts and translations side by side, with sentence breaks and more room for reading.

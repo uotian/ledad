@@ -137,6 +137,17 @@ describe("Flush", () => {
     expect(translate).not.toHaveBeenCalled();
   });
 
+  it("does not close the current transcript for an older item's completion", async () => {
+    const state = await setupFlush();
+    state.socket.emit({ type: "conversation.item.input_audio_transcription.delta", item_id: "current", delta: "Current speech" });
+    state.socket.emit({ type: "conversation.item.input_audio_transcription.completed", item_id: "previous", transcript: "Previous speech" });
+    expect(state.itemFlushLast.current?.transcripts).toEqual(["Current speech"]);
+    expect(state.items[0].endedAt).toBeUndefined();
+    state.socket.emit({ type: "conversation.item.input_audio_transcription.completed", item_id: "current", transcript: "Current speech" });
+    expect(state.itemFlushLast.current).toBeNull();
+    expect(state.items[0].endedAt).toEqual(expect.any(String));
+  });
+
   it("does not translate a whitespace-only transcript", async () => {
     const state = await setupFlush();
     state.listeners.get("message")?.(message({ type: "conversation.item.input_audio_transcription.delta", delta: " " }));

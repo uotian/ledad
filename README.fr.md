@@ -14,7 +14,7 @@ Technologies utilisées : Next.js 16, React 19, TypeScript, les API OpenAI et le
 
 - Entrée audio depuis le microphone du navigateur
 - Transcription en direct avec Gemini (par défaut) ou OpenAI ; version finale avec OpenAI
-- Transcriptions préliminaires à faible latence et versions finales toutes les 60 secondes
+- Transcriptions préliminaires à faible latence et versions finales générées à la prochaine finalisation préliminaire après 30 secondes
 - Traduction des transcriptions préliminaires et finales
 - Résumés par sujet et sujet actuel dans une langue choisie séparément
 - Changement de la langue source et de la langue cible

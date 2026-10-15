@@ -19,11 +19,11 @@ export class Transcript {
       : [...items, item]);
   }
 
-  endSentence() {
+  endSentence(endedAt = new Date().toISOString()) {
     const item = this.last.current;
     if (item) {
       this.last.current = null;
-      const finished = { ...item, endedAt: new Date().toISOString() };
+      const finished = { ...item, endedAt };
       this.setItems((items) => items.map((existing) => existing.id === item.id ? finished : existing));
       void this.translate(finished);
     }

@@ -14,7 +14,7 @@ Built with Next.js 16, React 19, TypeScript, OpenAI APIs, and Gemini APIs.
 
 - Browser microphone input
 - Gemini (default) or OpenAI live speech-to-text; OpenAI final transcription
-- Low-latency preliminary and 60-second final transcriptions
+- Low-latency preliminary transcriptions, with final transcriptions generated at the next preliminary completion after 30 seconds
 - Translation of preliminary and final transcripts
 - Topic summaries and the current topic in a separately selected language
 - Source and target language switching

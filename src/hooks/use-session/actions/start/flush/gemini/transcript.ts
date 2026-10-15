@@ -18,10 +18,10 @@ export class Transcript extends CommonTranscript {
     }
   }
 
-  endSentence() {
+  endSentence(endedAt?: string) {
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
-    super.endSentence();
+    super.endSentence(endedAt);
   }
 
   stop() {
