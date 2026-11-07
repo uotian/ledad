@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultSettings } from "@/lib/settings";
 import type { Settings, TranscriptionProvider } from "@/lib/types";

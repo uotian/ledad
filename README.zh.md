@@ -45,7 +45,7 @@
 
 ## 需要准备
 
-- Node.js
+- Node.js 22 或更高版本（`.nvmrc` 和 CI 使用 22）
 - OpenAI API key
 - Gemini API key（实时转写选择 Gemini 时需要）
 
@@ -92,3 +92,5 @@ http://localhost:3000
 - 使用 OpenAI 或 Gemini API 可能会产生费用。
 
 [更新日志](CHANGELOG.md)
+
+[依赖安全说明](docs/dependency-security.md)（日语）：审计结果和临时防护措施。开发时请使用 `npm run shadcn -- <参数>` 运行 CLI。
