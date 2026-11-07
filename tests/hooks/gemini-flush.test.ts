@@ -150,6 +150,12 @@ describe("Gemini live transcript", () => {
     await flush.start();
     const socket = browser.sockets[0];
     expect(socket.url).toBe("wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token=ephemeral-token");
+    expect(JSON.parse(socket.send.mock.calls[0][0])).toMatchObject({ setup: {
+      model: "models/gemini-3.5-transcribe-live",
+      generationConfig: { responseModalities: ["TEXT"] },
+      inputAudioTranscription: { languageCodes: ["en-US"], customVocabulary: [], mode: "VERBATIM" },
+      realtimeInputConfig: { automaticActivityDetection: { silenceDurationMs: 100 } },
+    } });
     expect(setStatus).toHaveBeenLastCalledWith("listening");
     expect(browser.contexts[0].sampleRate).toBe(24000);
     browser.emitAudio();

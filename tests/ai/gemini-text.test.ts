@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GeminiRateLimitError } from "@/ai/gemini/generate";
 import { translate } from "@/ai/gemini/translate";
@@ -17,22 +18,28 @@ function respond(text: string, status = "completed") {
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 }
-afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
+afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); });
 
 describe("Gemini text generation", () => {
   it("translates with the requested languages and reads only model text", async () => {
+    vi.stubEnv("GOOGLE_GENAI_API_VERSION", "v1beta");
+    vi.stubEnv("GOOGLE_GENAI_USE_VERTEXAI", "true");
+    vi.stubEnv("GOOGLE_GEMINI_BASE_URL", "https://example.test");
     const fetchMock = respond("  こんにちは  ");
     await expect(translate("secret", "en", "ja", "Hello")).resolves.toBe("こんにちは");
-    const [url, options] = fetchMock.mock.calls[0];
-    expect(url).toBe("https://generativelanguage.googleapis.com/v1beta/interactions");
-    expect(options.headers["x-goog-api-key"]).toBe("secret");
-    expect(JSON.parse(options.body)).toMatchObject({ model: "gemini-3.8-flash", input: "Hello", store: false, system_instruction: expect.stringContaining("en speech transcripts into natural ja") });
+    const request = new Request(...fetchMock.mock.calls[0] as [RequestInfo, RequestInit?]);
+    expect(request.url).toBe("https://generativelanguage.googleapis.com/v1/interactions");
+    expect(request.headers.get("x-goog-api-key")).toBe("secret");
+    expect(request.headers.get("x-goog-api-client")).toContain("google-genai-sdk/3.");
+    expect(await request.json()).toMatchObject({ model: "gemini-3.8-flash", input: "Hello", store: false, system_instruction: expect.stringContaining("en speech transcripts into natural ja"), generation_config: { thinking_level: "low", max_output_tokens: 8000 } });
   });
 
   it("returns trimmed, aligned transcript and translation segments", async () => {
     const fetchMock = respond(JSON.stringify({ segments: [{ transcript: " Hello. ", translation: " こんにちは。 " }, { transcript: "Bye.", translation: "さようなら。" }] }));
     await expect(translateMany("secret", "en", "ja", "Hello. Bye.")).resolves.toEqual({ transcripts: ["Hello.", "Bye."], translations: ["こんにちは。", "さようなら。"] });
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body).response_format).toMatchObject({ type: "text", mime_type: "application/json", schema: { required: ["segments"] } });
+    const request = new Request(...fetchMock.mock.calls[0] as [RequestInfo, RequestInit?]);
+    expect(request.url).toBe("https://generativelanguage.googleapis.com/v1/interactions");
+    expect((await request.json()).response_format).toMatchObject({ type: "text", mime_type: "application/json", schema: { required: ["segments"] } });
   });
 
   it.each(["not json", "null", "{}", '{"segments":[]}', '{"segments":[null]}', '{"segments":[{"transcript":"Hello","translation":" "}]}', '{"segments":[{"transcript":12,"translation":"a"}]}'])("rejects malformed translations: %s", async (text) => {
@@ -45,10 +52,11 @@ describe("Gemini text generation", () => {
     const fetchMock = respond(JSON.stringify(data));
     const controller = new AbortController();
     await expect(generateInsights("secret", input, controller.signal)).resolves.toEqual(data);
-    const options = fetchMock.mock.calls[0][1];
-    expect(JSON.parse(options.body)).toMatchObject({ input: JSON.stringify(input.items), system_instruction: expect.stringContaining("untrusted meeting data"), response_format: { schema: { required: ["allTopics", "currentTopic"] } } });
+    const request = new Request(...fetchMock.mock.calls[0] as [RequestInfo, RequestInit?]);
+    expect(request.url).toBe("https://generativelanguage.googleapis.com/v1/interactions");
+    expect(await request.json()).toMatchObject({ input: JSON.stringify(input.items), system_instruction: expect.stringContaining("untrusted meeting data"), response_format: { schema: { required: ["allTopics", "currentTopic"] } } });
     controller.abort();
-    expect(options.signal.aborted).toBe(true);
+    expect(request.signal.aborted).toBe(true);
   });
 
   it("rejects invalid topics", async () => {
@@ -56,9 +64,10 @@ describe("Gemini text generation", () => {
     await expect(generateInsights("secret", input)).rejects.toThrow("Could not read insights.");
   });
 
-  it.each(["incomplete", "failed", "cancelled"])("rejects %s responses even with readable output", async (status) => {
-    respond("partial translation", status);
+  it.each(["incomplete", "failed", "cancelled", "requires_continuation"])("rejects %s responses even with readable output", async (status) => {
+    const fetchMock = respond("partial translation", status);
     await expect(translate("secret", "en", "ja", "Hello")).rejects.toThrow("incomplete");
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
   it("rejects empty output", async () => {
@@ -67,7 +76,7 @@ describe("Gemini text generation", () => {
   });
 
   it("reports upstream failures without including provider response details", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ error: "private details" }, { status: 503 })));
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => Promise.resolve(Response.json({ error: "private details" }, { status: 503 }))));
     await expect(translate("secret", "en", "ja", "Hello")).rejects.toThrow("Gemini request failed (503).");
   });
 });

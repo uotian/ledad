@@ -7,6 +7,7 @@ import { Transcript } from "./transcript";
 
 const RECONNECT_INTERVAL_MS = 9 * 60 * 1000;
 const MAX_UTTERANCE_MS = 15 * 1000;
+// Live transcription with ephemeral tokens requires v1beta.
 const GEMINI_WS_URL = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained";
 
 type LiveMessage = {

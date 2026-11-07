@@ -45,7 +45,7 @@ While listening, the app checks for changes every 30 seconds and summarizes the 
 
 ## Requirements
 
-- Node.js
+- Node.js 22 or later (`.nvmrc`: 22; CI uses the same version)
 - OpenAI API key
 - Gemini API key (when Gemini is selected for live STT)
 
@@ -67,6 +67,8 @@ GEMINI_API_KEY=your_gemini_api_key
 ```
 
 Install dependencies.
+
+If you use nvm, run `nvm use` first. npm rejects unsupported Node.js versions.
 
 ```bash
 npm install
@@ -92,3 +94,7 @@ http://localhost:3000
 - OpenAI or Gemini API usage may incur costs.
 
 [Changelog](CHANGELOG.md)
+
+[Gemini API integration design](docs/gemini-api.md) (Japanese): SDK 3, API versions, and compatibility decisions.
+
+[Dependency security](docs/dependency-security.md) (Japanese): audit results and workarounds. Run the development CLI with `npm run shadcn -- <arguments>`.

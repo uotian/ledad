@@ -1,4 +1,5 @@
 import "server-only";
+import { GoogleGenAI } from "@google/genai";
 import type { Settings } from "@/lib/types";
 import { geminiLanguage } from "./transcribe-live";
 
@@ -18,7 +19,8 @@ export async function transcribeGemini(apiKey: string, audio: File, settings: Se
 }
 
 async function start(apiKey: string, audio: File, mimeType: string) {
-  const response = await fetch(`${BASE}/upload/v1beta/files`, {
+  // Keep the resumable upload's destination validation before sending audio.
+  const response = await fetch(`${BASE}/upload/v1/files`, {
     method: "POST",
     headers: {
       "x-goog-api-key": apiKey,
@@ -55,7 +57,9 @@ async function upload(uploadUrl: string, audio: File) {
 }
 
 async function transcribeAudio(apiKey: string, uri: string, mimeType: string, settings: Settings) {
-  const body = {
+  // v1 does not expose generation_config.transcription_config yet.
+  const client = new GoogleGenAI({ apiKey, apiVersion: "v1beta", vertexai: false, httpOptions: { baseUrl: BASE } });
+  const result = await client.interactions.create({
     model: "gemini-3.5-transcribe",
     input: [{ type: "audio", uri, mime_type: mimeType }], // Uploaded audio URI and MIME type.
     generation_config: {
@@ -69,24 +73,17 @@ async function transcribeAudio(apiKey: string, uri: string, mimeType: string, se
         },
       },
     },
-  };
-  console.log("[gemini:transcribe:request]", JSON.stringify(body, null, 2));
-  const response = await fetch(`${BASE}/v1beta/interactions`, {
-    method: "POST",
-    headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    automatic_continuation: false,
+  }, { retries: { strategy: "none" } }).catch((error: unknown) => {
+    const status = error instanceof Error && "status" in error && typeof error.status === "number" ? ` (${error.status})` : "";
+    throw new Error(`Gemini transcription failed${status}.`);
   });
-  if (!response.ok) throw new Error(`Gemini transcription failed (${response.status}).`);
-  const result = await response.json() as {
-    steps?: { type?: string; content?: { type?: string; text?: string }[] }[];
-  };
-  console.log("[gemini:transcribe]", JSON.stringify(result, null, 2));
+  if (result.status !== "completed") throw new Error("Gemini transcription was incomplete.");
   const text = result.steps?.filter((step) => step.type === "model_output").flatMap((step) => step.content ?? [])
     .filter((content) => content.type === "text").map((content) => content.text ?? "").join("");
-  if (typeof text !== "string") throw new Error("Gemini did not return a transcript.");
   return text.trim();
 }
 
 async function deleteAudio(apiKey: string, name: string) {
-  await fetch(`${BASE}/v1beta/${name}`, { method: "DELETE", headers: { "x-goog-api-key": apiKey } }).catch(() => undefined);
+  await fetch(`${BASE}/v1/${name}`, { method: "DELETE", headers: { "x-goog-api-key": apiKey } }).catch(() => undefined);
 }

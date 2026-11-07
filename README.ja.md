@@ -45,6 +45,7 @@
 
 ## 必要なもの
 
+- Node.js 22以上（`.nvmrc` と CI は22系）
 - OpenAI API key
 - Gemini API key（速報の STT で Gemini を選ぶ場合）
 
@@ -58,7 +59,7 @@ Chrome、Edge、Firefox、Safari（iOS Safari を含む）の最新版を利用�
 
 ## セットアップ
 
-ローカルで起動する場合は、Node.js をインストールしてください。
+ローカルで起動する場合は、Node.js 22以上をインストールしてください。nvm を使う場合は `nvm use` で22系を選択します。未対応の Node.js では npm のインストールを拒否します。
 
 `.env.local` を作成し、初期設定では両方の API key を設定します。
 
@@ -93,3 +94,7 @@ http://localhost:3000
 - OpenAI または Gemini APIの利用料が発生します。
 
 [変更履歴](CHANGELOG.ja.md)
+
+[Gemini API 設計](docs/gemini-api.md)：SDK 3、APIバージョンの使い分けと互換性の判断。
+
+[依存関係のセキュリティ](docs/dependency-security.md)：監査結果と回避策。開発時のshadcn CLIは `npm run shadcn -- <引数>` で実行してください。

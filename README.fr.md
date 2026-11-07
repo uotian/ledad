@@ -45,7 +45,7 @@ Pendant l’écoute, l’application vérifie les changements toutes les 30 seco
 
 ## Prérequis
 
-- Node.js
+- Node.js 22 ou version ultérieure (`.nvmrc` et CI : version 22)
 - Clé API OpenAI
 - Clé API Gemini (si Gemini est choisi pour la transcription en direct)
 
@@ -92,3 +92,5 @@ http://localhost:3000
 - L'utilisation des API OpenAI ou Gemini peut entraîner des frais.
 
 [Historique des modifications](CHANGELOG.md)
+
+[Sécurité des dépendances](docs/dependency-security.md) (en japonais) : résultats de l’audit et mesures temporaires. Lancez la CLI de développement avec `npm run shadcn -- <arguments>`.
